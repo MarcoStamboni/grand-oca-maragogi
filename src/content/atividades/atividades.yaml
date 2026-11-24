@@ -1,0 +1,238 @@
+# Atividades de lazer, crianças, esportes e bem-estar do Grand Oca Maragogi (páginas de entretenimento,
+# resort e piscinas do Grand Oca Maragogi e da agência, 23/11/2026).
+# cobranca:
+#   incluso       -> incluído no all inclusive
+#   pago          -> cobrado à parte
+#   nao-informado -> a fonte não diz; as páginas não afirmam nem uma coisa nem outra
+# Horários e modalidades mudam com período, clima e operação: conformeProgramacao: true.
+
+kids-club:
+  nome: Kids Club
+  categoria: criancas
+  resumo: Atividades diárias para crianças de 4 a 12 anos, com jogos, oficinas, shows e programação interna, na piscina e na praia, com a equipe de entretenimento infantil.
+  publico: De 4 a 12 anos
+  idadeMinima: 4
+  idadeMaxima: 12
+  horarios:
+    - rotulo: Manhã
+      abre: 09:00
+      fecha: '12:00'
+      dias: todos
+    - rotulo: Tarde
+      abre: '14:00'
+      fecha: '18:00'
+      dias: todos
+  conformeProgramacao: true
+  cobranca: incluso
+  fotos:
+    - grand-oca/criancas/parque-aquatico-escorregadores.jpg
+  fontes:
+    - /pt/hoteis/hotel-grand-oca-maragogi-beach-leisure-resort/entretenimento
+oficinas-infantis:
+  nome: Oficinas e brincadeiras
+  categoria: criancas
+  resumo: Castelo de areia, pequenos pintores, oficinas de massinha, brigadeiro, cupcake e pizza e caça ao tesouro para as crianças de 4 a 7 anos.
+  publico: De 4 a 7 anos
+  idadeMinima: 4
+  idadeMaxima: 7
+  conformeProgramacao: true
+  cobranca: incluso
+  fotos: []
+  fontes:
+    - /pt/hoteis/hotel-grand-oca-maragogi-beach-leisure-resort/entretenimento
+esportes-e-gincanas-infantis:
+  nome: Esportes e gincanas
+  categoria: criancas
+  resumo: Jogos esportivos, basquete e polo aquático, corrida de prancha, gincanas, caminhada ecológica e festa da espuma para as crianças de 8 a 12 anos.
+  publico: De 8 a 12 anos
+  idadeMinima: 8
+  idadeMaxima: 12
+  conformeProgramacao: true
+  cobranca: incluso
+  fotos: []
+  fontes:
+    - /pt/hoteis/hotel-grand-oca-maragogi-beach-leisure-resort/entretenimento
+parque-aquatico:
+  nome: Parque aquático infantil
+  categoria: criancas
+  resumo: Área aquática infantil com brinquedos, toboágua e espaços rasos, para as crianças brincarem com segurança.
+  local: Piscinas
+  cobranca: incluso
+  fotos:
+    - grand-oca/criancas/parque-aquatico-escorregadores.jpg
+    - grand-oca/criancas/parque-aquatico-torre.jpg
+  fontes:
+    - /pt/hoteis/hotel-grand-oca-maragogi-beach-leisure-resort/entretenimento
+playground:
+  nome: Playground
+  categoria: criancas
+  resumo: Área externa com cama elástica, escorregadores e outros brinquedos, para intercalar com a piscina e a praia.
+  cobranca: incluso
+  fotos:
+    - grand-oca/criancas/piscina-infantil-escorregador.jpg
+    - grand-oca/criancas/play-zone.jpg
+  fontes:
+    - /pt/hoteis/hotel-grand-oca-maragogi-beach-leisure-resort/entretenimento
+baby-area:
+  nome: Baby area
+  categoria: criancas
+  resumo: Espaço de apoio para famílias que viajam com bebês e crianças pequenas; crianças de até 3 anos participam de algumas atividades com um responsável.
+  publico: Bebês e crianças pequenas
+  idadeMaxima: 3
+  cobranca: incluso
+  fotos: []
+  fontes:
+    - /pt/hoteis/hotel-grand-oca-maragogi-beach-leisure-resort/entretenimento
+shows-infantis:
+  nome: Shows infantis
+  categoria: criancas
+  resumo: Shows e apresentações voltados às crianças, dentro da programação de entretenimento do resort.
+  conformeProgramacao: true
+  cobranca: incluso
+  fotos: []
+  fontes:
+    - /pt/hoteis/hotel-grand-oca-maragogi-beach-leisure-resort/entretenimento
+family-oca:
+  nome: Family Oca
+  categoria: criancas
+  resumo: Atividade para a família toda, na programação das crianças de 8 a 12 anos.
+  conformeProgramacao: true
+  cobranca: incluso
+  fotos: []
+  fontes:
+    - /pt/hoteis/hotel-grand-oca-maragogi-beach-leisure-resort/entretenimento
+piscinas-do-resort:
+  nome: Piscinas do resort
+  categoria: piscina
+  resumo: Várias piscinas ao longo de quase 400 metros, em frente aos bangalôs, com diferentes profundidades e áreas rasas para as crianças.
+  local: Em frente aos bangalôs
+  cobranca: incluso
+  fotos:
+    - grand-oca/piscinas/piscina-bangalos.jpg
+    - grand-oca/piscinas/piscina-lagoa-coqueiros.jpg
+  fontes:
+    - /pt/hoteis/hotel-grand-oca-maragogi-beach-leisure-resort/
+area-d-agua:
+  nome: Área D’Água
+  categoria: piscina
+  resumo: Nova área de piscinas, com solário, borda infinita, parque aquático e o Bar da Piscina D’Água, ao lado dos quartos Deluxe.
+  local: Nova área do resort
+  cobranca: incluso
+  fotos:
+    - grand-oca/piscinas/piscina-borda-infinita.jpg
+    - grand-oca/piscinas/piscina-solario.jpg
+  fontes:
+    - /pt/hoteis/hotel-grand-oca-maragogi-beach-leisure-resort/apartamentos
+hidro:
+  nome: Hidro e recreação aquática
+  categoria: piscina
+  resumo: Hidro, hidro fitness e dinâmicas aquáticas fazem parte da programação das piscinas.
+  conformeProgramacao: true
+  cobranca: incluso
+  fotos: []
+  fontes:
+    - /pt/hoteis/hotel-grand-oca-maragogi-beach-leisure-resort/entretenimento
+bar-na-piscina:
+  nome: Bar dentro da piscina
+  categoria: piscina
+  resumo: O Bar Galés fica dentro da piscina principal, para pedir bebidas sem sair da água.
+  local: Piscina principal
+  cobranca: incluso
+  fotos: []
+  fontes:
+    - /pt/hoteis/hotel-grand-oca-maragogi-beach-leisure-resort/entretenimento
+academia:
+  nome: Academia
+  categoria: esportes
+  resumo: Academia do resort, com aulas programadas, como Cardio HIT, GAP, funcional, Pilates com bola e alongamento.
+  conformeProgramacao: true
+  cobranca: incluso
+  fotos:
+    - grand-oca/lazer/academia.jpg
+  fontes:
+    - /pt/hoteis/hotel-grand-oca-maragogi-beach-leisure-resort/entretenimento
+caiaque:
+  nome: Caiaque
+  categoria: esportes
+  resumo: Atividade aquática presente na programação diurna de lazer, na Praia de Ponta de Mangue.
+  local: Praia
+  conformeProgramacao: true
+  cobranca: incluso
+  fotos: []
+  fontes:
+    - /pt/hoteis/hotel-grand-oca-maragogi-beach-leisure-resort/entretenimento
+volei-e-beach-tenis:
+  nome: Vôlei e beach tênis
+  categoria: esportes
+  resumo: Vôlei e beach tênis aparecem em diferentes dias da programação esportiva, em quadras de areia.
+  conformeProgramacao: true
+  cobranca: incluso
+  fotos: []
+  fontes:
+    - /pt/hoteis/hotel-grand-oca-maragogi-beach-leisure-resort/entretenimento
+futebol:
+  nome: Futebol e jogos com bola
+  categoria: esportes
+  resumo: Jogos e atividades com bola fazem parte da recreação esportiva do resort.
+  conformeProgramacao: true
+  cobranca: incluso
+  fotos: []
+  fontes:
+    - /pt/hoteis/hotel-grand-oca-maragogi-beach-leisure-resort/entretenimento
+mergulho-padi:
+  nome: Centro de mergulho PADI
+  categoria: esportes
+  resumo: Aulas de mergulho e passeios até as piscinas naturais em frente ao resort, com certificação PADI, em mergulho com cilindro ou snorkel.
+  cobranca: nao-informado
+  fotos: []
+  fontes:
+    - /pt/hoteis/hotel-grand-oca-maragogi-beach-leisure-resort/
+programacao-adulta:
+  nome: Programação para adultos
+  categoria: entretenimento
+  resumo: Atividades esportivas, aquáticas, recreativas e de dança, além de shows e música à noite, das 9h às 23h.
+  horarios:
+    - abre: 09:00
+      fecha: '23:00'
+      dias: todos
+  conformeProgramacao: true
+  cobranca: incluso
+  fotos: []
+  fontes:
+    - /pt/hoteis/hotel-grand-oca-maragogi-beach-leisure-resort/entretenimento
+shows-esplanada-tropical:
+  nome: Shows na Esplanada Tropical
+  categoria: entretenimento
+  resumo: A Esplanada Tropical recebe os espetáculos da equipe de animação, com temas regionais, nacionais e internacionais para adultos e crianças.
+  local: Esplanada Tropical
+  conformeProgramacao: true
+  cobranca: incluso
+  fotos: []
+  fontes:
+    - /pt/hoteis/hotel-grand-oca-maragogi-beach-leisure-resort/entretenimento
+arena-taba:
+  nome: Arena Taba
+  categoria: entretenimento
+  resumo: Espaço para apresentações ao ar livre durante o verão.
+  local: Arena Taba
+  conformeProgramacao: true
+  cobranca: incluso
+  fotos: []
+  fontes:
+    - /pt/hoteis/hotel-grand-oca-maragogi-beach-leisure-resort/entretenimento
+grand-oca-spa:
+  nome: Grand Oca Spa
+  categoria: bem-estar
+  resumo: Spa do resort, com atendimento conforme agendamento; consulte tratamentos, horários e valores no resort.
+  cobranca: nao-informado
+  fotos: []
+  fontes:
+    - /pt/hoteis/hotel-grand-oca-maragogi-beach-leisure-resort/entretenimento
+espaco-beleza:
+  nome: Espaço Beleza
+  categoria: bem-estar
+  resumo: Salão de beleza aberto todos os dias, com serviços de manicure e cabeleireiro.
+  cobranca: nao-informado
+  fotos: []
+  fontes:
+    - /pt/hoteis/hotel-grand-oca-maragogi-beach-leisure-resort/entretenimento

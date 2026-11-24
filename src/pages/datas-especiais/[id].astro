@@ -1,0 +1,307 @@
+---
+/**
+ * Página de um feriado ou temporada (coleção `datasEspeciais`), no modelo das landings do Grand
+ * Oca e do Enotel: data calculada no build (próxima ocorrência), oferta "a partir de" quando
+ * vigente (nunca no JSON-LD), por que viajar no período, quando reservar e outros feriados.
+ */
+import { type CollectionEntry, getCollection } from 'astro:content';
+
+import CartoesDatasEspeciais from '@/components/sections/CartoesDatasEspeciais.astro';
+import Botao from '@/components/ui/Botao.astro';
+import ChipsFatos from '@/components/ui/ChipsFatos.astro';
+import CartaoMotor from '@/components/ui/CartaoMotor.astro';
+import Icone from '@/components/ui/Icone.astro';
+import Imagem from '@/components/ui/Imagem.astro';
+import ListaCheck from '@/components/ui/ListaCheck.astro';
+import Secao from '@/components/ui/Secao.astro';
+import { caminhoDataEspecial, rotas } from '@/data/rotas';
+import PaginaLayout from '@/layouts/PaginaLayout.astro';
+import { acaoWhatsApp, reservarHospedagem } from '@/lib/acoes';
+import { DATA_CONTEUDO, ofertaVigente, proximaOcorrencia } from '@/lib/datas';
+import { formatarOcorrencia, formatarPreco, maiusculaInicial } from '@/lib/formatar';
+import { obterImagem } from '@/lib/imagens';
+import { condicoesPagamento } from '@/lib/pagamento';
+import { operador, resort } from '@/site.config';
+
+export async function getStaticPaths() {
+  const datas = await getCollection('datasEspeciais');
+  return datas.map((dataEspecial) => ({
+    params: { id: dataEspecial.id },
+    props: { dataEspecial },
+  }));
+}
+
+interface Props {
+  dataEspecial: CollectionEntry<'datasEspeciais'>;
+}
+
+const { dataEspecial } = Astro.props;
+const { id, data } = dataEspecial;
+const hoje = new Date();
+const ocorrencia = proximaOcorrencia(data.quando, hoje, data.janela);
+const oferta = ofertaVigente(data.oferta, hoje);
+const quando = ocorrencia ? formatarOcorrencia(ocorrencia) : 'Temporada encerrada';
+// Datas fixas mostram o tipo e o mês (`periodo`); as móveis (Carnaval, lua de mel) mostram a data.
+const periodo = data.periodo ?? quando;
+const mesDoPeriodo = data.periodo?.split(' · ').pop();
+/** Concordância do verbo com o nome da data ("as férias de janeiro acontecem"). */
+const plural = /^(as|os) /.test(data.naFrase);
+const capa = data.fotos[0] ? await obterImagem(data.fotos[0]) : undefined;
+
+const porPessoa = { pessoa: 'por pessoa', casal: 'por casal', apartamento: 'por apartamento' };
+const cotar = acaoWhatsApp(
+  `Olá! Quero uma cotação para ${data.naFrase} no ${resort.nomeCurto} (${periodo}).`,
+  'Cotar pelo WhatsApp',
+);
+const tituloDaPagina = `${data.titulo} no ${resort.nomeCurto}`;
+const [central] = operador.telefones;
+const motivos = [
+  {
+    icone: 'arvore' as const,
+    titulo: `${data.titulo} ${resort.destino.em} ${resort.destino.nome}`,
+    texto: `Aproveite os dias de folga à beira do ${resort.praia}, entre o cerrado e os morros da ${resort.destino.nome}.`,
+  },
+  {
+    icone: 'taca' as const,
+    titulo: 'Experiência all inclusive',
+    texto: `Hospedagem com refeições e bebidas incluídas no ${resort.nome}.`,
+  },
+  {
+    icone: 'pessoas' as const,
+    titulo: 'Viagem em família',
+    texto: 'Piscinas, aventura e recreação por idade deixam o período mais completo.',
+  },
+  {
+    icone: 'telefone' as const,
+    titulo: 'Prefere atendimento?',
+    texto: `Fale com a ${central.rotulo} pelo ${central.exibicao}.`,
+  },
+];
+---
+
+<PaginaLayout
+  titulo={data.seo.titulo}
+  descricao={data.seo.descricao}
+  rota="datasEspeciais"
+  trilhaExtra={[{ rotulo: data.titulo, href: caminhoDataEspecial(id) }]}
+  h1={tituloDaPagina}
+  sobretitulo={data.periodo ?? `${data.tipo === 'feriado' ? 'Feriado' : 'Temporada'} · ${quando}`}
+  subtitulo={data.resumo}
+  respostaDireta={data.respostaDireta}
+  imagem={capa ?? 'indisponivel'}
+  atualizadoEm={DATA_CONTEUDO}
+  chaveFaq={`data-especial:${id}`}
+>
+  <Fragment slot="acoes">
+    <Botao
+      variante="verde"
+      href={reservarHospedagem.href}
+      icone={reservarHospedagem.icone}
+      evento={reservarHospedagem.evento}
+      externo={reservarHospedagem.externo}
+      tamanho="lg"
+    >
+      Consultar tarifas para o período
+    </Botao>
+    <Botao
+      href={cotar.href}
+      icone={cotar.icone}
+      evento={cotar.evento}
+      variante="whatsapp"
+      tamanho="lg"
+      externo
+    >
+      {cotar.rotulo}
+    </Botao>
+  </Fragment>
+  <ChipsFatos
+    slot="fatos"
+    itens={[
+      { rotulo: 'Quando', valor: maiusculaInicial(periodo), icone: 'calendario' },
+      ...(data.sugestaoEstadia
+        ? [{ rotulo: 'Estadia sugerida', valor: data.sugestaoEstadia, icone: 'cama' as const }]
+        : []),
+      ...(oferta
+        ? [
+            {
+              rotulo: 'A partir de',
+              valor: `${formatarPreco(oferta.aPartirDe)} ${porPessoa[oferta.por]}`,
+              icone: 'estrela' as const,
+            },
+          ]
+        : []),
+    ]}
+  />
+
+  <Secao
+    introducao={`As tarifas para ${data.naFrase} no ${resort.nomeCurto} variam conforme as datas, o número de noites e a categoria. Consulte a disponibilidade com antecedência.`}
+    titulo={
+      oferta
+        ? `Qual é a oferta para ${data.naFrase}?`
+        : `Como consultar as tarifas para ${data.naFrase}?`
+    }
+    sobretitulo="Oferta para o período"
+  >
+    {/* Cartão da oferta do feriado: valor "a partir de" (ou consulta) e as condições comerciais. */}
+    <div class="ring-areia-200 grid gap-6 rounded-grande bg-white p-6 shadow-flutuante ring-1 sm:p-8 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)] lg:items-center lg:gap-10">
+      <div class="space-y-3">
+        <p class="bg-coral-100 text-coral-800 inline-flex rounded-full px-3 py-1 text-xs font-bold tracking-wider uppercase">
+          Reserve com antecedência
+        </p>
+        <p class="text-mar-800 font-semibold">{tituloDaPagina}</p>
+        {oferta ? (
+          <p class="flex flex-wrap items-baseline gap-x-2">
+            <span class="text-mar-800 text-sm font-semibold">a partir de</span>
+            <span class="text-coral-700 text-5xl font-bold tracking-tight">
+              {formatarPreco(oferta.aPartirDe)}
+            </span>
+          </p>
+        ) : (
+          <p class="text-coral-700 text-4xl font-bold tracking-tight">Consulte o valor</p>
+        )}
+        <p class="text-tinta-suave text-sm">
+          {oferta
+            ? `${porPessoa[oferta.por]}${oferta.noites ? ` · ${oferta.noites} noites` : ''} · hospedagem para o período promocional`
+            : `Hospedagem all inclusive para ${data.naFrase}, com tarifa conforme as datas e a categoria`}
+        </p>
+        <p class="pt-1">
+          <Botao
+            href={cotar.href}
+            icone="whatsapp"
+            evento={cotar.evento}
+            variante="primario"
+            externo
+          >
+            Consultar esta oferta
+          </Botao>
+        </p>
+      </div>
+      <div class="border-areia-200 rounded-cartao border p-5">
+        <p class="text-mar-950 mb-3 font-semibold">Condição comercial</p>
+        {/* Uma condição por linha, com ícone: cartão, Pix e as regras da tarifa. */}
+        <ul class="space-y-3">
+          {condicoesPagamento.map((condicao) => (
+            <li class="flex items-start gap-3">
+              <Icone nome={condicao.icone} class="text-mar-700 mt-0.5 size-5 shrink-0" />
+              <span>
+                <strong class="text-mar-950 font-semibold">{condicao.destaque}</strong>{' '}
+                {condicao.complemento}
+              </span>
+            </li>
+          ))}
+          {oferta?.condicao && (
+            <li class="flex items-start gap-3">
+              <Icone nome="estrela" class="text-mar-700 mt-0.5 size-5 shrink-0" />
+              <span>{oferta.condicao}</span>
+            </li>
+          )}
+          <li class="flex items-start gap-3">
+            <Icone nome="calendario" class="text-mar-700 mt-0.5 size-5 shrink-0" />
+            <span>Tarifa sujeita à disponibilidade</span>
+          </li>
+          <li class="flex items-start gap-3">
+            <Icone nome="pessoas" class="text-mar-700 mt-0.5 size-5 shrink-0" />
+            <span>Condições podem variar conforme a ocupação</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    {/* Motor de reservas e os motivos para viajar no período. */}
+    <div class="mt-12 grid items-start gap-10 lg:grid-cols-[25rem_minmax(0,1fr)] lg:gap-14">
+      <CartaoMotor rotulo={`Reserve: ${data.titulo}`} />
+      <div class="space-y-6">
+        {/* Foto do período no alto da coluna, ao lado do motor; o texto vem logo abaixo. */}
+        {capa && (
+          <div class="group aspect-video overflow-hidden rounded-grande shadow-flutuante">
+            <Imagem
+              src={capa.src}
+              alt={capa.alt}
+              sizes="(min-width: 1024px) 40vw, 100vw"
+              class="ease-suave h-full w-full object-cover transition-transform duration-[1.2s] group-hover:scale-105"
+            />
+          </div>
+        )}
+        <div class="space-y-2">
+          <p class="sobretitulo">
+            {data.tipo === 'feriado' ? 'Oferta para o feriado' : 'Oferta para a temporada'}
+          </p>
+          <h3>Consulte as melhores opções para {data.naFrase}</h3>
+          <p class="text-tinta-suave text-lg">
+            As tarifas variam conforme a data, o número de noites, a ocupação e a categoria
+            escolhida. Quanto antes a consulta, mais opções de acomodação ficam disponíveis.
+          </p>
+        </div>
+        <ul class="divide-areia-200 divide-y">
+          {motivos.map((item) => (
+            <li class="flex gap-4 py-4 first:pt-0">
+              <Icone nome={item.icone} class="text-coral-700 mt-0.5 size-6 shrink-0" />
+              <div>
+                <p class="text-mar-950 font-semibold">{item.titulo}</p>
+                <p class="text-tinta-suave text-sm">{item.texto}</p>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  </Secao>
+
+  <Secao
+    introducao={`${maiusculaInicial(data.naFrase)} no ${resort.nomeCurto} combina descanso, natureza e programação para toda a família, com tudo incluído na diária.`}
+    titulo={`Por que viajar ${data.tipo === 'feriado' ? 'no feriado' : 'nesta temporada'}?`}
+    sobretitulo={data.titulo}
+    fundo="areia"
+    foto={data.fotos[1] ?? 'grand-oca/piscinas/piscina-solario.jpg'}
+    conteudoAoLado
+  >
+    {/* Lista e texto na coluna do título, ao lado da foto (sem vão no meio da seção). */}
+    <div class="space-y-5">
+      <ListaCheck itens={data.destaques} />
+      <p class="text-tinta-suave">
+        Com o all inclusive, ninguém precisa pensar em refeições nem em deslocamentos: piscinas,
+        aventura, lago e recreação ficam dentro do resort.
+      </p>
+    </div>
+  </Secao>
+
+  <Secao
+    introducao={`Feriados e férias concentram a procura. Reservar cedo garante mais opções de acomodação e de tarifa.`}
+    foto="grand-oca/acomodacoes/suite-deluxe-quarto.jpg"
+    titulo={`Quando reservar ${data.naFrase}?`}
+    sobretitulo="Planejamento"
+  >
+    <div class="conteudo">
+      <p>
+        {maiusculaInicial(data.naFrase)}{' '}
+        {data.periodo
+          ? `${plural ? 'acontecem' : 'acontece'} em ${mesDoPeriodo}.`
+          : ocorrencia
+            ? `${ocorrencia.inicio.getTime() === ocorrencia.fim.getTime() ? (plural ? 'caem em' : 'cai em') : plural ? 'vão de' : 'vai de'} ${quando}.`
+            : `${plural ? 'acontecem' : 'acontece'} todos os anos.`}{' '}
+        Feriados e férias concentram a procura em poucos dias, e as datas mais disputadas esgotam
+        primeiro. Se já existe a intenção de viajar, vale consultar a disponibilidade com
+        antecedência.
+      </p>
+    </div>
+    <p class="mt-6">
+      <Botao variante="verde" href={rotas.reservas.caminho} iconeFim="seta-direita">
+        Como reservar
+      </Botao>
+    </p>
+  </Secao>
+
+  <Secao
+    introducao={`Carnaval, Semana Santa, feriados prolongados, férias e Réveillon: veja as datas do ano para planejar a próxima viagem ao ${resort.nomeCurto} e reservar com antecedência, quando há mais opções de acomodação e de tarifa.`}
+    titulo={`Quais são os feriados para viajar ao ${resort.nome}?`}
+    sobretitulo="Mais oportunidades para viajar"
+    fundo="areia"
+  >
+    <CartoesDatasEspeciais exceto={id} limite={6} />
+    <p class="mt-10">
+      <Botao href={rotas.datasEspeciais.caminho} variante="contorno" iconeFim="seta-direita">
+        Ver todos os feriados
+      </Botao>
+    </p>
+  </Secao>
+</PaginaLayout>

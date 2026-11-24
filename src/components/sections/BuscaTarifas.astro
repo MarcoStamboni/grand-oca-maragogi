@@ -1,0 +1,131 @@
+---
+/**
+ * "Consulte a melhor tarifa para sua viagem": texto à esquerda e, à direita, o motor de reservas
+ * embutido (CartaoMotor) quando o operador tem motor incorporável; sem motor, a busca rápida
+ * (cartão laranja do Grand Oca) com datas, quartos e hóspedes:
+ * - "Ver tarifas" leva à reserva de hospedagem (motor embutido), com os dados na URL;
+ * - "Cotar pelo WhatsApp" (só com JavaScript, src/scripts/busca-tarifas.ts) abre a conversa com a
+ *   mensagem já preenchida com as datas e os hóspedes.
+ * Nenhum dado é guardado nem enviado pelo site.
+ */
+import CartaoMotor from '@/components/ui/CartaoMotor.astro';
+import Icone from '@/components/ui/Icone.astro';
+import { acoes, reservarHospedagem } from '@/lib/acoes';
+import { classesBotao } from '@/lib/botoes';
+import { operador, resort } from '@/site.config';
+
+interface Props {
+  class?: string;
+}
+
+const { class: classe } = Astro.props;
+const temMotor =
+  operador.reservas.hospedagemUrl !== null && operador.reservas.hospedagemIncorporavel;
+const campo =
+  'border-areia-200 text-tinta focus-visible:ring-mar-700 mt-1 block min-h-11 w-full rounded-xl border bg-white px-3 focus-visible:ring-3 focus-visible:outline-none';
+const rotulo = 'text-sm font-semibold text-mar-950';
+---
+
+<section
+  class:list={['bg-areia-100 py-16 sm:py-20', classe]}
+  aria-labelledby="busca-tarifas-titulo"
+>
+  <div class="container-site grid items-center gap-10 lg:grid-cols-[minmax(0,1fr)_28rem] lg:gap-16">
+    <div class="space-y-4" data-revelar="esquerda">
+      <p class="sobretitulo">Ofertas para o {resort.nomeCurto}</p>
+      <h2 id="busca-tarifas-titulo" class="titulo-secao">
+        Consulte a melhor tarifa para sua viagem
+      </h2>
+      <p class="text-tinta-suave max-w-xl text-lg">
+        As tarifas e a disponibilidade variam conforme o período, a ocupação e a categoria
+        escolhida. Informe as datas e os hóspedes no motor para ver as opções e reservar.
+      </p>
+      <ul class="text-tinta grid gap-2 pt-2 sm:grid-cols-2">
+        <li class="flex items-center gap-2">
+          <Icone nome="cama" class="text-mar-700 size-5" />
+          Hospedagem com tudo incluído
+        </li>
+        <li class="flex items-center gap-2">
+          <Icone nome="whatsapp" class="text-mar-700 size-5" />
+          Atendimento por WhatsApp
+        </li>
+        <li class="flex items-center gap-2">
+          <Icone nome="aviao" class="text-mar-700 size-5" />
+          Hotel + aéreo sob consulta
+        </li>
+        <li class="flex items-center gap-2">
+          <Icone nome="bebe" class="text-mar-700 size-5" />
+          Recreação para todas as idades
+        </li>
+      </ul>
+    </div>
+
+    {temMotor ? (
+      <div data-revelar="direita">
+        <CartaoMotor />
+      </div>
+    ) : (
+      <form
+        action={reservarHospedagem.href}
+        method="get"
+        class="bg-coral-500 shadow-sol space-y-4 rounded-grande p-6 sm:p-8"
+        data-busca-tarifas
+        data-whatsapp={operador.whatsapp.numero}
+        data-resort={resort.nome}
+        data-revelar="direita"
+      >
+        <p class="text-mar-950 text-center text-2xl font-bold">{resort.nomeCurto}</p>
+        <div class="grid grid-cols-2 gap-3">
+          <label class:list={[rotulo]}>
+            Entrada
+            <input type="date" name="entrada" required class={campo} data-busca-entrada />
+          </label>
+          <label class:list={[rotulo]}>
+            Saída
+            <input type="date" name="saida" required class={campo} data-busca-saida />
+          </label>
+          <label class:list={[rotulo]}>
+            Quartos
+            <select name="quartos" class={campo}>
+              {[1, 2, 3, 4].map((n) => (
+                <option value={n}>{n}</option>
+              ))}
+            </select>
+          </label>
+          <label class:list={[rotulo]}>
+            Adultos
+            <input type="number" name="adultos" min="1" max="12" value="2" required class={campo} />
+          </label>
+          <label class:list={[rotulo, 'col-span-2']}>
+            Crianças
+            <input type="number" name="criancas" min="0" max="10" value="0" class={campo} />
+          </label>
+        </div>
+        <p class="text-mar-950 text-sm" data-busca-erro role="alert"></p>
+        <div class="grid gap-3">
+          <button
+            type="submit"
+            class:list={[classesBotao('verde', 'lg'), 'w-full']}
+            data-evento={reservarHospedagem.evento}
+          >
+            <Icone nome="calendario" class="size-5" />
+            Ver tarifas
+          </button>
+          <button
+            type="button"
+            class:list={[classesBotao('whatsapp', 'lg'), 'sem-js:hidden w-full']}
+            data-busca-whatsapp
+            data-evento={acoes.whatsapp.evento}
+          >
+            <Icone nome="whatsapp" class="size-5" />
+            Cotar pelo WhatsApp
+          </button>
+        </div>
+      </form>
+    )}
+  </div>
+</section>
+
+<script>
+  import '@/scripts/busca-tarifas';
+</script>

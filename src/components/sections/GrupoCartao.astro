@@ -1,0 +1,73 @@
+---
+/**
+ * Cartão que reúne vários itens sem foto própria (restaurantes, bares...) numa imagem só, com
+ * "Ler mais" (details). Cada item pode ter um link.
+ */
+import Icone from '@/components/ui/Icone.astro';
+import Imagem from '@/components/ui/Imagem.astro';
+import type { NomeIcone } from '@/lib/icones';
+import type { ImagemResolvida } from '@/lib/imagens';
+
+interface Item {
+  id?: string | undefined;
+  nome: string;
+  resumo: string;
+  detalhe?: string | undefined;
+  href?: string | undefined;
+}
+
+interface Props {
+  titulo: string;
+  resumo: string;
+  icone: NomeIcone;
+  foto: ImagemResolvida;
+  itens: readonly Item[];
+  rotulo?: string;
+}
+
+const { titulo, resumo, icone, foto, itens, rotulo = 'itens' } = Astro.props;
+---
+
+<article class="group ring-areia-200 ease-suave flex h-full flex-col overflow-hidden rounded-cartao bg-white ring-1 transition duration-500 hover:-translate-y-1 hover:shadow-flutuante">
+  <div class="relative aspect-[16/7] overflow-hidden">
+    <Imagem
+      src={foto.src}
+      alt={foto.alt}
+      sizes="(min-width: 768px) 40vw, 100vw"
+      largura={800}
+      class="ease-suave h-full w-full object-cover transition-transform duration-[1.2s] group-hover:scale-105"
+    />
+  </div>
+  <div class="flex flex-1 flex-col gap-3 p-5">
+    <div class="flex items-start gap-3">
+      <span class="text-coral-700 flex shrink-0 pt-0.5">
+        <Icone nome={icone} class="size-6" />
+      </span>
+      <h3 class="">{titulo}</h3>
+    </div>
+    <p class="text-tinta">{resumo}</p>
+    <details class="group/ler mt-auto">
+      <summary class="text-coral-700 cursor-pointer font-semibold">
+        Ler mais
+        <span class="text-tinta-suave text-sm font-normal">
+          ({itens.length} {rotulo})
+        </span>
+      </summary>
+      <ul class="mt-3 space-y-3 text-sm">
+        {itens.map((item) => (
+          <li id={item.id}>
+            {item.href ? (
+              <a href={item.href} class="text-mar-950 font-semibold">
+                {item.nome}
+              </a>
+            ) : (
+              <strong class="text-mar-950 font-semibold">{item.nome}</strong>
+            )}
+            <span class="text-tinta block">{item.resumo}</span>
+            {item.detalhe && <span class="text-tinta-suave block">{item.detalhe}</span>}
+          </li>
+        ))}
+      </ul>
+    </details>
+  </div>
+</article>

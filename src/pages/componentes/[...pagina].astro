@@ -1,0 +1,196 @@
+---
+/**
+ * Vitrine de componentes para conferência visual e de acessibilidade.
+ * Só existe em desenvolvimento (`npm run dev` → /componentes/): no build de produção
+ * getStaticPaths não gera nenhuma rota.
+ */
+import { getCollection } from 'astro:content';
+
+import Botao from '@/components/ui/Botao.astro';
+import Card from '@/components/ui/Card.astro';
+import ChipsFatos from '@/components/ui/ChipsFatos.astro';
+import Faq from '@/components/ui/Faq.astro';
+import Galeria from '@/components/ui/Galeria.astro';
+import Nota from '@/components/ui/Nota.astro';
+import NotaTripadvisor from '@/components/ui/NotaTripadvisor.astro';
+import Passos from '@/components/ui/Passos.astro';
+import RespostaDireta from '@/components/ui/RespostaDireta.astro';
+import Secao from '@/components/ui/Secao.astro';
+import TabelaComparativa from '@/components/ui/TabelaComparativa.astro';
+import TabelaFatos from '@/components/ui/TabelaFatos.astro';
+import { caminhoAcomodacao } from '@/data/rotas';
+import PaginaLayout from '@/layouts/PaginaLayout.astro';
+import { acoes } from '@/lib/acoes';
+import { faqDaPagina } from '@/lib/faq';
+import { formatarFaixaHorario } from '@/lib/formatar';
+import { CHAVE_IMAGEM_PADRAO, obterImagem, obterImagens } from '@/lib/imagens';
+import { resort } from '@/site.config';
+
+export function getStaticPaths() {
+  return import.meta.env.DEV ? [{ params: { pagina: undefined } }] : [];
+}
+
+const imagemHero = await obterImagem(CHAVE_IMAGEM_PADRAO);
+const acomodacoes = await Promise.all(
+  (await getCollection('acomodacoes'))
+    .sort((a, b) => a.data.ordem - b.data.ordem)
+    .map(async (item) => ({
+      ...item,
+      capa: item.data.fotos[0] ? await obterImagem(item.data.fotos[0]) : undefined,
+    })),
+);
+const faq = await faqDaPagina('perguntasFrequentes');
+const [restauranteExemplo] = await getCollection('restaurantes', ({ id }) => id === 'mar-aberto');
+const fotosGaleria = await obterImagens(restauranteExemplo?.data.fotos.slice(0, 5) ?? []);
+---
+
+<PaginaLayout
+  titulo="Componentes"
+  descricao="Vitrine de componentes (somente desenvolvimento)."
+  rota="home"
+  trilhaExtra={[{ rotulo: 'Componentes', href: '/componentes/' }]}
+  h1="Vitrine de componentes"
+  sobretitulo={`${resort.endereco.cidade} · ${resort.praia}`}
+  subtitulo="Página de desenvolvimento para conferir layout, foco e contraste em 375, 768 e 1440 px."
+  imagem={imagemHero}
+  atualizadoEm={new Date('2026-09-30')}
+  chaveFaq={false}
+  semIndice
+>
+  <RespostaDireta slot="resumo">{resort.descricao}</RespostaDireta>
+  <Fragment slot="acoes">
+    <Botao href={acoes.consultarTarifas.href} variante="verde" icone="calendario" tamanho="lg">
+      {acoes.consultarTarifas.rotulo}
+    </Botao>
+    <Botao href={acoes.whatsapp.href} variante="whatsapp" icone="whatsapp" tamanho="lg" externo>
+      {acoes.whatsapp.rotulo}
+    </Botao>
+  </Fragment>
+  <ChipsFatos
+    slot="fatos"
+    itens={[
+      { rotulo: 'Regime', valor: 'All Inclusive Premium 24 h', icone: 'talheres' },
+      { rotulo: 'Praia', valor: resort.praia, icone: 'ondas' },
+      { rotulo: 'Unidades', valor: String(resort.unidades), icone: 'cama' },
+      { rotulo: 'Check-in', valor: '15h', icone: 'relogio' },
+    ]}
+  />
+
+  <Secao
+    titulo="Quais são as acomodações?"
+    sobretitulo="Cartões"
+    introducao="Cartões com e sem foto real."
+  >
+    <ul class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      {acomodacoes.slice(0, 3).map((item) => (
+        <li>
+          <Card
+            titulo={item.data.nome}
+            href={caminhoAcomodacao(item.id)}
+            iconeSemFoto="cama"
+            iconeTitulo="cama"
+            descricao={item.data.resumo}
+            fatos={[
+              item.data.areaM2 ? `${item.data.areaM2} m²` : 'Área não informada',
+              item.data.capacidade.descricao,
+            ]}
+            imagem={item.capa}
+          />
+        </li>
+      ))}
+    </ul>
+  </Secao>
+
+  <Secao
+    titulo="Tabelas"
+    introducao="Vitrine de componentes para conferir layout, foco e contraste."
+    fundo="areia"
+  >
+    <div class="grid gap-8 lg:grid-cols-2">
+      <TabelaFatos
+        legenda="Ficha técnica"
+        linhas={[
+          { rotulo: 'Regime', valor: resort.regime },
+          { rotulo: 'Unidades', valor: String(resort.unidades) },
+          { rotulo: 'Check-in / check-out', valor: '15h / 12h' },
+          {
+            rotulo: 'Aeroporto',
+            valor: `${resort.aeroporto.iata}, ${resort.aeroporto.distanciaKm} km`,
+          },
+        ]}
+      />
+      {restauranteExemplo && (
+        <TabelaFatos
+          legenda={`Horários do ${restauranteExemplo.data.nome}`}
+          linhas={restauranteExemplo.data.horarios.map((horario) => ({
+            rotulo: horario.rotulo ?? 'Horário',
+            valor: formatarFaixaHorario(horario),
+          }))}
+        />
+      )}
+    </div>
+    <TabelaComparativa
+      class="mt-8"
+      legenda="Comparativo de acomodações"
+      colunas={['Categoria', 'Área', 'Ambientes', 'Capacidade', 'Vista']}
+      linhas={acomodacoes.map((item) => ({
+        cabecalho: item.data.nome,
+        celulas: [
+          item.data.areaM2 ? `${item.data.areaM2} m²` : 'Não informada',
+          String(item.data.ambientes),
+          item.data.capacidade.descricao,
+          item.data.vistas.join(' ou '),
+        ],
+      }))}
+    />
+  </Secao>
+
+  <Secao
+    titulo="Passos, notas e selo"
+    introducao="Vitrine de componentes para conferir layout, foco e contraste."
+  >
+    <Passos
+      itens={[
+        { titulo: `Voe para ${resort.aeroporto.cidade}`, texto: resort.aeroporto.nome },
+        { titulo: 'Siga pela PE-009', texto: 'Rota do Atlântico, via expressa com pedágio.' },
+        {
+          titulo: 'Chegue ao resort',
+          texto: `${resort.aeroporto.distanciaKm} km, ${resort.aeroporto.tempoEstimado}.`,
+        },
+      ]}
+    />
+    <div class="mt-8 grid gap-4 lg:grid-cols-2">
+      <Nota titulo="Crianças">{resort.criancas.ressalva}</Nota>
+      <Nota tipo="atencao" titulo="Atenção">
+        Exemplo de nota de atenção.
+      </Nota>
+    </div>
+    <NotaTripadvisor class="mt-8" />
+    <div class="mt-8 flex flex-wrap gap-3">
+      <Botao href="#" variante="primario">
+        Primário
+      </Botao>
+      <Botao href="#" variante="secundario">
+        Secundário
+      </Botao>
+      <Botao href="#" variante="contorno">
+        Contorno
+      </Botao>
+      <Botao href="#" variante="texto" iconeFim="seta-direita">
+        Texto
+      </Botao>
+    </div>
+  </Secao>
+
+  <Secao
+    titulo="Galeria"
+    introducao="Vitrine de componentes para conferir layout, foco e contraste."
+    fundo="areia"
+  >
+    <Galeria imagens={fotosGaleria} titulo="Restaurante Sete Mares" />
+  </Secao>
+
+  <div class="container-site max-w-4xl py-12">
+    <Faq itens={faq.slice(0, 4)} abrirPrimeira />
+  </div>
+</PaginaLayout>

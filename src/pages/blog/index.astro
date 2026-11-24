@@ -1,0 +1,100 @@
+---
+/**
+ * Hub do blog (novidade do modelo, a partir do blog do Enotel): artigo mais recente em
+ * destaque e os demais em cartões. Textos: src/data/paginas.ts (blog); artigos: coleção `blog`.
+ */
+import Card from '@/components/ui/Card.astro';
+import Icone from '@/components/ui/Icone.astro';
+import Imagem from '@/components/ui/Imagem.astro';
+import Secao from '@/components/ui/Secao.astro';
+import { caminhoPost } from '@/data/rotas';
+import PaginaLayout from '@/layouts/PaginaLayout.astro';
+import { minutosDeLeitura, postsEmOrdem, rotulosCategoriaBlog } from '@/lib/blog';
+import { DATA_CONTEUDO } from '@/lib/datas';
+import { dataIso, formatarData } from '@/lib/formatar';
+import { obterImagem } from '@/lib/imagens';
+import { resort } from '@/site.config';
+
+const posts = await postsEmOrdem();
+const cartoes = await Promise.all(
+  posts.map(async (post) => ({ post, capa: await obterImagem(post.data.capa) })),
+);
+const [destaque, ...demais] = cartoes;
+const topo = destaque?.capa;
+---
+
+<PaginaLayout
+  rota="blog"
+  imagem={topo ?? 'indisponivel'}
+  atualizadoEm={destaque?.post.data.atualizadoEm ?? DATA_CONTEUDO}
+>
+  {destaque && (
+    <Secao
+      introducao={`O artigo mais recente do blog, com dicas práticas para planejar a sua viagem ao ${resort.nomeCurto}.`}
+      titulo="Qual é o artigo mais recente?"
+      sobretitulo="Destaque"
+    >
+      <article
+        class="group ring-areia-200 relative grid overflow-hidden rounded-grande bg-white shadow-cartao ring-1 lg:grid-cols-2"
+        data-revelar
+      >
+        <div class="aspect-4/3 overflow-hidden lg:aspect-auto">
+          <Imagem
+            src={destaque.capa.src}
+            alt={destaque.capa.alt}
+            sizes="(min-width: 1024px) 50vw, 100vw"
+            class="ease-suave h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.04]"
+          />
+        </div>
+        <div class="flex flex-col justify-center gap-4 p-6 sm:p-10">
+          <p class="sobretitulo">{rotulosCategoriaBlog[destaque.post.data.categoria]}</p>
+          <h3 class="">
+            <a href={caminhoPost(destaque.post.id)} class="link-esticado no-underline">
+              {destaque.post.data.titulo}
+            </a>
+          </h3>
+          <p class="text-tinta-suave text-lg">{destaque.post.data.resumo}</p>
+          <p class="text-tinta-suave flex flex-wrap items-center gap-x-4 gap-y-1 text-sm">
+            <span class="inline-flex items-center gap-1.5">
+              <Icone nome="calendario" class="size-4" />
+              <time datetime={dataIso(destaque.post.data.publicadoEm)}>
+                {formatarData(destaque.post.data.publicadoEm)}
+              </time>
+            </span>
+            <span class="inline-flex items-center gap-1.5">
+              <Icone nome="relogio" class="size-4" />
+              {minutosDeLeitura(destaque.post.body)} min de leitura
+            </span>
+          </p>
+          <p class="text-coral-700 inline-flex items-center gap-2 font-semibold" aria-hidden="true">
+            Ler o artigo <Icone nome="seta-direita" class="size-4" />
+          </p>
+        </div>
+      </article>
+    </Secao>
+  )}
+
+  {demais.length > 0 && (
+    <Secao
+      introducao={`Todos os artigos do blog sobre planejamento, viagem em família e o destino.`}
+      titulo="Quais são os outros artigos?"
+      sobretitulo="Todos os artigos"
+      fundo="areia"
+    >
+      <ul class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {demais.map(({ post, capa }) => (
+          <li>
+            <Card
+              titulo={post.data.titulo}
+              href={caminhoPost(post.id)}
+              sobretitulo={`${rotulosCategoriaBlog[post.data.categoria]} · ${formatarData(post.data.publicadoEm)}`}
+              descricao={post.data.resumo}
+              imagem={capa}
+              chamada="Ler o artigo"
+            />
+          </li>
+        ))}
+      </ul>
+    </Secao>
+  )}
+</PaginaLayout>

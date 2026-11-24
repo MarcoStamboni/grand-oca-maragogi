@@ -1,0 +1,303 @@
+---
+/**
+ * Hub de reservas: busca de tarifas (Grand Oca), formas de reservar conforme o operador, passo a
+ * passo, "O que conferir antes de finalizar a reserva" (Vila Galé), regras resumidas e feriados.
+ * Textos: src/data/paginas.ts (reservas); regras: src/data/reservas.ts.
+ */
+import BuscaTarifas from '@/components/sections/BuscaTarifas.astro';
+import CartoesDatasEspeciais from '@/components/sections/CartoesDatasEspeciais.astro';
+import JornadaReserva from '@/components/sections/JornadaReserva.astro';
+import MotorReservas from '@/components/sections/MotorReservas.astro';
+import Botao from '@/components/ui/Botao.astro';
+import Icone from '@/components/ui/Icone.astro';
+import Imagem from '@/components/ui/Imagem.astro';
+import Nota from '@/components/ui/Nota.astro';
+import Secao from '@/components/ui/Secao.astro';
+import SeloPagamento from '@/components/ui/SeloPagamento.astro';
+import TabelaFatos from '@/components/ui/TabelaFatos.astro';
+import { conferirAntesDeReservar, regrasCancelamento } from '@/data/reservas';
+import { rotas } from '@/data/rotas';
+import PaginaLayout from '@/layouts/PaginaLayout.astro';
+import { acaoWhatsApp, pacoteComAereo, reservarHospedagem } from '@/lib/acoes';
+import { DATA_CONTEUDO } from '@/lib/datas';
+import { formatarHora, maiusculaInicial } from '@/lib/formatar';
+import { fraseCondicoesPagamento } from '@/lib/pagamento';
+import { obterImagem } from '@/lib/imagens';
+import { operador, resort } from '@/site.config';
+
+const topo = await obterImagem('grand-oca/piscinas/piscina-solario.jpg');
+const { horarios } = resort;
+const { hospedagemUrl, hospedagemIncorporavel } = operador.reservas;
+const temMotor = hospedagemUrl !== null;
+
+const [fotoHospedagem, fotoPacote] = await Promise.all([
+  obterImagem('grand-oca/acomodacoes/suite-deluxe-quarto.jpg'),
+  obterImagem('grand-oca/resort/praia-coqueiral.jpg'),
+]);
+
+const modalidades = [
+  {
+    titulo: 'Só hospedagem',
+    publico: 'Para quem já tem a passagem ou vai de carro',
+    icone: 'cama' as const,
+    imagem: fotoHospedagem,
+    texto: temMotor
+      ? `Escolha as datas, compare as categorias e as tarifas do ${resort.nomeCurto} e finalize a reserva online.`
+      : `Informe as datas, os hóspedes e a acomodação desejada: a equipe consulta a disponibilidade no ${resort.nomeCurto} e envia a tarifa.`,
+    beneficios: [
+      'Refeições, snacks e bebidas selecionadas, com e sem álcool',
+      'Piscinas, praia, esportes e Kids Club de 4 a 12 anos',
+      `Check-in a partir das ${formatarHora(horarios.checkIn)}`,
+      ...(fraseCondicoesPagamento ? [maiusculaInicial(fraseCondicoesPagamento)] : []),
+    ],
+    acao: reservarHospedagem,
+    rotulo: 'Consultar tarifas de hospedagem',
+    variante: 'verde' as const,
+    whatsapp: acaoWhatsApp(
+      `Olá! Quero consultar tarifas de hospedagem no ${resort.nome}.`,
+      'Tirar dúvidas no WhatsApp',
+    ),
+  },
+  ...(pacoteComAereo
+    ? [
+        {
+          titulo: 'Hotel + aéreo',
+          publico: 'Viagem completa numa só cotação',
+          icone: 'aviao' as const,
+          imagem: fotoPacote,
+          texto: `Hospedagem all inclusive e voo da sua cidade até ${resort.aeroporto.cidade} cotados juntos, com a mesma equipe do começo ao fim.`,
+          beneficios: [
+            `Voo até o ${resort.aeroporto.nome} (${resort.aeroporto.iata})`,
+            `Resort a cerca de ${resort.aeroporto.distanciaKm} km de ${resort.aeroporto.cidade}`,
+            'Traslado do aeroporto como opcional',
+            ...(fraseCondicoesPagamento ? [`Voo + hotel em ${fraseCondicoesPagamento}`] : []),
+          ],
+          acao: pacoteComAereo,
+          rotulo: 'Cotar pacote com aéreo',
+          variante: 'primario' as const,
+          whatsapp: acaoWhatsApp(
+            `Olá! Quero cotar um pacote com aéreo para o ${resort.nome}.`,
+            'Tirar dúvidas no WhatsApp',
+          ),
+        },
+      ]
+    : []),
+];
+const [telefonePrincipal] = operador.telefones;
+const confianca = [
+  {
+    icone: 'escudo' as const,
+    titulo: operador.nome,
+    texto: operador.fundacao ? `Agência de viagens desde ${operador.fundacao}` : operador.descricao,
+  },
+  {
+    icone: 'telefone' as const,
+    titulo: `${telefonePrincipal.rotulo}: ${telefonePrincipal.exibicao}`,
+    texto: 'Atendimento por telefone e WhatsApp',
+  },
+  {
+    icone: 'relogio' as const,
+    titulo: 'Horário de atendimento',
+    texto: operador.horarioAtendimento ?? 'Consulte a equipe',
+  },
+];
+---
+
+<PaginaLayout rota="reservas" imagem={topo} atualizadoEm={DATA_CONTEUDO}>
+  <Fragment slot="acoes">
+    <Botao
+      variante="verde"
+      href={reservarHospedagem.href}
+      icone={reservarHospedagem.icone}
+      evento={reservarHospedagem.evento}
+      externo={reservarHospedagem.externo}
+      tamanho="lg"
+    >
+      {reservarHospedagem.rotulo}
+    </Botao>
+    {pacoteComAereo && (
+      <Botao
+        href={pacoteComAereo.href}
+        icone={pacoteComAereo.icone}
+        evento={pacoteComAereo.evento}
+        variante="contorno"
+        tamanho="lg"
+      >
+        {pacoteComAereo.rotulo}
+      </Botao>
+    )}
+  </Fragment>
+
+  {temMotor && hospedagemIncorporavel && (
+    <Secao
+      introducao={`Escolha as datas, os quartos e os viajantes no motor de reservas para ver as tarifas do ${resort.nomeCurto}.`}
+      titulo={`Quais datas e tarifas do ${resort.nomeCurto} estão disponíveis?`}
+      sobretitulo="Motor de reservas"
+    >
+      <MotorReservas />
+    </Secao>
+  )}
+
+  <Secao
+    introducao={`Escolha como quer viajar ao ${resort.nome}: reserve só a hospedagem, se já tem a passagem ou vai de carro, ou monte o pacote com voo até ${resort.aeroporto.cidade} numa única cotação. Nos dois casos, refeições e bebidas estão incluídas e a equipe confirma a disponibilidade antes do pagamento.`}
+    titulo={`Quais são as formas de reservar o ${resort.nomeCurto}?`}
+    sobretitulo="Modalidades"
+    id="modalidades"
+  >
+    <ul class="grid gap-6 lg:grid-cols-2">
+      {modalidades.map((modalidade, indice) => (
+        <li data-revelar style={`--atraso: ${indice * 120}ms`}>
+          <article class="group ring-areia-200 ease-suave flex h-full flex-col overflow-hidden rounded-grande bg-white shadow-cartao ring-1 transition duration-500 hover:-translate-y-1.5 hover:shadow-flutuante">
+            <div class="relative aspect-16/9 overflow-hidden">
+              <Imagem
+                src={modalidade.imagem.src}
+                alt={modalidade.imagem.alt}
+                sizes="(min-width: 1024px) 40rem, 100vw"
+                class="ease-suave transition-transform duration-[1.2s] group-hover:scale-105"
+              />
+              <span
+                class="absolute inset-x-0 bottom-0 h-2/3 bg-linear-to-t from-black/75 to-transparent"
+                aria-hidden="true"
+              ></span>
+              {/* Faixa em 45° no canto: identifica a modalidade de longe. */}{' '}
+              <span class="bg-[#f7790d] absolute top-14 -right-[4.6rem] z-10 w-72 rotate-45 py-1.5 text-center text-xs font-bold tracking-wide text-white uppercase shadow-cartao">
+                {' '}
+                {indice === 0 ? 'Apenas Hospedagem' : 'Pacote Hotel + Aéreo'}{' '}
+              </span>
+              <div class="absolute inset-x-0 bottom-0 flex items-end gap-3 p-6 text-white">
+                <Icone nome={modalidade.icone} class="size-8 shrink-0" />
+                <div>
+                  <p class="text-xs font-bold tracking-[0.12em] text-white/85 uppercase">
+                    {modalidade.publico}
+                  </p>
+                  <h3 class="text-white">{modalidade.titulo}</h3>
+                </div>
+              </div>
+            </div>
+            <div class="flex flex-1 flex-col gap-6 p-6 sm:p-8">
+              <p class="text-tinta-suave">{modalidade.texto}</p>
+              <ul class="grid gap-3">
+                {modalidade.beneficios.map((beneficio) => (
+                  <li class="flex items-start gap-3">
+                    <Icone nome="check" class="text-verde-700 mt-0.5 size-5 shrink-0" />
+                    <span class="text-mar-950">{beneficio}</span>
+                  </li>
+                ))}
+              </ul>
+              {/* Botão principal e, logo abaixo, o link do WhatsApp (igual nos dois cartões). */}
+              <div class="mt-auto flex flex-col items-start gap-3 pt-2">
+                <Botao
+                  href={modalidade.acao.href}
+                  icone={modalidade.acao.icone}
+                  evento={modalidade.acao.evento}
+                  externo={modalidade.acao.externo}
+                  variante={modalidade.variante}
+                  tamanho="lg"
+                >
+                  {modalidade.rotulo}
+                </Botao>
+                <Botao
+                  href={modalidade.whatsapp.href}
+                  icone="whatsapp"
+                  evento={modalidade.whatsapp.evento}
+                  variante="texto"
+                  externo
+                >
+                  Tirar dúvidas no WhatsApp
+                </Botao>
+              </div>
+            </div>
+          </article>
+        </li>
+      ))}
+    </ul>
+
+    <ul
+      class="ring-areia-200 mt-8 grid gap-6 rounded-grande bg-white p-6 ring-1 sm:grid-cols-3 sm:p-8"
+      aria-label="Atendimento da reserva"
+    >
+      {confianca.map((item) => (
+        <li class="flex items-start gap-3">
+          <Icone nome={item.icone} class="text-mar-700 mt-0.5 size-6 shrink-0" />
+          <span>
+            <strong class="text-mar-950 block font-semibold">{item.titulo}</strong>
+            <span class="text-tinta-suave text-sm">{item.texto}</span>
+          </span>
+        </li>
+      ))}
+    </ul>
+    <SeloPagamento
+      class="mt-6"
+      centralizado
+      nota="Condições válidas para hospedagem e para o pacote com aéreo."
+    />
+  </Secao>
+
+  {/* Com motor, ele já aparece no topo da página: a busca rápida só entra sem motor. */}
+  {!(temMotor && hospedagemIncorporavel) && <BuscaTarifas />}
+
+  <JornadaReserva />
+
+  <Secao
+    foto="grand-oca/acomodacoes/comunicante-varanda.jpg"
+    titulo={`O que conferir antes de finalizar a reserva no ${resort.nomeCurto}?`}
+    sobretitulo="Antes de pagar"
+    introducao="Seis pontos que evitam surpresas no check-in: datas, idade das crianças, capacidade da acomodação, regra de cancelamento, o que está incluso e documentos."
+    fundo="areia"
+  >
+    <ol class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      {conferirAntesDeReservar.map((item, indice) => (
+        <li
+          class="ring-areia-200 flex gap-4 rounded-cartao bg-white p-5 shadow-cartao ring-1"
+          data-revelar
+        >
+          <span
+            class="bg-verde-100 text-verde-900 flex size-9 shrink-0 items-center justify-center rounded-full font-bold"
+            aria-hidden="true"
+          >
+            {indice + 1}
+          </span>
+          <div>
+            <h3 class="">{item.titulo}</h3>
+            <p class="text-tinta-suave mt-1">{item.texto}</p>
+          </div>
+        </li>
+      ))}
+    </ol>
+    <Nota titulo="Condições sujeitas ao período" class="mt-8 max-w-3xl">
+      {resort.criancas.ressalva}
+    </Nota>
+  </Secao>
+
+  <Secao
+    foto="grand-oca/resort/jardim-cabanas-coqueiral.jpg"
+    introducao={`Um resumo das principais regras de hospedagem do resort. A política completa traz todos os detalhes.`}
+    titulo={`Quais são as principais regras de hospedagem do ${resort.nomeCurto}?`}
+    sobretitulo="Política"
+  >
+    <TabelaFatos
+      legenda="Resumo da política de hospedagem"
+      linhas={[
+        {
+          rotulo: 'Check-in e check-out',
+          valor: `A partir das ${formatarHora(horarios.checkIn)} · até as ${formatarHora(horarios.checkOut)}`,
+        },
+        ...regrasCancelamento,
+      ]}
+    />
+    <p class="mt-6">
+      <Botao href={rotas.politicaHospedagem.caminho} variante="contorno" iconeFim="seta-direita">
+        Ler a política de hospedagem completa
+      </Botao>
+    </p>
+  </Secao>
+
+  <Secao
+    titulo={`Tem algum feriado no período da sua viagem ao ${resort.nomeCurto}?`}
+    sobretitulo="Feriados e datas especiais"
+    introducao="As datas mais procuradas esgotam primeiro: consulte com antecedência."
+    fundo="areia"
+  >
+    <CartoesDatasEspeciais limite={6} />
+  </Secao>
+</PaginaLayout>

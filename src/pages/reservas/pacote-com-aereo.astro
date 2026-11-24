@@ -1,0 +1,104 @@
+---
+/**
+ * Pacote hotel + aéreo (só no perfil agência): motor de pacotes (MotorPacote, com confirmação
+ * imediata e o calendário de melhores horários e preços), cotação pela equipe (canais de atendimento ou
+ * formulário, com PUBLIC_FORM_ENDPOINT), link do produto quando houver, a chegada
+ * pelos aeroportos e o que conferir antes de pagar. Sem preços inventados.
+ */
+import CanaisAtendimento from '@/components/sections/CanaisAtendimento.astro';
+import FormularioCotacao from '@/components/sections/FormularioCotacao.astro';
+import MotorPacote from '@/components/sections/MotorPacote.astro';
+import Botao from '@/components/ui/Botao.astro';
+import ListaCheck from '@/components/ui/ListaCheck.astro';
+import Secao from '@/components/ui/Secao.astro';
+import { conferirAntesDeReservar } from '@/data/reservas';
+import { rotas } from '@/data/rotas';
+import PaginaLayout from '@/layouts/PaginaLayout.astro';
+import { enderecoFormulario } from '@/lib/ambiente';
+import { DATA_CONTEUDO } from '@/lib/datas';
+import { obterImagem } from '@/lib/imagens';
+import { rotaDisponivel } from '@/lib/navegacao';
+import { resort } from '@/site.config';
+
+// Página exclusiva da agência: com outro operador, leva ao hub de reservas.
+if (!rotaDisponivel('reservasPacoteComAereo')) return Astro.redirect(rotas.reservas.caminho);
+
+const topo = await obterImagem('grand-oca/resort/praia-coqueiral.jpg');
+const aeroportos = [resort.aeroporto, ...resort.aeroportosAlternativos];
+---
+
+<PaginaLayout rota="reservasPacoteComAereo" imagem={topo} atualizadoEm={DATA_CONTEUDO}>
+  <Secao
+    introducao={`Escolha a cidade de origem, as datas e os viajantes no motor de pacotes para ver os voos e as tarifas da hospedagem all inclusive no ${resort.nomeCurto}.`}
+    titulo={`Quais datas e preços do pacote para o ${resort.nomeCurto} estão disponíveis?`}
+    sobretitulo="Motor de pacotes"
+  >
+    <MotorPacote />
+  </Secao>
+
+  <Secao
+    introducao={`No pacote com aéreo, a nossa equipe cota juntos os voos e a hospedagem all inclusive no ${resort.nomeCurto}.`}
+    foto="grand-oca/resort/praia-coqueiral.jpg"
+    titulo={`Como pedir a cotação do pacote para o ${resort.nomeCurto}?`}
+    sobretitulo="Atendimento"
+  >
+    <CanaisAtendimento
+      mensagem={`Olá! Quero cotar um pacote com aéreo para o ${resort.nome}. Cidade de origem: ___. Datas: ___. Adultos: ___. Crianças e idades: ___.`}
+    />
+    {enderecoFormulario && (
+      <div class="mt-10 max-w-3xl space-y-4">
+        <h3 class="">Prefere enviar os dados pelo site?</h3>
+        <FormularioCotacao tipo="pacote" />
+      </div>
+    )}
+  </Secao>
+
+  <Secao
+    foto="grand-oca/resort/praia-coqueiral.jpg"
+    introducao={`O voo do pacote chega a ${resort.aeroporto.cidade}, no ${resort.aeroporto.nome}, a cerca de ${resort.aeroporto.distanciaKm} km do resort. Ao desembarcar, siga de transfer, táxi ou carro até o ${resort.nomeCurto}, em Ponta de Mangue: a equipe da Rede Resort All Inclusive ajuda a cotar esse serviço.`}
+    titulo={`Qual aeroporto fica mais perto do ${resort.nomeCurto}?`}
+    sobretitulo="Chegada"
+    fundo="areia"
+    conteudoAoLado
+  >
+    {/* Um cartão compacto por aeroporto, na coluna do título (ao lado da foto). */}
+    <div class="space-y-3">
+      {aeroportos.map((item) => (
+        <div class="ring-areia-200 flex items-center gap-4 rounded-cartao bg-white p-4 shadow-cartao ring-1">
+          <span class="bg-mar-50 text-mar-800 flex size-12 shrink-0 items-center justify-center rounded-xl text-sm font-bold">
+            {item.iata}
+          </span>
+          <div class="min-w-0 flex-1">
+            <p class="text-mar-950 font-semibold">{item.cidade}</p>
+            <p class="text-tinta-suave text-sm">{item.nome}</p>
+          </div>
+          <div class="text-right text-sm">
+            <p class="text-mar-800 font-semibold">{item.distanciaKm} km</p>
+            {item.tempoEstimado && <p class="text-tinta-suave">{item.tempoEstimado}</p>}
+          </div>
+        </div>
+      ))}
+    </div>
+    <p class="mt-6">
+      <Botao href={rotas.comoChegar.caminho} variante="contorno" iconeFim="seta-direita">
+        Rotas, traslado e mapa
+      </Botao>
+    </p>
+  </Secao>
+
+  <Secao
+    foto="grand-oca/acomodacoes/suite-deluxe-quarto.jpg"
+    introducao={`Antes de pagar, confira os pontos que mais geram dúvidas na viagem e no check-in.`}
+    titulo={`O que conferir antes de finalizar a reserva no ${resort.nomeCurto}?`}
+    sobretitulo="Antes de pagar"
+  >
+    <ListaCheck
+      itens={[
+        'Horários dos voos: o check-in no resort tem horário fixo, e chegar cedo pode exigir early check-in',
+        'Bagagem incluída na tarifa aérea',
+        ...conferirAntesDeReservar.map(({ titulo, texto }) => `${titulo}: ${texto}`),
+      ]}
+      class="max-w-3xl"
+    />
+  </Secao>
+</PaginaLayout>

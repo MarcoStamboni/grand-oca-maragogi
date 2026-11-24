@@ -1,0 +1,29 @@
+---
+/**
+ * Lista de itens (incluídos, resumo de fatos) com um ícone que faz referência a cada texto
+ * (src/lib/icone-do-texto.ts, ex.: Wi-Fi, frigobar, piscina); sem ícone que combine, fica o check.
+ */
+import Icone from '@/components/ui/Icone.astro';
+import { iconeDoTexto } from '@/lib/icone-do-texto';
+
+interface Props {
+  itens: readonly string[];
+  colunas?: 1 | 2;
+  /** Ícones em laranja-claro, para fundos escuros (azul nos claros). */
+  escuro?: boolean;
+  class?: string;
+}
+
+const { itens, colunas = 1, escuro = false, class: classe } = Astro.props;
+---
+
+<ul class:list={['grid gap-x-8 gap-y-3', colunas === 2 && 'sm:grid-cols-2', classe]}>
+  {itens.map((item) => (
+    <li class="flex gap-3">
+      <span class:list={['mt-0.5 flex shrink-0', escuro ? 'text-coral-400' : 'text-mar-700']}>
+        <Icone nome={iconeDoTexto(item)} class="size-5" />
+      </span>
+      <span>{item}</span>
+    </li>
+  ))}
+</ul>

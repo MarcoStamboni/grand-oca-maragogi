@@ -1,0 +1,394 @@
+---
+/**
+ * Detalhe de um restaurante (coleção `restaurantes`): proposta, ficha, cardápio em janela (recurso
+ * do template), horários, noites temáticas, opções alimentares, bebidas, reserva e
+ * outros restaurantes. Textos e fatos: o arquivo do restaurante em src/content/restaurantes/.
+ */
+import Botao from '@/components/ui/Botao.astro';
+import BotaoJanela from '@/components/ui/BotaoJanela.astro';
+import Card from '@/components/ui/Card.astro';
+import ChipsFatos from '@/components/ui/ChipsFatos.astro';
+import Icone from '@/components/ui/Icone.astro';
+import Janela from '@/components/ui/Janela.astro';
+import Secao from '@/components/ui/Secao.astro';
+import { regraRestaurantesALaCarte } from '@/data/acomodacoes';
+import { caminhoRestaurante, rotas } from '@/data/rotas';
+import PaginaLayout from '@/layouts/PaginaLayout.astro';
+import {
+  formatarDias,
+  formatarFaixaHorario,
+  formatarListaFrase,
+  maiusculaInicial,
+} from '@/lib/formatar';
+import type { NomeIcone } from '@/lib/icones';
+import {
+  type Restaurante,
+  dadosSchemaRestaurante,
+  restaurantesOrdenados,
+  rotuloRefeicao,
+  textoHorariosReserva,
+  textoRefeicoes,
+  textoServico,
+  textosOpcoesAlimentares,
+  textoTipo,
+} from '@/lib/gastronomia';
+import { iconeDoTexto } from '@/lib/icone-do-texto';
+import { imagensSchema, obterImagem, obterImagens } from '@/lib/imagens';
+import { noRestaurante } from '@/lib/schema';
+import { alternarFundos } from '@/lib/secoes';
+import { resort } from '@/site.config';
+
+export async function getStaticPaths() {
+  const restaurantes = await restaurantesOrdenados();
+  return restaurantes.map((restaurante) => ({
+    params: { id: restaurante.id },
+    props: { restaurante },
+  }));
+}
+
+interface Props {
+  restaurante: Restaurante;
+}
+
+const { restaurante } = Astro.props;
+const { id, data } = restaurante;
+/** Artigo do nome: "a La Brasa", "a Praça de Alimentação", "o Ix’U". */
+const art =
+  id === 'la-brasa' || id === 'praca-de-alimentacao'
+    ? { O: 'A', o: 'a', do: 'da', no: 'na' }
+    : { O: 'O', o: 'o', do: 'do', no: 'no' };
+const chaveCapa = data.banner ?? data.fotos[0];
+
+const [capa, fotos, todos] = await Promise.all([
+  chaveCapa ? obterImagem(chaveCapa) : undefined,
+  obterImagens(data.fotos),
+  restaurantesOrdenados(),
+]);
+const outros = await Promise.all(
+  todos
+    .filter((item) => item.id !== id)
+    .map(async (item) => ({
+      item,
+      foto: item.data.fotos[0] ? await obterImagem(item.data.fotos[0]) : undefined,
+    })),
+);
+
+const { reserva } = data;
+const entradasReserva = textoHorariosReserva(restaurante);
+/** Um cartão por refeição: ícone, nome, horário em destaque e a observação embaixo. */
+const iconeRefeicao: Record<string, NomeIcone> = {
+  'cafe-da-manha': 'cafe',
+  almoco: 'sol',
+  jantar: 'lua',
+};
+const cartoesHorario = data.horarios.map((horario) => ({
+  icone: iconeRefeicao[horario.refeicao] ?? 'relogio',
+  rotulo: horario.rotulo ?? rotuloRefeicao(horario.refeicao),
+  horario:
+    !horario.fecha && entradasReserva
+      ? `${entradasReserva}`
+      : maiusculaInicial(formatarFaixaHorario(horario)),
+  observacao: !horario.fecha && entradasReserva ? 'Com reserva' : horario.observacao,
+}));
+const idCardapio = `cardapio-${id}`;
+const proximoFundo = alternarFundos();
+const restauranteSchema = noRestaurante(
+  dadosSchemaRestaurante(restaurante, await imagensSchema(fotos.length > 0 ? fotos : [capa])),
+);
+---
+
+<PaginaLayout
+  titulo={data.seo.titulo}
+  descricao={data.seo.descricao}
+  rota="restaurantes"
+  trilhaExtra={[{ rotulo: data.nome, href: caminhoRestaurante(id) }]}
+  h1={data.nome}
+  sobretitulo={textoTipo(restaurante)}
+  subtitulo={data.resumo}
+  respostaDireta={data.respostaDireta}
+  imagem={capa ?? 'indisponivel'}
+  atualizadoEm={data.atualizadoEm}
+  chaveFaq={`restaurante:${id}`}
+  dadosEstruturados={{ principal: restauranteSchema }}
+>
+  <Fragment slot="acoes">
+    {data.cardapio.length > 0 && (
+      <BotaoJanela alvo={idCardapio} variante="primario" tamanho="lg" icone="documento">
+        Ver cardápio
+      </BotaoJanela>
+    )}
+    <Botao
+      href={rotas.restaurantes.caminho}
+      variante="contorno"
+      tamanho="lg"
+      iconeFim="seta-direita"
+    >
+      Todos os restaurantes
+    </Botao>
+  </Fragment>
+  <ChipsFatos
+    slot="fatos"
+    itens={[
+      { rotulo: 'Cozinha', valor: formatarListaFrase(data.cozinhas), icone: 'talheres' },
+      { rotulo: 'Serviço', valor: textoServico(restaurante), icone: 'cafe' },
+      ...(data.horarios.length > 0
+        ? [{ rotulo: 'Refeições', valor: textoRefeicoes(restaurante), icone: 'relogio' as const }]
+        : []),
+      {
+        rotulo: 'Reserva',
+        valor: reserva?.obrigatoria
+          ? 'Obrigatória'
+          : reserva?.observacao
+            ? 'Em parte do serviço'
+            : 'Não precisa',
+        icone: 'calendario',
+      },
+    ]}
+  />
+
+  <Secao
+    introducao={`${art.O} ${data.nome} faz parte do all inclusive do ${resort.nomeCurto}. Veja o ambiente, o estilo de serviço e o que esperar da experiência.`}
+    foto={data.fotos[1] ?? data.fotos[0]}
+    titulo={`Como é ${art.o} ${data.nome} do ${resort.nomeCurto}?`}
+    sobretitulo="O restaurante"
+    fundo={proximoFundo()}
+  >
+    {/* Destaques em lista simples com ícone, sem caixas. */}
+    <div>
+      <ul class="grid gap-x-8 gap-y-4 sm:grid-cols-2">
+        {data.destaques.map((item) => (
+          <li class="flex items-center gap-3">
+            <Icone nome={iconeDoTexto(item)} class="text-mar-700 size-5 shrink-0" />
+            <span class="text-mar-950 text-sm leading-snug font-medium">{item}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </Secao>
+
+  {data.cardapio.length > 0 && (
+    <Secao
+      foto={data.fotos[0]}
+      introducao={`Alguns dos pratos servidos ${art.no} ${data.nome}. O cardápio pode variar conforme a época, a estação e a disponibilidade dos ingredientes.`}
+      titulo="O que tem no cardápio?"
+      sobretitulo="Cardápio"
+      fundo={proximoFundo()}
+    >
+      <BotaoJanela alvo={idCardapio} icone="documento">
+        Abrir o cardápio
+      </BotaoJanela>
+      <Janela
+        id={idCardapio}
+        titulo={`Cardápio ${art.do} ${data.nome}`}
+        subtitulo="Cardápio de referência: os pratos podem mudar conforme a estação."
+      >
+        <div class="space-y-6">
+          {data.cardapio.map((secao) => (
+            <div>
+              <p class="text-coral-700 mb-3 text-xs font-bold tracking-wider uppercase">
+                {secao.secao}
+              </p>
+              <ul class="divide-areia-200 divide-y">
+                {secao.itens.map((item) => (
+                  <li class="py-3">
+                    <p class="text-mar-800 font-semibold">{item.nome}</p>
+                    {item.descricao && <p class="text-tinta-suave text-sm">{item.descricao}</p>}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+      </Janela>
+    </Secao>
+  )}
+
+  {/* Horários e reserva juntos: tudo o que é preciso para planejar a refeição. */}
+  <Secao
+    introducao={
+      cartoesHorario.length > 0
+        ? `Confira quando ${art.o} ${data.nome} abre e ${reserva?.obrigatoria ? 'como garantir a sua mesa' : 'se é preciso reservar'}, para organizar as refeições do dia no resort.`
+        : `O ${resort.nomeCurto} não publica horários fixos para ${art.o} ${data.nome}: o funcionamento é informado no resort. Veja também se é preciso reservar.`
+    }
+    foto={data.fotos[2] ?? data.fotos[0]}
+    titulo={`Qual é o horário ${art.do} ${data.nome} e como reservar?`}
+    sobretitulo="Horários e reserva"
+    fundo={proximoFundo()}
+  >
+    <div class="space-y-8">
+      {/* Horários: um cartão por refeição, com o horário em destaque. */}
+      {cartoesHorario.length > 0 && (
+        <ul class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {cartoesHorario.map((cartao) => (
+            <li class="ring-areia-200 flex h-full flex-col gap-3 rounded-cartao bg-white p-5 shadow-cartao ring-1">
+              <div class="flex items-center gap-2">
+                <Icone nome={cartao.icone} class="text-mar-700 size-5 shrink-0" />
+                <h3>{cartao.rotulo}</h3>
+              </div>
+              <p class="text-mar-950 text-2xl leading-tight font-semibold">{cartao.horario}</p>
+              {cartao.observacao && (
+                <p class="text-tinta-suave text-sm">{maiusculaInicial(cartao.observacao)}</p>
+              )}
+            </li>
+          ))}
+        </ul>
+      )}
+
+      {/* Reserva: as regras em itens com ícone, numa caixa só. */}
+      <div class="ring-areia-200 rounded-cartao bg-white p-6 shadow-cartao ring-1 sm:p-8">
+        <div class="flex items-center gap-2">
+          <Icone nome="calendario" class="text-mar-700 size-5" />
+          <h3>{reserva?.obrigatoria ? 'Como reservar' : 'Precisa reservar?'}</h3>
+        </div>
+        {reserva?.obrigatoria ? (
+          <dl class="mt-5 grid gap-x-8 gap-y-5 sm:grid-cols-2 lg:grid-cols-4">
+            <div>
+              <dt class="text-tinta-suave text-sm">Reserva</dt>
+              <dd class="text-mar-950 font-semibold">
+                Obrigatória{reserva.observacao && `, ${reserva.observacao.toLowerCase()}`}
+              </dd>
+            </div>
+            {entradasReserva && (
+              <div>
+                <dt class="text-tinta-suave text-sm">Horários de entrada</dt>
+                <dd class="text-mar-950 font-semibold">{entradasReserva}</dd>
+              </div>
+            )}
+            {reserva.toleranciaMinutos && (
+              <div>
+                <dt class="text-tinta-suave text-sm">Tolerância de atraso</dt>
+                <dd class="text-mar-950 font-semibold">{reserva.toleranciaMinutos} minutos</dd>
+              </div>
+            )}
+            {reserva.elegibilidade && (
+              <div>
+                <dt class="text-tinta-suave text-sm">Reservas por estadia</dt>
+                <dd class="text-mar-950 font-semibold">
+                  {regraRestaurantesALaCarte.faixas
+                    .map(({ diariasMin, diariasMax, reservas }) =>
+                      diariasMax
+                        ? `${reservas} de ${diariasMin} a ${diariasMax} noites`
+                        : `até ${reservas} com ${diariasMin} noites ou mais`,
+                    )
+                    .join('; ')}
+                </dd>
+              </div>
+            )}
+          </dl>
+        ) : (
+          <p class="text-tinta mt-3">
+            {reserva?.observacao ??
+              `O resort não informa regra de reserva para ${art.o} ${data.nome}: confirme no local.`}
+          </p>
+        )}
+        {data.traje && (
+          <p class="text-tinta-suave mt-5 text-sm">
+            <strong class="text-mar-950 font-semibold">Traje:</strong> {data.traje}
+          </p>
+        )}
+      </div>
+
+      <p class="text-tinta-suave flex items-center gap-2 text-sm">
+        <Icone nome="info" class="size-4 shrink-0" />
+        Horários sujeitos a alteração sem aviso prévio.
+      </p>
+    </div>
+  </Secao>
+
+  {data.noitesTematicas.length > 0 && (
+    <Secao
+      introducao={`Em algumas noites, ${art.o} ${data.nome} tem cardápio temático, uma boa forma de variar o jantar durante a estadia sem sair do resort.`}
+      foto="grand-oca/gastronomia/restaurante-corais-buffet.jpg"
+      titulo="Quais são as noites temáticas?"
+      sobretitulo="Noites temáticas"
+      fundo={proximoFundo()}
+      conteudoAoLado
+    >
+      {/* Noites temáticas na coluna do título, ao lado da foto: dia em destaque e o tema. */}
+      <ul class="divide-areia-200 divide-y" data-curto>
+        {data.noitesTematicas.map(({ dias, tema }) => (
+          <li class="flex items-start gap-3 py-3 first:pt-0 last:pb-0">
+            <Icone nome="calendario" class="text-mar-700 mt-0.5 size-5 shrink-0" />
+            <div>
+              <p class="text-coral-700 text-xs font-bold tracking-wider uppercase">
+                {maiusculaInicial(formatarDias(dias) ?? '')}
+              </p>
+              <p class="text-mar-950 font-semibold">{tema}</p>
+            </div>
+          </li>
+        ))}
+      </ul>
+    </Secao>
+  )}
+
+  {/*
+   * Bebidas (e alimentação especial, quando o restaurante tem): foto ao lado e os itens na coluna
+   * do título, em blocos com ícone. Título e introdução mudam conforme o que o restaurante oferece.
+   */}
+  {(data.bebidasInclusas.length > 0 || data.opcoesAlimentares.length > 0) && (
+    <Secao
+      introducao={
+        data.opcoesAlimentares.length > 0
+          ? `As bebidas servidas durante a refeição estão incluídas no all inclusive do ${resort.nomeCurto}. Quem tem restrição alimentar também encontra opções: avise na chegada e confirme com a equipe do restaurante.`
+          : `As bebidas servidas durante a refeição ${art.no} ${data.nome} já estão incluídas no all inclusive do ${resort.nomeCurto}, sem custo extra: é só pedir à equipe do restaurante.`
+      }
+      titulo={
+        data.opcoesAlimentares.length > 0
+          ? 'O que está incluído nas bebidas e na alimentação especial?'
+          : `Quais bebidas estão incluídas ${art.no} ${data.nome}?`
+      }
+      sobretitulo={data.opcoesAlimentares.length > 0 ? 'Bebidas e alimentação' : 'Bebidas'}
+      foto="grand-oca/gastronomia/bar-piscina-noite.jpg"
+      fundo={proximoFundo()}
+      conteudoAoLado
+    >
+      <div class="space-y-5">
+        {data.bebidasInclusas.length > 0 && (
+          <ul class="grid gap-3 sm:grid-cols-2">
+            {data.bebidasInclusas.map((item) => (
+              <li class="ring-areia-200 flex items-center gap-3 rounded-cartao bg-white p-3.5 shadow-cartao ring-1">
+                <Icone nome={iconeDoTexto(item)} class="text-mar-700 size-5 shrink-0" />
+                <span class="text-mar-950 text-sm font-medium">{item}</span>
+              </li>
+            ))}
+          </ul>
+        )}
+        {data.opcoesAlimentares.length > 0 && (
+          <div class="space-y-3">
+            <h3>Alimentação especial</h3>
+            <ul class="grid gap-3 sm:grid-cols-2">
+              {textosOpcoesAlimentares(restaurante).map((opcao) => (
+                <li class="ring-areia-200 flex items-center gap-3 rounded-cartao bg-white p-3.5 shadow-cartao ring-1">
+                  <Icone nome="folha" class="text-mar-700 size-5 shrink-0" />
+                  <span class="text-mar-950 text-sm font-medium">Opções {opcao}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+      </div>
+    </Secao>
+  )}
+
+  <Secao
+    introducao={`Conheça os outros restaurantes incluídos no all inclusive do ${resort.nomeCurto}.`}
+    titulo="Quais são os outros restaurantes?"
+    sobretitulo="Restaurantes"
+    fundo={proximoFundo()}
+  >
+    <ul class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      {outros.map(({ item, foto }) => (
+        <li>
+          <Card
+            titulo={item.data.nome}
+            href={caminhoRestaurante(item.id)}
+            sobretitulo={textoTipo(item)}
+            descricao={item.data.resumo}
+            imagem={foto}
+            iconeSemFoto="talheres"
+          />
+        </li>
+      ))}
+    </ul>
+  </Secao>
+</PaginaLayout>

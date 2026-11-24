@@ -1,0 +1,143 @@
+---
+/**
+ * Termos de uso do site. Quem mantém o site vem do operador ativo (site.config.ts).
+ * TODO: revisão jurídica antes da publicação.
+ */
+import Botao from '@/components/ui/Botao.astro';
+import ListaCheck from '@/components/ui/ListaCheck.astro';
+import Nota from '@/components/ui/Nota.astro';
+import RespostaDireta from '@/components/ui/RespostaDireta.astro';
+import Secao from '@/components/ui/Secao.astro';
+import { rotas } from '@/data/rotas';
+import ContatoOperador from '@/components/sections/ContatoOperador.astro';
+import PaginaLayout from '@/layouts/PaginaLayout.astro';
+import { DATA_POLITICAS } from '@/lib/datas';
+import { formatarData } from '@/lib/formatar';
+import { obterImagem } from '@/lib/imagens';
+import { porOperador } from '@/lib/operador';
+import { operador, resort, site } from '@/site.config';
+
+const ehAgencia = operador.id === 'agencia';
+const quemMantem = porOperador();
+const dataFonte = formatarData(site.dataColetaFonte);
+const capa = await obterImagem('grand-oca/resort/praia-coqueiral.jpg');
+---
+
+<PaginaLayout
+  titulo="Termos de uso"
+  descricao="Termos de uso do site do Grand Oca Maragogi Resort: informações publicadas, reservas, uso do conteúdo e responsabilidades."
+  rota="termos"
+  h1="Termos de uso"
+  sobretitulo="Institucional"
+  subtitulo="As regras para usar este site e as informações publicadas nele."
+  imagem={capa}
+  atualizadoEm={DATA_POLITICAS}
+  chaveFaq={false}
+>
+  <RespostaDireta slot="resumo">
+    Este site é mantido {quemMantem} para informar e atender quem quer se hospedar no {resort.nome}.
+    As informações sobre o resort foram atualizadas em {dataFonte} e podem mudar. Tarifas,
+    disponibilidade e condições só valem depois de confirmadas na reserva.
+  </RespostaDireta>
+
+  <Secao
+    introducao={`Quem é responsável por este site e pelas informações publicadas sobre o ${resort.nomeCurto}.`}
+    titulo="Quem mantém este site?"
+    sobretitulo="Responsável"
+    largura="estreito"
+  >
+    <div class="space-y-6">
+      <div class="conteudo">
+        <p>
+          {ehAgencia
+            ? `Este site é mantido pela ${operador.nome}, ${operador.descricao.charAt(0).toLowerCase()}${operador.descricao.slice(1)}`
+            : `Este é o site do ${resort.nome}${resort.rede ? `, da rede ${resort.rede}` : ''}.`}
+        </p>
+      </div>
+      {operador.aviso && <Nota titulo="Importante">{operador.aviso}</Nota>}
+    </div>
+  </Secao>
+
+  <Secao
+    introducao={`As informações são conferidas com cuidado, mas condições, horários e programação podem mudar.`}
+    titulo="As informações publicadas são garantidas?"
+    sobretitulo="Informações"
+    fundo="areia"
+    largura="estreito"
+  >
+    <div class="conteudo">
+      <p>
+        Os dados sobre estrutura, acomodações, restaurantes, horários, programação e políticas foram
+        atualizados em {dataFonte}. O resort pode alterar horários, serviços e programação,
+        inclusive sem aviso prévio.
+      </p>
+      <p>
+        Por isso, confirme os detalhes que forem importantes para a sua viagem no momento da
+        reserva. Se encontrar alguma informação desatualizada, avise a nossa equipe.
+      </p>
+    </div>
+  </Secao>
+
+  <Secao
+    introducao={`Como funcionam os pedidos de cotação e as reservas feitas pelos nossos canais.`}
+    titulo="Como funcionam cotações e reservas?"
+    sobretitulo="Reservas"
+    largura="estreito"
+  >
+    <div class="conteudo">
+      <ListaCheck
+        itens={[
+          'O site não publica preços: as tarifas são informadas na cotação.',
+          'Uma cotação não garante a reserva. A reserva vale depois de confirmada, com as condições de pagamento combinadas.',
+          'Cancelamento, no-show, documentos e regras para menores seguem a política de hospedagem do resort.',
+        ]}
+      />
+      <p>
+        <Botao href={rotas.politicaHospedagem.caminho} variante="texto" iconeFim="seta-direita">
+          Ler a política de hospedagem
+        </Botao>
+      </p>
+    </div>
+  </Secao>
+
+  <Secao
+    introducao={`Regras para o uso dos textos e das imagens publicados neste site.`}
+    titulo="Posso usar o conteúdo do site?"
+    sobretitulo="Conteúdo"
+    fundo="areia"
+    largura="estreito"
+  >
+    <div class="conteudo">
+      <p>
+        A marca, as fotos e as informações do {resort.nome} pertencem aos respectivos titulares. Os
+        textos e a organização deste site não podem ser copiados para uso comercial sem autorização.
+      </p>
+    </div>
+  </Secao>
+
+  <Secao
+    introducao={`Este site pode ter links para sites de terceiros, que têm políticas próprias.`}
+    titulo="E os links para outros sites?"
+    sobretitulo="Terceiros"
+    largura="estreito"
+  >
+    <div class="conteudo">
+      <p>
+        O site tem links para serviços de terceiros, como WhatsApp, Google Maps, Tripadvisor e as
+        redes sociais do resort. Ao abri-los, valem as regras e as políticas de privacidade de cada
+        serviço. A nota do Tripadvisor exibida aqui é um dado de terceiro, com a data da consulta.
+      </p>
+      <p>
+        Estes termos seguem a legislação brasileira, incluindo o Código de Defesa do Consumidor.
+        Fica eleito o foro do domicílio do consumidor para resolver eventuais conflitos.
+      </p>
+      <p>
+        <Botao href={rotas.privacidade.caminho} variante="texto" iconeFim="seta-direita">
+          Ler a política de privacidade
+        </Botao>
+      </p>
+    </div>
+  </Secao>
+
+  <ContatoOperador />
+</PaginaLayout>

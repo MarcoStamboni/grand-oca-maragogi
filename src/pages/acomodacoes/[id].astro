@@ -1,0 +1,316 @@
+---
+/**
+ * Detalhe de uma categoria de acomodação (coleção `acomodacoes`): ficha, para quem é indicada,
+ * o que oferece, benefícios Premium, reserva pela central, fotos e outras categorias.
+ * Textos e fatos: o arquivo da categoria em src/content/acomodacoes/.
+ */
+import MosaicoFotos from '@/components/sections/MosaicoFotos.astro';
+import Botao from '@/components/ui/Botao.astro';
+import Card from '@/components/ui/Card.astro';
+import ChipsFatos from '@/components/ui/ChipsFatos.astro';
+import Icone from '@/components/ui/Icone.astro';
+import ListaCheck from '@/components/ui/ListaCheck.astro';
+import Nota from '@/components/ui/Nota.astro';
+import Secao from '@/components/ui/Secao.astro';
+import TabelaFatos from '@/components/ui/TabelaFatos.astro';
+import { beneficiosPremium, itensTodasAcomodacoes } from '@/data/acomodacoes';
+import { caminhoAcomodacao, rotas } from '@/data/rotas';
+import PaginaLayout from '@/layouts/PaginaLayout.astro';
+import { acaoWhatsApp, acoes, reservarHospedagem } from '@/lib/acoes';
+import {
+  type Acomodacao,
+  acomodacoesComCapa,
+  dadosSchemaAcomodacao,
+  doNome,
+  fatosCurtos,
+  outrasAcomodacoes,
+  textoAmbientes,
+  textoCamas,
+  textoVistas,
+} from '@/lib/acomodacoes';
+import { formatarArea, formatarHora, formatarLista } from '@/lib/formatar';
+import { iconeDoTexto } from '@/lib/icone-do-texto';
+import { imagensSchema, obterImagem, obterImagens } from '@/lib/imagens';
+import { noAcomodacao } from '@/lib/schema';
+import { alternarFundos } from '@/lib/secoes';
+import { resort } from '@/site.config';
+
+export async function getStaticPaths() {
+  const todas = await acomodacoesComCapa();
+  return todas.map(({ entrada }) => ({
+    params: { id: entrada.id },
+    props: { acomodacao: entrada },
+  }));
+}
+
+interface Props {
+  acomodacao: Acomodacao;
+}
+
+const { acomodacao } = Astro.props;
+const { id, data } = acomodacao;
+const chaveCapa = data.banner ?? data.fotos[0];
+
+const [capa, fotos, todas] = await Promise.all([
+  chaveCapa ? obterImagem(chaveCapa) : undefined,
+  obterImagens(data.fotos),
+  acomodacoesComCapa(),
+]);
+const outras = outrasAcomodacoes(todas, acomodacao);
+const { criancas } = resort;
+const quarto = noAcomodacao(
+  // As fotos do próprio quarto descrevem a acomodação; a capa (banner) pode ser uma vista geral.
+  dadosSchemaAcomodacao(acomodacao, await imagensSchema(fotos.length > 0 ? fotos : [capa])),
+);
+
+const ficha = [
+  ...(data.areaM2 ? [{ rotulo: 'Área', valor: formatarArea(data.areaM2) }] : []),
+  { rotulo: 'Ambientes', valor: textoAmbientes(acomodacao) },
+  { rotulo: 'Capacidade', valor: data.capacidade.descricao },
+  ...(data.camas.length > 0 ? [{ rotulo: 'Camas', valor: textoCamas(acomodacao) }] : []),
+  { rotulo: 'Vista', valor: textoVistas(acomodacao) },
+  ...(data.varanda ? [{ rotulo: 'Varanda', valor: 'Sim' }] : []),
+  ...(data.hidromassagem ? [{ rotulo: 'Hidromassagem', valor: 'Sim' }] : []),
+  ...(data.piscinaPrivativa ? [{ rotulo: 'Piscina privativa', valor: 'Sim' }] : []),
+  ...(data.conjugacao ? [{ rotulo: 'Conjugação', valor: data.conjugacao }] : []),
+  ...(data.quantidade ? [{ rotulo: 'Unidades', valor: String(data.quantidade) }] : []),
+  ...(data.premium ? [{ rotulo: 'Categoria', valor: 'Premium' }] : []),
+];
+const oferece = [...data.diferenciais, ...itensTodasAcomodacoes];
+
+const idadeCapacidade = data.capacidade.idadeMaxCriancas;
+const textoCriancas = !data.capacidade.criancas
+  ? `A capacidade ${doNome(acomodacao)} é de ${data.capacidade.descricao}. Informe a idade de cada criança na consulta. ${criancas.ressalva}`
+  : idadeCapacidade
+    ? `A capacidade inclui crianças de até ${idadeCapacidade} anos. Informe a idade de cada criança na consulta, porque ela muda a tarifa. ${criancas.ressalva}`
+    : `Informe a idade de cada criança na consulta, porque ela muda a tarifa. ${criancas.ressalva}`;
+
+// Categorias vendidas só pela central: o botão principal leva ao atendimento.
+const cotar = acaoWhatsApp(
+  `Olá! Quero uma cotação para ${data.artigo} ${data.nome} no ${resort.nomeCurto}.`,
+  'Cotar pelo WhatsApp',
+);
+const acaoPrincipal = data.reservaSomenteCentral ? acoes.ligar : reservarHospedagem;
+const proximoFundo = alternarFundos();
+---
+
+<PaginaLayout
+  titulo={data.seo.titulo}
+  descricao={data.seo.descricao}
+  rota="acomodacoes"
+  trilhaExtra={[{ rotulo: data.nome, href: caminhoAcomodacao(id) }]}
+  h1={data.nome}
+  sobretitulo={data.premium ? 'Acomodação Premium' : 'Acomodação'}
+  subtitulo={data.resumo}
+  respostaDireta={data.respostaDireta}
+  imagem={capa ?? 'indisponivel'}
+  atualizadoEm={data.atualizadoEm}
+  chaveFaq={`acomodacao:${id}`}
+  dadosEstruturados={{ principal: quarto }}
+>
+  <Fragment slot="acoes">
+    <Botao
+      variante="verde"
+      href={acaoPrincipal.href}
+      icone={acaoPrincipal.icone}
+      evento={acaoPrincipal.evento}
+      externo={acaoPrincipal.externo}
+      tamanho="lg"
+    >
+      {acaoPrincipal.rotulo}
+    </Botao>
+    <Botao
+      href={cotar.href}
+      icone={cotar.icone}
+      evento={cotar.evento}
+      variante="whatsapp"
+      tamanho="lg"
+      externo
+    >
+      {cotar.rotulo}
+    </Botao>
+  </Fragment>
+  <ChipsFatos
+    slot="fatos"
+    itens={[
+      ...(data.areaM2
+        ? [{ rotulo: 'Área', valor: formatarArea(data.areaM2), icone: 'area' as const }]
+        : []),
+      { rotulo: 'Capacidade', valor: data.capacidade.descricao, icone: 'pessoas' },
+      { rotulo: 'Vista', valor: textoVistas(acomodacao), icone: 'ondas' },
+      { rotulo: 'Indicada para', valor: data.indicadoPara, icone: 'coracao' },
+    ]}
+  />
+
+  <MosaicoFotos fotos={fotos} rotulo={`Fotos ${doNome(acomodacao)}`} />
+
+  <Secao
+    introducao={`A Rede Resort All Inclusive resumiu na tabela abaixo a área, os ambientes, a vista e a capacidade ${doNome(acomodacao)}. Assim fica fácil comparar com as outras acomodações do ${resort.nomeCurto} e escolher a ideal para a sua viagem.`}
+    titulo={`Qual é o tamanho e a capacidade ${doNome(acomodacao)}?`}
+    sobretitulo={data.nome}
+    fundo={proximoFundo()}
+  >
+    <div class="grid items-start gap-10 lg:grid-cols-[minmax(0,1fr)_22rem] lg:gap-12">
+      <div class="grid items-start gap-8 xl:grid-cols-2">
+        <TabelaFatos legenda={`Ficha ${doNome(acomodacao)}`} linhas={ficha} />
+        <div class="space-y-6">
+          <Nota
+            titulo={`Para quem ${data.artigo === 'a' ? 'a' : 'o'} ${data.nome} é indicad${data.artigo}?`}
+          >
+            {data.indicadoPara}.
+          </Nota>
+          <Nota titulo="Crianças">{textoCriancas}</Nota>
+        </div>
+      </div>
+      <aside
+        class="ring-areia-200 space-y-4 rounded-grande bg-white p-6 shadow-flutuante ring-1 lg:sticky lg:top-[calc(7rem+var(--bf-h,0px))]"
+        aria-label={`Reservar ${data.artigo} ${data.nome}`}
+      >
+        <p class="text-mar-950 text-lg font-bold">
+          Consulte {data.artigo} {data.nome} para as suas datas
+        </p>
+        <ul class="text-tinta-suave space-y-1.5 text-sm">
+          <li>
+            {data.areaM2 ? `${formatarArea(data.areaM2)} · ` : ''}
+            {data.capacidade.descricao}
+          </li>
+          <li>
+            Check-in {formatarHora(resort.horarios.checkIn)} · check-out{' '}
+            {formatarHora(resort.horarios.checkOut)}
+          </li>
+        </ul>
+        <div class="grid gap-3">
+          <Botao
+            variante="verde"
+            href={acaoPrincipal.href}
+            icone={acaoPrincipal.icone}
+            evento={acaoPrincipal.evento}
+            externo={acaoPrincipal.externo}
+            larguraTotal
+          >
+            {acaoPrincipal.rotulo}
+          </Botao>
+          <Botao
+            href={cotar.href}
+            icone={cotar.icone}
+            evento={cotar.evento}
+            variante="whatsapp"
+            externo
+            larguraTotal
+          >
+            {cotar.rotulo}
+          </Botao>
+        </div>
+      </aside>
+    </div>
+  </Secao>
+
+  <Secao
+    introducao={`Veja os ambientes e os diferenciais ${doNome(acomodacao)}, para chegar ao ${resort.nomeCurto} sabendo o que vai encontrar na acomodação.`}
+    foto={data.fotos[2] ?? data.fotos[0]}
+    titulo={`O que ${data.artigo} ${data.nome} oferece?`}
+    sobretitulo="Comodidades"
+    fundo={proximoFundo()}
+    conteudoAoLado
+  >
+    {/* Comodidades em blocos com ícone, na coluna do título (ao lado da foto). */}
+    <ul class="grid gap-3 sm:grid-cols-2">
+      {oferece.map((item) => (
+        <li class="ring-areia-200 flex items-center gap-3 rounded-cartao bg-white p-3 shadow-cartao ring-1">
+          <span class="text-mar-700 flex shrink-0 items-center">
+            <Icone nome={iconeDoTexto(item)} class="size-5" />
+          </span>
+          <span class="text-mar-950 text-sm leading-snug font-medium">{item}</span>
+        </li>
+      ))}
+    </ul>
+  </Secao>
+
+  {data.premium && (
+    <Secao
+      foto={data.fotos[0]}
+      introducao={`As categorias Premium do ${resort.nomeCurto} somam benefícios exclusivos à diária all inclusive, para quem busca mais conforto e privacidade.`}
+      titulo={`Quais benefícios Premium ${doNome(acomodacao)} estão incluídos?`}
+      sobretitulo="Premium"
+      fundo={proximoFundo()}
+    >
+      <div class="grid items-start gap-10 lg:grid-cols-2">
+        <div class="space-y-4">
+          <ListaCheck itens={beneficiosPremium} />
+          <Botao href={rotas.comparativo.caminho} variante="texto" iconeFim="seta-direita">
+            Comparar todas as acomodações
+          </Botao>
+        </div>
+        {data.experienciasPagas.length > 0 && (
+          <Nota titulo="Pagos à parte">
+            {`${formatarLista(data.experienciasPagas)}: contratado à parte por quem se hospeda nesta categoria.`}
+          </Nota>
+        )}
+      </div>
+    </Secao>
+  )}
+
+  {data.reservaSomenteCentral && (
+    <Secao
+      foto="grand-oca/resort/vista-aerea-resort.jpg"
+      introducao={`Consulte as tarifas do ${data.nome} para as suas datas com a nossa equipe, informando o número de adultos e a idade de cada criança.`}
+      titulo={`Como reservar ${data.artigo} ${data.nome}?`}
+      sobretitulo="Reserva"
+      fundo={proximoFundo()}
+    >
+      <div class="max-w-3xl space-y-5">
+        <p class="text-lg">
+          {`${data.artigo === 'a' ? 'A' : 'O'} ${data.nome} ${data.quantidade === 1 ? 'é uma unidade única no resort' : 'tem poucas unidades'} e é reservad${data.artigo} sob consulta, não pelo motor de reservas online. Fale com a nossa equipe para consultar a disponibilidade.`}
+        </p>
+        <div class="flex flex-wrap gap-3">
+          <Botao
+            href={cotar.href}
+            icone={cotar.icone}
+            evento={cotar.evento}
+            variante="whatsapp"
+            externo
+          >
+            {cotar.rotulo}
+          </Botao>
+          <Botao
+            href={acoes.ligar.href}
+            icone={acoes.ligar.icone}
+            evento={acoes.ligar.evento}
+            variante="contorno"
+          >
+            {acoes.ligar.rotulo}
+          </Botao>
+        </div>
+      </div>
+    </Secao>
+  )}
+
+  <Secao
+    introducao={`Compare com as outras categorias de acomodação do ${resort.nomeCurto}, dos apartamentos para casais às opções maiores para famílias.`}
+    titulo={`Quais são as outras acomodações além ${doNome(acomodacao)}?`}
+    sobretitulo="Compare"
+    fundo={proximoFundo()}
+  >
+    <ul class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      {outras.map(({ entrada, capa: foto }) => (
+        <li>
+          <Card
+            titulo={entrada.data.nome}
+            href={caminhoAcomodacao(entrada.id)}
+            iconeSemFoto="cama"
+            iconeTitulo="cama"
+            descricao={entrada.data.resumo}
+            fatos={fatosCurtos(entrada)}
+            imagem={foto}
+            {...(entrada.data.premium ? { selo: 'Premium' } : {})}
+          />
+        </li>
+      ))}
+    </ul>
+    <p class="mt-8">
+      <Botao href={rotas.comparativo.caminho} variante="contorno" iconeFim="seta-direita">
+        Comparar todas as acomodações
+      </Botao>
+    </p>
+  </Secao>
+</PaginaLayout>

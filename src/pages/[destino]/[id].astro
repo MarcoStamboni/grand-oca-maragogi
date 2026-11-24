@@ -1,0 +1,92 @@
+---
+/**
+ * Página do guia do destino (coleção `guia`; rota dinâmica com `resort.destino.slug`): cada tema
+ * vira uma seção com a pergunta como título e os fatos como texto, fotos e outras páginas.
+ */
+import { type CollectionEntry, getCollection } from 'astro:content';
+
+import Card from '@/components/ui/Card.astro';
+import Secao from '@/components/ui/Secao.astro';
+import { caminhoGuia } from '@/data/rotas';
+import PaginaLayout from '@/layouts/PaginaLayout.astro';
+import { obterImagem } from '@/lib/imagens';
+import { alternarFundos } from '@/lib/secoes';
+import { resort } from '@/site.config';
+
+export async function getStaticPaths() {
+  const paginas = (await getCollection('guia')).sort((a, b) => a.data.ordem - b.data.ordem);
+  return paginas.map((pagina) => ({
+    params: { destino: resort.destino.slug, id: pagina.id },
+    props: { pagina, paginas },
+  }));
+}
+
+interface Props {
+  pagina: CollectionEntry<'guia'>;
+  paginas: CollectionEntry<'guia'>[];
+}
+
+const { pagina, paginas } = Astro.props;
+const { id, data } = pagina;
+const [chaveCapa] = data.fotos;
+const [capa, outras] = await Promise.all([
+  chaveCapa ? obterImagem(chaveCapa) : undefined,
+  Promise.all(
+    paginas
+      .filter((item) => item.id !== id)
+      .map(async (item) => ({
+        item,
+        foto: item.data.fotos[0] ? await obterImagem(item.data.fotos[0]) : undefined,
+      })),
+  ),
+]);
+const proximoFundo = alternarFundos();
+---
+
+<PaginaLayout
+  titulo={data.seo.titulo}
+  descricao={data.seo.descricao}
+  rota="destino"
+  trilhaExtra={[{ rotulo: data.titulo, href: caminhoGuia(id) }]}
+  h1={data.titulo}
+  sobretitulo={`Guia: ${resort.destino.nome}`}
+  subtitulo={data.resumo}
+  respostaDireta={data.respostaDireta}
+  imagem={capa ?? 'indisponivel'}
+  atualizadoEm={data.atualizadoEm}
+  chaveFaq={`guia:${id}`}
+>
+  {/* Cada tema: os fatos viram o parágrafo da seção, ao lado de uma foto do guia. */}
+  {data.secoes.map((secao, indice) => (
+    <Secao
+      titulo={secao.pergunta}
+      sobretitulo={secao.tema}
+      introducao={secao.fatos.map((fato) => fato.texto).join(' ')}
+      foto={data.fotos.length > 0 ? data.fotos[indice % data.fotos.length] : undefined}
+      fotoLado={indice % 2 === 0 ? 'direita' : 'esquerda'}
+      fundo={proximoFundo()}
+      class="[&>div>div]:mb-0"
+    />
+  ))}
+
+  <Secao
+    introducao={`Continue o planejamento com os outros guias do destino: a Costa dos Corais, a cidade de Maragogi e as praias da região, sempre com o ${resort.nomeCurto} como ponto de partida.`}
+    titulo="O que mais ver na região?"
+    sobretitulo="Guia"
+    fundo={proximoFundo()}
+  >
+    <ul class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      {outras.map(({ item, foto }) => (
+        <li>
+          <Card
+            titulo={item.data.titulo}
+            href={caminhoGuia(item.id)}
+            descricao={item.data.resumo}
+            imagem={foto}
+            iconeSemFoto="bussola"
+          />
+        </li>
+      ))}
+    </ul>
+  </Secao>
+</PaginaLayout>

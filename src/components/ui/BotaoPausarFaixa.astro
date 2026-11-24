@@ -1,0 +1,33 @@
+---
+/**
+ * Botão de pausar/retomar uma faixa em movimento contínuo (WCAG 2.2.2). Só aparece com
+ * JavaScript, que é o que liga o movimento (src/scripts/faixas.ts).
+ */
+import Icone from '@/components/ui/Icone.astro';
+
+interface Props {
+  /** O que a faixa mostra, para o nome acessível (ex.: "destaques", "fotos"). */
+  conteudo: string;
+  class?: string;
+}
+
+const { conteudo, class: classe } = Astro.props;
+---
+
+<button
+  type="button"
+  class:list={[
+    'ease-suave inline-flex size-10 items-center justify-center rounded-full bg-white/90 text-mar-950 shadow-cartao transition duration-300 hover:bg-white sem-js:hidden',
+    classe,
+  ]}
+  aria-pressed="false"
+  data-pausar-faixa
+>
+  <span class="sr-only">Pausar o movimento das {conteudo}</span>
+  <span data-icone-pausar>
+    <Icone nome="pausar" class="size-4" />
+  </span>
+  <span data-icone-tocar hidden>
+    <Icone nome="tocar" class="size-4" />
+  </span>
+</button>

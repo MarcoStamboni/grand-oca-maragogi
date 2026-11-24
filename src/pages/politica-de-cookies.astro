@@ -1,0 +1,138 @@
+---
+/**
+ * Política de cookies. Reflete o comportamento real do site: sem cookies próprios de análise
+ * ou publicidade; mapa do Google só após clique; analytics (GA4 ou GTM) só com o
+ * consentimento dado no aviso de cookies, quando ativo (src/lib/ambiente.ts).
+ * TODO: revisão jurídica antes da publicação.
+ */
+import Botao from '@/components/ui/Botao.astro';
+import ListaCheck from '@/components/ui/ListaCheck.astro';
+import RespostaDireta from '@/components/ui/RespostaDireta.astro';
+import Secao from '@/components/ui/Secao.astro';
+import TabelaComparativa from '@/components/ui/TabelaComparativa.astro';
+import { rotas } from '@/data/rotas';
+import ContatoOperador from '@/components/sections/ContatoOperador.astro';
+import PaginaLayout from '@/layouts/PaginaLayout.astro';
+import { analytics } from '@/lib/ambiente';
+import { DATA_POLITICAS } from '@/lib/datas';
+import { obterImagem } from '@/lib/imagens';
+import { porOperador } from '@/lib/operador';
+
+const ferramentas =
+  analytics.ativo && analytics.provedor === 'gtm'
+    ? 'Google Tag Manager e Google Analytics'
+    : 'Google Analytics';
+const descricao =
+  'Política de cookies do site do Grand Oca Maragogi Resort: quais cookies podem ser usados e como mudar a sua escolha.';
+const resposta = analytics.ativo
+  ? `Este site, mantido ${porOperador()}, usa recursos técnicos necessários ao funcionamento e só carrega ferramentas de análise de audiência depois do seu consentimento, que pode ser retirado a qualquer momento. O mapa do Google só é carregado quando você clica em "Mostrar mapa", e o Google pode usar cookies a partir desse momento.`
+  : `Este site, mantido ${porOperador()}, não grava cookies próprios de análise de audiência nem de publicidade. Os recursos de terceiros só entram em ação quando você pede: o mapa do Google, por exemplo, só é carregado depois do clique em "Mostrar mapa", e a partir desse momento o Google pode usar os próprios cookies.`;
+const capa = await obterImagem('grand-oca/resort/vista-aerea-resort.jpg');
+---
+
+<PaginaLayout
+  titulo="Política de cookies"
+  descricao={descricao}
+  rota="cookies"
+  h1="Política de cookies"
+  sobretitulo="Seus dados"
+  subtitulo="Quais cookies e recursos de terceiros podem ser usados quando você navega por aqui."
+  imagem={capa}
+  atualizadoEm={DATA_POLITICAS}
+  chaveFaq={false}
+>
+  <RespostaDireta slot="resumo">{resposta}</RespostaDireta>
+
+  <Secao
+    introducao={`Uma explicação simples sobre cookies e por que os sites usam esses arquivos.`}
+    titulo="O que são cookies?"
+    sobretitulo="Conceito"
+    largura="estreito"
+  >
+    <div class="conteudo">
+      <p>
+        Cookies são pequenos arquivos que um site grava no navegador para lembrar informações, como
+        preferências ou dados de navegação. Alguns são necessários para o site funcionar; outros
+        servem para medir audiência ou exibir publicidade.
+      </p>
+    </div>
+  </Secao>
+
+  <Secao
+    introducao={`A lista dos cookies e recursos de terceiros que podem ser usados quando você navega por este site.`}
+    titulo="Quais cookies e recursos este site usa?"
+    sobretitulo="Neste site"
+    fundo="areia"
+    largura="estreito"
+  >
+    <TabelaComparativa
+      legenda="Cookies e recursos de terceiros"
+      colunas={['Recurso', 'Quando é usado', 'Cookies']}
+      linhas={[
+        {
+          cabecalho: 'Páginas do site',
+          celulas: ['Sempre', 'Nenhum cookie próprio de análise ou publicidade'],
+        },
+        {
+          cabecalho: 'Mapa do Google (páginas de localização e contato)',
+          celulas: [
+            'Só depois do clique em "Mostrar mapa"',
+            'O Google pode gravar os próprios cookies',
+          ],
+        },
+        {
+          cabecalho: 'WhatsApp, Tripadvisor, Instagram e YouTube',
+          celulas: [
+            'Só quando você abre o link, em outra aba ou aplicativo',
+            'Regras de cada serviço',
+          ],
+        },
+        {
+          cabecalho: `Medição de audiência (${ferramentas})`,
+          celulas: analytics.ativo
+            ? ['Só depois do seu consentimento', 'Cookies de análise do Google (_ga e similares)']
+            : ['Desativada', 'Nenhum'],
+        },
+        ...(analytics.ativo
+          ? [
+              {
+                cabecalho: 'Sua escolha sobre a medição de audiência',
+                celulas: [
+                  'Depois que você aceita ou recusa',
+                  'Nenhum: a escolha fica no armazenamento local do navegador, com data e hora',
+                ],
+              },
+            ]
+          : []),
+      ]}
+    />
+  </Secao>
+
+  <Secao
+    introducao={`Você controla os cookies pelo aviso do site e pelas configurações do navegador.`}
+    titulo="Como gerenciar os cookies?"
+    sobretitulo="Controle"
+    largura="estreito"
+  >
+    <div class="conteudo">
+      <ListaCheck
+        itens={[
+          'Você pode apagar ou bloquear cookies nas configurações do navegador.',
+          'Bloquear cookies de terceiros pode impedir o carregamento do mapa do Google.',
+          ...(analytics.ativo
+            ? [
+                'Para mudar a sua escolha sobre a medição de audiência, use "Preferências de cookies", no rodapé. Ao recusar, os cookies de análise do Google são apagados.',
+              ]
+            : []),
+        ]}
+      />
+      <p>
+        <Botao href={rotas.privacidade.caminho} variante="texto" iconeFim="seta-direita">
+          Ler a política de privacidade
+        </Botao>
+      </p>
+    </div>
+  </Secao>
+
+  <ContatoOperador />
+</PaginaLayout>

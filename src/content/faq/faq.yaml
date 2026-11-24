@@ -1,0 +1,3041 @@
+# Perguntas frequentes do Grand Oca Maragogi Resort (fatos: docs/conteudo-grand-oca-maragogi.md).
+# Regra AEO da rede: cada página indexável mostra EXATAMENTE 15 perguntas (14 do assunto da página
+# + "Onde fazer a sua reserva...", marcada para "todas"), conferido por src/lib/faq-paginas.test.ts.
+# paginas: chaves de src/data/rotas.ts, páginas de detalhe ("acomodacao:<id>", "restaurante:<id>",
+# "guia:<id>", "data-especial:<id>", "post:<id>") ou "todas". Uma mesma pergunta pode servir a mais de
+# uma página do mesmo assunto.
+# tema: agrupa as perguntas na página /perguntas-frequentes/.
+# Meta AEO: resposta direta de 40 a 60 palavras (conferida por teste).
+
+r-01:
+  pergunta: O que é o Grand Oca Maragogi Resort?
+  resposta: O Grand Oca Maragogi Resort, também chamado de Grand Oca Maragogi Beach & Leisure Resort, é um resort all inclusive pé na areia na Praia de Ponta de Mangue, em Maragogi, Alagoas, com 420 unidades de hospedagem, várias piscinas, quatro restaurantes, sete bares e estrutura de lazer para casais e famílias.
+  tema: resort
+  paginas:
+    - home
+    - outrosResorts
+    - acomodacao:apartamento-standard
+    - acomodacao:standard-comunicante
+    - acomodacao:bangalo-vista-jardim
+    - acomodacao:bangalo-vista-piscina
+    - acomodacao:bangalo-triplo
+    - acomodacao:suite
+    - acomodacao:deluxe-duas-camas-grandes
+    - acomodacao:duplo-deluxe-sofa-cama
+    - acomodacao:suite-deluxe
+  ordem: 100
+  fontes: &id001
+    - /resort/
+r-02:
+  pergunta: O Grand Oca Maragogi é um resort pé na areia?
+  resposta: Sim. O Grand Oca Maragogi Resort fica de frente para a Praia de Ponta de Mangue, a cerca de 10 metros do mar, em uma área de coqueirais. Os hóspedes caminham da piscina até a areia em poucos passos, e há um bar na área da praia com serviço de bebidas.
+  tema: resort
+  paginas:
+    - home
+    - resort
+    - outrosResorts
+  ordem: 101
+  fontes: *id001
+r-03:
+  pergunta: Quantas unidades de hospedagem o Grand Oca Maragogi tem?
+  resposta: O Grand Oca Maragogi Resort tem 420 unidades de hospedagem, distribuídas em nove categorias, de apartamentos Standard e bangalôs a suítes e quartos Deluxe. Todas ficam em uma grande área de jardins e coqueiros, com vista para as piscinas ou para o verde, e recebem de uma a seis pessoas.
+  tema: resort
+  paginas:
+    - home
+    - resort
+    - comparativo
+    - outrosResorts
+  ordem: 102
+  fontes: *id001
+r-04:
+  pergunta: O Grand Oca Maragogi faz parte de qual rede hoteleira?
+  resposta: O Grand Oca Maragogi Resort pertence à rede Oca Hotels, que tem hotéis no Brasil, em Portugal e na Espanha. Este site é um portal da agência Resorts Online, que vende hospedagem e pacotes para o resort, e não representa o site oficial do hotel nem o seu atendimento.
+  tema: resort
+  paginas:
+    - resort
+    - quemSomos
+  ordem: 103
+  fontes: *id001
+r-05:
+  pergunta: Para quem o Grand Oca Maragogi é indicado?
+  resposta: O Grand Oca Maragogi Resort é indicado para casais e famílias que querem praia, piscinas e all inclusive no litoral norte de Alagoas. As crianças contam com Kids Club, parque aquático e playground, e os adultos, com esportes, academia, bares e shows, além de passeios pelas piscinas naturais da região.
+  tema: resort
+  paginas:
+    - resort
+    - quemSomos
+  ordem: 104
+  fontes: *id001
+r-06:
+  pergunta: Quais são os principais diferenciais do Grand Oca Maragogi?
+  resposta: Os principais diferenciais do Grand Oca Maragogi Resort são a localização pé na areia na Praia de Ponta de Mangue, as piscinas distribuídas por quase 400 metros, a nova área D’Água com parque aquático, os restaurantes temáticos incluídos no all inclusive e o centro de mergulho PADI para explorar os recifes.
+  tema: resort
+  paginas:
+    - resort
+    - post:como-escolher-acomodacao
+  ordem: 105
+  fontes: *id001
+r-07:
+  pergunta: O Grand Oca Maragogi tem Wi-Fi?
+  resposta: Sim. O Grand Oca Maragogi Resort oferece acesso à internet Wi-Fi para os hóspedes nas áreas do resort, A qualidade e a abrangência do sinal podem variar conforme o local, a ocupação e o período da estadia. Vale confirmar os detalhes com a recepção.
+  tema: resort
+  paginas:
+    - resort
+    - servicos
+    - bemEstar
+  ordem: 106
+  fontes: *id001
+r-08:
+  pergunta: O que é o Guest Service do Grand Oca Maragogi?
+  resposta: O Guest Service é o departamento de atendimento ao hóspede do Grand Oca Maragogi, instalado ao lado da recepção. É lá que os hóspedes fazem a reserva dos restaurantes temáticos Ix’U, Il Giardino e La Brasa, que fazem parte do all inclusive, e tiram dúvidas sobre a programação do dia.
+  tema: resort
+  paginas:
+    - resort
+    - servicos
+    - bemEstar
+    - contato
+  ordem: 107
+  fontes: *id001
+r-09:
+  pergunta: O Grand Oca Maragogi tem enfermaria?
+  resposta: Sim. O Grand Oca Maragogi Resort conta com serviço de enfermaria para primeiros socorros durante a estadia. Em caso de necessidade, o hóspede pode procurar a recepção ou o Guest Service, que orientam sobre o atendimento, e quem usa medicação contínua deve levar a própria receita e os remédios.
+  tema: resort
+  paginas:
+    - servicos
+    - fotos
+    - blog
+  ordem: 108
+  fontes: *id001
+r-10:
+  pergunta: O Grand Oca Maragogi tem lojas e salão de beleza?
+  resposta: Sim. O Grand Oca Maragogi Resort tem lojas para comprar lembranças, moda e artesanato local e um salão de beleza que abre todos os dias, com serviços de manicure e cabeleireiro. Esses serviços não fazem parte da diária all inclusive, e as condições são informadas no resort.
+  tema: resort
+  paginas:
+    - servicos
+    - fotos
+    - blog
+  ordem: 109
+  fontes: *id001
+r-11:
+  pergunta: O Grand Oca Maragogi tem agência de viagens?
+  resposta: Sim. O Grand Oca Maragogi Resort conta com uma agência de viagens interna, onde é possível reservar traslados e passeios pelos arredores, como as saídas às piscinas naturais da Costa dos Corais. Esses serviços são contratados à parte, e valores e horários são informados no momento da contratação.
+  tema: resort
+  paginas:
+    - servicos
+    - fotos
+    - blog
+  ordem: 110
+  fontes: *id001
+r-12:
+  pergunta: O Grand Oca Maragogi tem academia?
+  resposta: Sim. O Grand Oca Maragogi Resort tem academia, com programação de aulas como Cardio HIT, GAP, funcional, Pilates com bola e alongamento, além de hidro fitness na piscina. As modalidades e os horários seguem a agenda vigente e podem mudar conforme o período e a operação do resort.
+  tema: resort
+  paginas:
+    - blog
+  ordem: 111
+  fontes: *id001
+l-01:
+  pergunta: Onde fica o Grand Oca Maragogi Resort?
+  resposta: O Grand Oca Maragogi Resort fica em Ponta de Mangue, no município de Maragogi, no litoral norte de Alagoas, entre as cidades de Recife e Maceió. A região é conhecida como Costa dos Corais, por causa dos recifes, das piscinas naturais, das praias de coqueirais e do mar azul-esverdeado.
+  tema: localizacao
+  paginas:
+    - home
+    - resort
+    - comoChegar
+    - outrosResorts
+    - quemSomos
+    - data-especial:reveillon
+    - post:o-que-levar-na-mala
+  ordem: 200
+  fontes: &id002
+    - /como-chegar/
+l-02:
+  pergunta: Qual é o endereço do Grand Oca Maragogi Resort?
+  resposta: O endereço do Grand Oca Maragogi Resort é Rodovia AL-101 Norte, s/n, Ponta de Mangue, Maragogi, Alagoas. O CEP informado nos canais atuais do resort e da agência é 57955-000. Para chegar de carro, vale conferir a rota atualizada no mapa disponível na página Como chegar.
+  tema: localizacao
+  paginas:
+    - home
+    - resort
+    - comoChegar
+    - outrosResorts
+    - data-especial:finados
+    - guia:costa-dos-corais
+    - post:o-que-levar-na-mala
+  ordem: 201
+  fontes: *id002
+l-03:
+  pergunta: O Grand Oca Maragogi fica em frente à praia?
+  resposta: Sim. O Grand Oca Maragogi fica em frente à Praia de Ponta de Mangue, uma das praias mais conhecidas da região de Maragogi, a cerca de 10 metros do resort. A estrutura inclui um bar na área da praia, com serviço de bebidas e vista para o mar.
+  tema: localizacao
+  paginas:
+    - fotos
+    - comoChegar
+    - data-especial:carnaval
+    - guia:costa-dos-corais
+    - post:o-que-levar-na-mala
+  ordem: 202
+  fontes: *id002
+l-04:
+  pergunta: Como é a Praia de Ponta de Mangue, em frente ao resort?
+  resposta: A Praia de Ponta de Mangue é conhecida pelas águas claras e tranquilas, sobretudo em períodos de maré baixa, e tem coqueirais ao fundo. É uma das praias mais procuradas de Maragogi e fica a poucos passos do Grand Oca Maragogi, que também integra a região dos recifes e das piscinas naturais.
+  tema: localizacao
+  paginas:
+    - comoChegar
+    - data-especial:proclamacao-da-republica
+  ordem: 203
+  fontes: *id002
+l-05:
+  pergunta: O Grand Oca Maragogi fica perto do centro de Maragogi?
+  resposta: O Grand Oca Maragogi fica em Ponta de Mangue, ao norte do centro de Maragogi, e normalmente é necessário usar algum transporte para chegar à cidade. Quem prefere passear por lá pode combinar táxi, transfer ou carro alugado, e a agência de viagens do resort também reserva passeios pela região.
+  tema: localizacao
+  paginas:
+    - comoChegar
+    - data-especial:natal
+    - guia:cidade-de-maragogi
+  ordem: 204
+  fontes: *id002
+l-06:
+  pergunta: O Grand Oca Maragogi fica mais perto de Recife ou de Maceió?
+  resposta: 'O Grand Oca Maragogi fica entre as duas capitais, com distância ligeiramente menor por Recife: cerca de 126 km, contra cerca de 136 km de Maceió. A melhor escolha depende dos voos, dos horários e das tarifas disponíveis, e o trecho final é feito de carro, táxi ou transfer.'
+  tema: localizacao
+  paginas:
+    - comoChegar
+    - reservasPacoteComAereo
+    - data-especial:consciencia-negra
+    - guia:cidade-de-maragogi
+  ordem: 205
+  fontes: *id002
+l-07:
+  pergunta: Qual é a distância de Recife até o Grand Oca Maragogi?
+  resposta: A distância do Recife até o Grand Oca Maragogi Resort é de aproximadamente 126 km, segundo as informações do resort. O trecho é feito de carro, táxi ou transfer, pelo litoral sul de Pernambuco até Maragogi, e o tempo de estrada varia conforme o trânsito e as condições da rodovia.
+  tema: localizacao
+  paginas:
+    - comoChegar
+    - reservasPacoteComAereo
+    - data-especial:pascoa
+  ordem: 206
+  fontes: *id002
+l-08:
+  pergunta: Qual é a distância de Maceió até o Grand Oca Maragogi?
+  resposta: A distância de Maceió até o Grand Oca Maragogi Resort é de aproximadamente 136 km, pelo litoral norte de Alagoas até Ponta de Mangue. O trajeto costuma ser feito de carro, táxi ou transfer, e o tempo depende do trânsito e das condições da estrada no dia da viagem.
+  tema: localizacao
+  paginas:
+    - comoChegar
+    - reservasPacoteComAereo
+  ordem: 207
+  fontes: *id002
+l-09:
+  pergunta: Qual a distância do Grand Oca Maragogi até Caruaru?
+  resposta: O Grand Oca Maragogi Resort informa uma distância de cerca de 153 km até Caruaru, em Pernambuco, além de 126 km até Recife e 136 km até Maceió. A Praia de Ponta de Mangue, por sua vez, fica a apenas 10 metros do resort, em frente aos jardins.
+  tema: localizacao
+  paginas:
+    - comoChegar
+    - reservasPacoteComAereo
+    - data-especial:tiradentes
+  ordem: 208
+  fontes: *id002
+l-10:
+  pergunta: Qual aeroporto é melhor para chegar ao Grand Oca Maragogi?
+  resposta: O Grand Oca Maragogi pode ser acessado pelo Aeroporto do Recife (REC) ou pelo Aeroporto de Maceió (MCZ). O Recife fica um pouco mais perto por estrada, mas a melhor opção depende do voo, da tarifa e da logística do transfer. Compare o custo total, e não só a distância.
+  tema: localizacao
+  paginas:
+    - comoChegar
+    - reservasPacoteComAereo
+  ordem: 209
+  fontes: *id002
+l-11:
+  pergunta: Maragogi vai ter aeroporto próprio?
+  resposta: Sim. Está em construção o Aeroporto Costa dos Corais, em Maragogi, que deverá facilitar o acesso aéreo à região. Ainda não há uma data definitiva de início das operações, e o aeroporto não opera voos comerciais regulares, então por enquanto é preciso chegar pelos aeroportos de Recife ou de Maceió.
+  tema: localizacao
+  paginas:
+    - comoChegar
+    - reservasPacoteComAereo
+    - data-especial:dia-do-trabalho
+  ordem: 210
+  fontes: *id002
+l-12:
+  pergunta: É preciso alugar carro para se hospedar no Grand Oca Maragogi?
+  resposta: Não necessariamente. O Grand Oca Maragogi pode ser acessado por transfer, táxi ou carro particular, e o resort concentra restaurantes, bares, piscinas, lazer e praia em um só local. O carro alugado só ajuda a quem quer passear pela região com mais liberdade, fora do resort.
+  tema: localizacao
+  paginas:
+    - destino
+  ordem: 211
+  fontes: *id002
+l-13:
+  pergunta: O Grand Oca Maragogi oferece transfer do aeroporto?
+  resposta: O Grand Oca Maragogi conta com a agência de viagens do resort, que reserva traslados e passeios, e também pode ter opções de transfer conforme a disponibilidade e as condições da reserva. Valores e horários são informados no momento da contratação, e o serviço não faz parte da diária.
+  tema: localizacao
+  paginas:
+    - destino
+    - data-especial:sete-de-setembro
+  ordem: 212
+  fontes: *id002
+l-15:
+  pergunta: O Grand Oca Maragogi fica perto das piscinas naturais?
+  resposta: Sim. O Grand Oca Maragogi fica em uma região próxima aos recifes e às piscinas naturais de Maragogi, na área de Ponta de Mangue. O centro de mergulho do resort oferece aulas e passeios até esses pontos, em mergulho com cilindro ou em snorkel, contratados à parte.
+  tema: localizacao
+  paginas:
+    - data-especial:dia-das-criancas
+  ordem: 214
+  fontes: *id002
+a-01:
+  pergunta: Quais tipos de acomodação o Grand Oca Maragogi tem?
+  resposta: 'O Grand Oca Maragogi Resort tem nove categorias de acomodação: Apartamento Standard, Standard Comunicante, Bangalô Vista Jardim, Bangalô Vista Piscina, Bangalô Triplo, Suíte, Deluxe com 2 Camas Grandes, Duplo Deluxe com Sofá-cama e Suíte Deluxe, com capacidades de uma a seis pessoas.'
+  tema: hospedagem
+  paginas:
+    - home
+    - acomodacoes
+    - experiencias
+    - datasEspeciais
+    - blog
+    - outrosResorts
+    - reservasHospedagem
+    - acomodacao:apartamento-standard
+    - acomodacao:bangalo-triplo
+    - acomodacao:suite
+    - post:como-escolher-acomodacao
+  ordem: 300
+  fontes: &id003
+    - /acomodacoes/
+a-02:
+  pergunta: Qual é a maior acomodação do Grand Oca Maragogi?
+  resposta: A Suíte Deluxe é a maior acomodação do Grand Oca Maragogi Resort, com 72 m² e capacidade para até seis hóspedes, no máximo quatro adultos e duas crianças. Tem duas camas extragrandes, sala de estar com sofá-cama, cafeteira Nespresso, Smart TV e varanda com vista para a piscina da área D’Água.
+  tema: hospedagem
+  paginas:
+    - home
+    - acomodacoes
+    - blog
+    - reservasHospedagem
+    - acomodacao:apartamento-standard
+    - acomodacao:bangalo-triplo
+    - acomodacao:suite
+    - post:como-escolher-acomodacao
+  ordem: 301
+  fontes: *id003
+a-03:
+  pergunta: Qual acomodação do Grand Oca Maragogi é melhor para famílias?
+  resposta: Depende do número de hóspedes. O Duplo Deluxe acomoda cinco em 50 m², o Standard Comunicante reúne até seis em dois quartos, a Suíte Deluxe recebe até seis, com no máximo quatro adultos e duas crianças. A idade das crianças muda a tarifa, então informe-a na cotação.
+  tema: hospedagem
+  paginas:
+    - acomodacoes
+    - criancas
+    - blog
+    - reservasHospedagem
+    - acomodacao:apartamento-standard
+    - acomodacao:suite
+    - post:como-escolher-acomodacao
+    - post:resort-com-criancas
+  ordem: 302
+  fontes: *id003
+a-04:
+  pergunta: Qual acomodação do Grand Oca Maragogi é melhor para casais?
+  resposta: Para casais, o Grand Oca Maragogi oferece o Bangalô, a Suíte, com cama king e vista parcial para a praia, e os quartos Deluxe da área D’Água, com varanda para a piscina. A escolha depende principalmente da vista, da localização dentro do resort e do nível de conforto desejado.
+  tema: hospedagem
+  paginas:
+    - resort
+    - acomodacoes
+    - acomodacao:apartamento-standard
+    - acomodacao:standard-comunicante
+    - acomodacao:suite
+    - acomodacao:deluxe-duas-camas-grandes
+    - post:como-escolher-acomodacao
+  ordem: 303
+  fontes: *id003
+a-05:
+  pergunta: O Grand Oca Maragogi tem acomodação adaptada para mobilidade reduzida?
+  resposta: O Grand Oca Maragogi informa que o Standard Comunicante não possui adaptação para hóspedes com deficiência física ou mobilidade reduzida. Quem precisa de acessibilidade deve informar a necessidade na hora da cotação, para a equipe da Resorts Online confirmar com o resort a categoria mais adequada para a viagem.
+  tema: hospedagem
+  paginas:
+    - acomodacoes
+    - comparativo
+    - politicaHospedagem
+    - acomodacao:standard-comunicante
+    - acomodacao:deluxe-duas-camas-grandes
+    - post:como-escolher-acomodacao
+  ordem: 304
+  fontes: *id003
+a-06:
+  pergunta: Os quartos do Grand Oca Maragogi têm varanda?
+  resposta: Algumas categorias têm varanda, como os quartos Deluxe, o Duplo Deluxe e a Suíte Deluxe, todos com vista para a piscina da área D’Água, e o Standard Comunicante, com duas varandas. As demais variam, e a vista pode ser para o jardim, a piscina ou áreas do resort.
+  tema: hospedagem
+  paginas:
+    - acomodacoes
+    - comparativo
+    - acomodacao:standard-comunicante
+    - acomodacao:deluxe-duas-camas-grandes
+  ordem: 305
+  fontes: *id003
+a-07:
+  pergunta: Os quartos do Grand Oca Maragogi têm ar-condicionado, TV e frigobar?
+  resposta: Sim. As acomodações do Grand Oca Maragogi têm ar-condicionado, TV ou Smart TV, frigobar, telefone e banheiro privativo com chuveiro e secador de cabelo, com variações de itens conforme a categoria. Os apartamentos também informam cofre e amenities. Confirme os detalhes da categoria escolhida na cotação com a equipe.
+  tema: hospedagem
+  paginas:
+    - servicos
+    - acomodacoes
+    - comparativo
+    - acomodacao:standard-comunicante
+    - acomodacao:bangalo-vista-jardim
+    - acomodacao:deluxe-duas-camas-grandes
+    - acomodacao:duplo-deluxe-sofa-cama
+  ordem: 306
+  fontes: *id003
+a-08:
+  pergunta: Qual é a voltagem dos apartamentos do Grand Oca Maragogi?
+  resposta: Os apartamentos do Grand Oca Maragogi Resort têm tomadas de 220 volts. Quem viaja com aparelhos de 110 volts, como alguns carregadores, secadores e barbeadores, deve conferir se são bivolt ou levar um adaptador adequado, para evitar danos aos equipamentos durante a estadia.
+  tema: hospedagem
+  paginas:
+    - servicos
+    - acomodacoes
+    - comparativo
+    - acomodacao:bangalo-vista-jardim
+    - acomodacao:duplo-deluxe-sofa-cama
+    - post:o-que-levar-na-mala
+  ordem: 307
+  fontes: *id003
+a-09:
+  pergunta: Qual acomodação do Grand Oca Maragogi tem vista para o mar?
+  resposta: As duas Suítes do andar superior têm vista para a piscina e vista parcial para a Praia de Ponta de Mangue. As demais categorias têm vista para jardins, coqueiral ou piscinas, e o resort fica a cerca de 10 metros da praia, então o mar está sempre a poucos passos.
+  tema: hospedagem
+  paginas:
+    - fotos
+    - acomodacoes
+    - comparativo
+    - acomodacao:bangalo-vista-jardim
+    - acomodacao:duplo-deluxe-sofa-cama
+  ordem: 308
+  fontes: *id003
+a-10:
+  pergunta: O que é a área D’Água do Grand Oca Maragogi?
+  resposta: A área D’Água é a parte mais nova do Grand Oca Maragogi Resort, com piscinas, solário, borda infinita, parque aquático, um bar com snacks e gelados e os quartos Deluxe, de varanda para a piscina. Ficam nela o Deluxe, o Duplo Deluxe e a Suíte Deluxe.
+  tema: hospedagem
+  paginas:
+    - fotos
+    - acomodacoes
+    - comparativo
+    - acomodacao:bangalo-vista-jardim
+    - acomodacao:bangalo-vista-piscina
+    - acomodacao:duplo-deluxe-sofa-cama
+    - acomodacao:suite-deluxe
+  ordem: 309
+  fontes: *id003
+a-11:
+  pergunta: Os bangalôs do Grand Oca Maragogi aceitam bebê em berço?
+  resposta: Sim. Os Bangalôs Vista Jardim e Vista Piscina do Grand Oca Maragogi acomodam dois adultos e um bebê em berço, com cama de casal ou duas camas de solteiro. Confirme a disponibilidade do berço com a equipe da Resorts Online ao fazer a cotação da categoria escolhida.
+  tema: hospedagem
+  paginas:
+    - comparativo
+    - acomodacao:bangalo-vista-piscina
+    - acomodacao:suite-deluxe
+  ordem: 310
+  fontes: *id003
+a-12:
+  pergunta: Qual acomodação do Grand Oca Maragogi acomoda cinco pessoas?
+  resposta: 'O Grand Oca Maragogi tem uma opção para cinco pessoas: o Duplo Deluxe com Sofá-cama, de 50 m², com no máximo quatro adultos e uma criança. Para seis hóspedes, as alternativas são o Standard Comunicante e a Suíte Deluxe. A idade das crianças deve constar na cotação, pois muda a tarifa.'
+  tema: hospedagem
+  paginas:
+    - comparativo
+    - acomodacao:bangalo-vista-piscina
+    - acomodacao:suite-deluxe
+  ordem: 311
+  fontes: *id003
+a-13:
+  pergunta: Os apartamentos do Grand Oca Maragogi são rústicos?
+  resposta: Os Apartamentos Standard e o Standard Comunicante têm estilo e decoração rústica, com ambiente aconchegante, e ficam em meio a uma área de jardins. Já os quartos Deluxe da área D’Água têm decoração clara e contemporânea, com varanda, o que dá ao hóspede duas propostas distintas para escolher.
+  tema: hospedagem
+  paginas:
+    - acomodacao:bangalo-vista-piscina
+    - acomodacao:bangalo-triplo
+    - acomodacao:suite-deluxe
+  ordem: 312
+  fontes: *id003
+a-14:
+  pergunta: Como escolher entre vista para o jardim e vista para a piscina no Grand Oca Maragogi?
+  resposta: A vista para o jardim agrada a quem prefere um ambiente mais reservado, com paisagismo e coqueiros. A vista para a piscina serve a quem quer ficar de frente para a área de lazer, mais movimentada. Os bangalôs, por exemplo, têm as duas versões, com a mesma metragem e capacidade.
+  tema: hospedagem
+  paginas:
+    - acomodacao:bangalo-triplo
+  ordem: 313
+  fontes: *id003
+i-01:
+  pergunta: O Grand Oca Maragogi é all inclusive?
+  resposta: Sim. O Grand Oca Maragogi Resort opera no sistema all inclusive, com refeições, snacks, bebidas selecionadas e opções de lazer incluídas, conforme as regras do plano contratado. Alguns itens, como espumantes, vinhos em garrafa, room service e serviços extras, ficam fora e têm condições próprias.
+  tema: all-inclusive
+  paginas:
+    - home
+    - allInclusive
+    - blog
+    - outrosResorts
+    - reservasHospedagem
+    - data-especial:reveillon
+  ordem: 400
+  fontes: &id004
+    - /all-inclusive/
+i-02:
+  pergunta: O que está incluído no all inclusive do Grand Oca Maragogi?
+  resposta: O all inclusive do Grand Oca Maragogi inclui café da manhã, almoço, chá da tarde e jantar, restaurantes temáticos com reserva prévia, snacks, água, sucos, refrigerantes, cervejas, caipirinhas, destilados, vinhos em taça e coquetéis selecionados, além da reposição diária de itens do frigobar.
+  tema: all-inclusive
+  paginas:
+    - home
+    - acomodacoes
+    - allInclusive
+    - reservas
+    - reservasHospedagem
+    - acomodacao:apartamento-standard
+    - data-especial:proclamacao-da-republica
+    - post:como-escolher-acomodacao
+  ordem: 401
+  fontes: *id004
+i-03:
+  pergunta: O que não está incluído no all inclusive do Grand Oca Maragogi?
+  resposta: Ficam fora do all inclusive do Grand Oca Maragogi as bebidas importadas, o espumante, o vinho em garrafa, o room service, os itens fora do cardápio all inclusive, a experiência VIP Premium e os serviços extras não gastronômicos, como mergulho, spa, passeios e traslado.
+  tema: all-inclusive
+  paginas:
+    - home
+    - allInclusive
+    - acomodacao:standard-comunicante
+    - data-especial:carnaval
+  ordem: 402
+  fontes: *id004
+i-04:
+  pergunta: Quais refeições o Grand Oca Maragogi oferece no all inclusive?
+  resposta: O Grand Oca Maragogi oferece café da manhã, almoço, chá da tarde e jantar, além de snacks em diferentes pontos do resort, como a praça de alimentação, e sorvetes. A maior parte das refeições é servida em buffet no Restaurante dos Corais, de frente para o mar.
+  tema: all-inclusive
+  paginas:
+    - allInclusive
+    - acomodacao:bangalo-vista-jardim
+    - restaurante:restaurante-dos-corais
+    - data-especial:consciencia-negra
+  ordem: 403
+  fontes: *id004
+i-05:
+  pergunta: Quais são os horários das refeições no Grand Oca Maragogi?
+  resposta: No Grand Oca Maragogi, o café da manhã é servido das 7h às 10h, o almoço das 12h30 às 15h, o chá da tarde das 16h30 às 17h30 e o jantar das 19h às 22h. Os horários podem mudar sem aviso prévio, então confirme no resort durante a hospedagem.
+  tema: all-inclusive
+  paginas:
+    - resort
+    - allInclusive
+    - acomodacao:bangalo-vista-piscina
+    - restaurante:restaurante-dos-corais
+    - data-especial:natal
+  ordem: 404
+  fontes: *id004
+i-06:
+  pergunta: Quais bebidas estão incluídas no all inclusive do Grand Oca Maragogi?
+  resposta: O all inclusive do Grand Oca Maragogi inclui água, água de coco, sucos, refrigerantes, cervejas, chope, caipirinhas, destilados, vinhos em taça e coquetéis selecionados. A disponibilidade varia conforme o bar ou restaurante, e a marca ou o preparo podem mudar sem aviso, segundo o cardápio vigente.
+  tema: all-inclusive
+  paginas:
+    - resort
+    - allInclusive
+    - acomodacao:bangalo-triplo
+  ordem: 405
+  fontes: *id004
+i-07:
+  pergunta: O espumante está incluído no all inclusive do Grand Oca Maragogi?
+  resposta: Não. O Grand Oca Maragogi informa que espumantes e vinhos em garrafa não fazem parte do cardápio padrão do all inclusive. Os vinhos em taça selecionados, as cervejas, as caipirinhas e os coquetéis fazem parte, e há uma experiência VIP Premium com bebidas e condições próprias.
+  tema: all-inclusive
+  paginas:
+    - allInclusive
+    - acomodacao:suite
+    - restaurante:ixu
+    - data-especial:pascoa
+  ordem: 406
+  fontes: *id004
+i-08:
+  pergunta: O frigobar está incluído no all inclusive do Grand Oca Maragogi?
+  resposta: Sim, em parte. O frigobar do Grand Oca Maragogi recebe itens definidos pelo resort, com reposição diária conforme a política vigente da hospedagem. Itens fora dessa lista ou consumidos além da reposição podem ter condições próprias, que o hóspede confirma com a recepção ou com o Guest Service.
+  tema: all-inclusive
+  paginas:
+    - allInclusive
+    - acomodacao:deluxe-duas-camas-grandes
+    - restaurante:ixu
+  ordem: 407
+  fontes: *id004
+i-09:
+  pergunta: Os restaurantes temáticos do Grand Oca Maragogi estão incluídos no all inclusive?
+  resposta: Sim. O Ix’U, o Il Giardino e o La Brasa, no jantar, participam do all inclusive do Grand Oca Maragogi, com reserva prévia no Guest Service e respeitando as regras de permanência e disponibilidade. A quantidade de reservas incluídas varia conforme o número de noites da hospedagem.
+  tema: all-inclusive
+  paginas:
+    - allInclusive
+    - restaurantes
+    - acomodacao:duplo-deluxe-sofa-cama
+    - data-especial:tiradentes
+  ordem: 408
+  fontes: *id004
+i-10:
+  pergunta: É preciso reservar os restaurantes temáticos do Grand Oca Maragogi?
+  resposta: Sim. No Grand Oca Maragogi, os restaurantes Ix’U, Il Giardino e o jantar do La Brasa exigem reserva prévia no Guest Service, conforme a disponibilidade e as regras vigentes. O Restaurante dos Corais, de buffet, e o almoço do La Brasa funcionam sem a mesma exigência.
+  tema: all-inclusive
+  paginas:
+    - restaurantes
+    - politicaHospedagem
+    - acomodacao:suite-deluxe
+    - restaurante:il-giardino
+  ordem: 409
+  fontes: *id004
+i-11:
+  pergunta: Quantas vezes é possível jantar nos restaurantes temáticos do Grand Oca Maragogi?
+  resposta: No Grand Oca Maragogi, a quantidade de reservas nos restaurantes temáticos incluídas no all inclusive varia conforme o número de noites da hospedagem. O resort não publica uma tabela fixa, então a equipe da Resorts Online e o Guest Service confirmam a regra vigente para a estadia escolhida.
+  tema: all-inclusive
+  paginas:
+    - restaurantes
+    - politicaHospedagem
+    - restaurante:il-giardino
+    - data-especial:dia-do-trabalho
+  ordem: 410
+  fontes: *id004
+i-13:
+  pergunta: O Grand Oca Maragogi tem bar na piscina no all inclusive?
+  resposta: Sim. O Grand Oca Maragogi tem bares próximos e dentro das piscinas, como o Galés, dentro da piscina principal, o Coqueirais, ao lado dela, e o bar da Piscina D’Água, na área nova. As bebidas incluídas seguem o cardápio de cada ponto de serviço.
+  tema: all-inclusive
+  paginas:
+    - bares
+    - restaurante:la-brasa
+    - data-especial:sete-de-setembro
+  ordem: 412
+  fontes: *id004
+i-14:
+  pergunta: O Grand Oca Maragogi tem bar na praia?
+  resposta: Sim. O Grand Oca Maragogi possui o Bar Ponta de Mangue, na área da praia, com serviço de bebidas e vista para o mar. Ele integra a rede de sete bares do resort, que também inclui pontos dentro e ao lado das piscinas e uma área esportiva.
+  tema: all-inclusive
+  paginas:
+    - bares
+    - restaurante:la-brasa
+  ordem: 413
+  fontes: *id004
+i-15:
+  pergunta: As crianças também têm alimentação incluída no Grand Oca Maragogi?
+  resposta: Sim. O all inclusive do Grand Oca Maragogi atende famílias, com refeições, lanches, sorvetes e opções adequadas para diferentes idades. O restaurante italiano Il Giardino é citado como um dos preferidos dos pequenos, e a praça de alimentação tem hambúrgueres, pizzas e sorvetes.
+  tema: all-inclusive
+  paginas:
+    - criancas
+    - data-especial:dia-das-criancas
+  ordem: 414
+  fontes: *id004
+i-16:
+  pergunta: O que é a experiência VIP Premium do Grand Oca Maragogi?
+  resposta: A VIP Premium é uma experiência adicional do Grand Oca Maragogi, com área exclusiva na praia, atendimento de hostess, camas de praia, bebidas selecionadas e brunch no Ix’U. Funciona das 9h às 17h, não admite menores de 14 anos e tem preços e condições próprios.
+  tema: all-inclusive
+  paginas:
+    - restaurante:praca-de-alimentacao
+  ordem: 415
+  fontes: *id004
+i-17:
+  pergunta: Vale a pena o all inclusive do Grand Oca Maragogi?
+  resposta: O all inclusive do Grand Oca Maragogi é indicado para quem busca praticidade, variedade de restaurantes e bares e refeições durante toda a estadia. Com buffet de frente para o mar, três restaurantes temáticos e sete bares, a diária reúne a maior parte do que a viagem pede, sem contas ao fim do dia.
+  tema: all-inclusive
+  paginas:
+    - restaurante:praca-de-alimentacao
+    - data-especial:finados
+  ordem: 416
+  fontes: *id004
+re-01:
+  pergunta: Quantos restaurantes o Grand Oca Maragogi tem?
+  resposta: 'O Grand Oca Maragogi Resort tem quatro restaurantes: o Restaurante dos Corais, de buffet regional, o Ix’U, de cozinha fusion, o Il Giardino, de cozinha italiana, e o La Brasa, de churrasco e carnes na brasa. Há ainda uma praça de alimentação com pontos de hambúrguer, comida mexicana, pizza e sorvete.'
+  tema: all-inclusive
+  paginas:
+    - fotos
+    - allInclusive
+    - restaurantes
+    - restaurante:restaurante-dos-corais
+    - restaurante:praca-de-alimentacao
+  ordem: 500
+  fontes: *id004
+re-02:
+  pergunta: Qual é o restaurante principal do Grand Oca Maragogi?
+  resposta: O Restaurante dos Corais é o principal do Grand Oca Maragogi. Fica de frente para o mar, com janelas panorâmicas e capacidade para 340 pessoas, e serve café da manhã, almoço e jantar em buffet, com culinária regional e show cooking no almoço e no jantar.
+  tema: all-inclusive
+  paginas:
+    - allInclusive
+    - restaurantes
+    - restaurante:restaurante-dos-corais
+  ordem: 501
+  fontes: *id004
+re-03:
+  pergunta: O Grand Oca Maragogi tem restaurante italiano?
+  resposta: Sim. O Il Giardino é o restaurante italiano do Grand Oca Maragogi, com pratos tradicionais da gastronomia da Itália, como massas, e um menu degustação. Faz parte do sistema all inclusive e exige reserva prévia no Guest Service, conforme as condições vigentes e o número de noites da hospedagem.
+  tema: all-inclusive
+  paginas:
+    - restaurantes
+    - restaurante:restaurante-dos-corais
+    - restaurante:ixu
+  ordem: 502
+  fontes: *id004
+re-04:
+  pergunta: O Grand Oca Maragogi tem restaurante à beira-mar?
+  resposta: Sim. O Restaurante dos Corais tem janelas panorâmicas de frente para o mar, e o Ix’U fica às margens da praia, com cozinha fusion em ambiente lounge para até 70 pessoas e carta exclusiva de vinhos. O Ix’U integra o all inclusive e exige reserva prévia no Guest Service.
+  tema: all-inclusive
+  paginas:
+    - restaurantes
+    - restaurante:restaurante-dos-corais
+    - restaurante:ixu
+  ordem: 503
+  fontes: *id004
+re-05:
+  pergunta: O Grand Oca Maragogi tem restaurante especializado em carnes?
+  resposta: Sim. O La Brasa oferece carnes grelhadas no almoço, em clima de churrasco informal, até em traje de banho, e funciona como restaurante temático de carnes na brasa à noite. O jantar exige reserva prévia no Guest Service, e o número de reservas incluídas depende das noites da estadia.
+  tema: all-inclusive
+  paginas:
+    - restaurantes
+    - restaurante:ixu
+    - restaurante:il-giardino
+  ordem: 504
+  fontes: *id004
+re-06:
+  pergunta: O Grand Oca Maragogi oferece comida regional?
+  resposta: Sim. O Grand Oca Maragogi oferece culinária regional principalmente no Restaurante dos Corais, onde o café da manhã tem tapiocas, bolo de goma e doces regionais, além de opções internacionais e temáticas nos demais restaurantes. O buffet do almoço e do jantar também traz show cooking.
+  tema: all-inclusive
+  paginas:
+    - restaurantes
+    - restaurante:ixu
+    - restaurante:il-giardino
+  ordem: 505
+  fontes: *id004
+re-07:
+  pergunta: O que tem no café da manhã do Grand Oca Maragogi?
+  resposta: O café da manhã do Restaurante dos Corais reúne mais de 70 itens, entre doces regionais, pães doces e salgados, bolo de goma, as famosas tapiocas, frios variados, bolos, cereais e iogurtes. É servido das 7h às 10h, em buffet, com vista panorâmica para o mar.
+  tema: all-inclusive
+  paginas:
+    - restaurantes
+    - restaurante:il-giardino
+    - restaurante:la-brasa
+  ordem: 506
+  fontes: *id004
+re-08:
+  pergunta: Qual restaurante escolher no Grand Oca Maragogi?
+  resposta: Para variar sem sair do resort, o Corais é ideal para buffet e refeições diárias, o Ix’U para cozinha fusion à beira-mar, o Il Giardino para comida italiana e o La Brasa para carnes na brasa. Os três temáticos pedem reserva prévia no Guest Service e fazem parte do all inclusive.
+  tema: all-inclusive
+  paginas:
+    - restaurantes
+    - restaurante:il-giardino
+    - restaurante:la-brasa
+  ordem: 507
+  fontes: *id004
+re-09:
+  pergunta: O Grand Oca Maragogi tem cardápio dos restaurantes temáticos?
+  resposta: Sim. O resort divulga cardápios de referência para o Ix’U, o Il Giardino e o La Brasa, que podem mudar sem aviso. O Ix’U é à la carte, o Il Giardino trabalha com menu degustação e o La Brasa, com carnes, espetinhos e acompanhamentos. Esta página reúne os pratos de cada restaurante.
+  tema: all-inclusive
+  paginas:
+    - restaurante:la-brasa
+    - restaurante:praca-de-alimentacao
+  ordem: 508
+  fontes: *id004
+re-10:
+  pergunta: O Grand Oca Maragogi tem opções para quem tem restrição alimentar?
+  resposta: O resort não publica uma lista de opções para dietas específicas. Quem tem alergias ou restrições alimentares deve informar a necessidade na hora da reserva e, na chegada, avisar a equipe dos restaurantes e do Guest Service, para saber o que pode ser adaptado no cardápio de cada ponto de serviço.
+  tema: all-inclusive
+  paginas:
+    - restaurante:la-brasa
+    - restaurante:praca-de-alimentacao
+  ordem: 509
+  fontes: *id004
+re-11:
+  pergunta: O Grand Oca Maragogi tem pizzaria, hamburgueria e comida mexicana?
+  resposta: Sim. A praça de alimentação do Grand Oca Maragogi reúne o Onda Oca Hamburguer Bar, na rua de compras, a Cantina Mex Oca, com burritos, tacos e tequila, a Pizzoca, de pizzas, e a Gelattoca, de picolés e sorvetes. São boas opções para lanchar entre as refeições principais.
+  tema: all-inclusive
+  paginas:
+    - restaurante:praca-de-alimentacao
+  ordem: 510
+  fontes: *id004
+be-01:
+  pergunta: Quais cervejas estão incluídas no Grand Oca Maragogi?
+  resposta: O Grand Oca Maragogi oferece marcas como Heineken, Brahma, Bohemia, Budweiser e Stella Artois em lata nos bares, além de cervejas em garrafa nos restaurantes temáticos, como Budweiser, Corona Extra, Spaten e Stella Artois. A disponibilidade varia conforme o ponto de serviço e pode mudar sem aviso.
+  tema: all-inclusive
+  paginas:
+    - allInclusive
+    - restaurante:restaurante-dos-corais
+  ordem: 600
+  fontes: *id004
+be-02:
+  pergunta: O Grand Oca Maragogi tem cerveja sem álcool e sem glúten?
+  resposta: Sim. O Grand Oca Maragogi informa opções sem álcool, como Brahma 0,0, Budweiser 0,0 e Heineken 0,0, e a Amstel Ultra, sem glúten, entre as alternativas disponíveis. A oferta depende do bar ou do restaurante, e o cardápio pode mudar sem aviso prévio.
+  tema: all-inclusive
+  paginas:
+    - bares
+    - restaurante:ixu
+  ordem: 601
+  fontes: *id004
+be-03:
+  pergunta: O Grand Oca Maragogi serve chope no all inclusive?
+  resposta: Sim. O Grand Oca Maragogi oferece chope Brahma e Itaipava em pontos de serviço selecionados do all inclusive. Como a oferta varia conforme o bar ou o restaurante, vale conferir no resort onde cada marca está disponível durante a hospedagem, e confirmar eventuais mudanças de cardápio.
+  tema: all-inclusive
+  paginas:
+    - bares
+    - restaurante:il-giardino
+  ordem: 602
+  fontes: *id004
+be-04:
+  pergunta: Quais whiskies e gins estão incluídos no Grand Oca Maragogi?
+  resposta: O Grand Oca Maragogi oferece whiskies e gins selecionados no all inclusive, como Royal Label, Passport e Ballantine’s, além de gins como Rocks e Gordon’s. As marcas são as do cardápio vigente e podem mudar sem aviso, conforme o bar e a disponibilidade.
+  tema: all-inclusive
+  paginas:
+    - bares
+    - restaurante:la-brasa
+  ordem: 603
+  fontes: *id004
+be-05:
+  pergunta: O Grand Oca Maragogi oferece vinhos e espumantes?
+  resposta: Sim, com ressalvas. O resort oferece vinhos em taça selecionados no all inclusive, e a carta de bebidas lista frisantes, espumantes e vinhos de marca nacional, com disponibilidade que varia por bar e restaurante. Espumante e vinho em garrafa não fazem parte do cardápio padrão do all inclusive.
+  tema: all-inclusive
+  paginas:
+    - restaurante:praca-de-alimentacao
+  ordem: 604
+  fontes: *id004
+be-08:
+  pergunta: As mesmas bebidas estão disponíveis em todos os bares do Grand Oca Maragogi?
+  resposta: Não. No Grand Oca Maragogi, a disponibilidade das bebidas varia conforme o bar, o restaurante ou o ponto de serviço. Algumas cervejas em garrafa, por exemplo, são servidas apenas nos restaurantes temáticos, e marcas e receitas podem mudar sem aviso prévio.
+  tema: all-inclusive
+  paginas:
+    - restaurantes
+  ordem: 607
+  fontes: *id004
+b-01:
+  pergunta: Quantos bares o Grand Oca Maragogi tem?
+  resposta: 'O Grand Oca Maragogi Resort tem sete bares, distribuídos entre a piscina, a praia, a área de shows e uma área esportiva: Coqueirais, Galés, Drink Parrot, Ponta de Mangue, Esplanada Tropical, Piscina D’Água e SportBar. A praça de alimentação complementa com snacks e sorvetes.'
+  tema: all-inclusive
+  paginas:
+    - allInclusive
+    - bares
+    - piscinas
+    - restaurante:restaurante-dos-corais
+  ordem: 700
+  fontes: *id004
+b-02:
+  pergunta: Qual é o bar principal do Grand Oca Maragogi?
+  resposta: O Bar Coqueirais é o bar principal do Grand Oca Maragogi, ao lado da piscina principal. Tem um terraço panorâmico com vista para a Praia de Ponta de Mangue e serve bebidas e lanches, o que o torna um ponto de encontro natural durante o dia.
+  tema: all-inclusive
+  paginas:
+    - bares
+    - piscinas
+  ordem: 701
+  fontes: *id004
+b-03:
+  pergunta: O Grand Oca Maragogi tem bar dentro da piscina?
+  resposta: Sim. O Bar Galés fica dentro da piscina principal do Grand Oca Maragogi e permite pedir bebidas sem sair da água. Para quem prefere ficar ao lado da piscina, o Coqueirais e o bar da Piscina D’Água oferecem bebidas e snacks, conforme o cardápio de cada ponto.
+  tema: all-inclusive
+  paginas:
+    - bares
+    - restaurante:ixu
+  ordem: 702
+  fontes: *id004
+b-04:
+  pergunta: Onde tomar coquetéis no Grand Oca Maragogi?
+  resposta: O Drink Parrot é o bar dedicado especialmente a coquetéis no Grand Oca Maragogi, em frente ao Bar Coqueirais, próximo à piscina principal. Os demais bares também servem bebidas do all inclusive, mas cada ponto tem um cardápio próprio, que pode mudar sem aviso prévio.
+  tema: all-inclusive
+  paginas:
+    - bares
+  ordem: 703
+  fontes: *id004
+b-05:
+  pergunta: O Grand Oca Maragogi tem bar com shows e entretenimento?
+  resposta: Sim. O Bar Esplanada Tropical reúne bebidas, ambiente familiar e os shows da equipe de animação do Grand Oca Maragogi, que apresenta espetáculos com temas regionais, nacionais e internacionais para adultos e crianças. Em determinados períodos de verão, a Arena Taba recebe apresentações ao ar livre.
+  tema: all-inclusive
+  paginas:
+    - bares
+    - restaurante:il-giardino
+  ordem: 704
+  fontes: *id004
+b-06:
+  pergunta: O Grand Oca Maragogi tem bar para assistir futebol?
+  resposta: Sim. O SportBar é a área esportiva do Grand Oca Maragogi, onde os hóspedes acompanham diferentes esportes, em especial jogos de futebol, com uma bebida gelada e boa companhia. A transmissão depende da programação esportiva do período, e o espaço também serve para relaxar com os amigos depois das atividades do dia.
+  tema: all-inclusive
+  paginas:
+    - bares
+  ordem: 705
+  fontes: *id004
+b-07:
+  pergunta: Onde fica o bar da Piscina D’Água no Grand Oca Maragogi?
+  resposta: O bar da Piscina D’Água fica na nova área de piscinas do Grand Oca Maragogi e oferece bebidas, uma área de snacks e gelados e o chá da tarde. É um ponto prático para relaxar à beira da piscina, perto dos quartos Deluxe e do parque aquático.
+  tema: all-inclusive
+  paginas:
+    - restaurantes
+    - bares
+    - restaurante:la-brasa
+  ordem: 706
+  fontes: *id004
+b-09:
+  pergunta: Qual é o melhor bar do Grand Oca Maragogi para cada momento?
+  resposta: 'Cada bar do Grand Oca Maragogi atende a um momento: o Galés para a piscina, o Ponta de Mangue para a praia, o Drink Parrot para coquetéis, o Esplanada Tropical para shows, o bar da Piscina D’Água para snacks e o SportBar para esportes. O Coqueirais é o ponto principal.'
+  tema: all-inclusive
+  paginas:
+    - restaurante:praca-de-alimentacao
+  ordem: 708
+  fontes: *id004
+lz-01:
+  pergunta: Quais atividades de lazer o Grand Oca Maragogi oferece?
+  resposta: O Grand Oca Maragogi oferece piscinas, praia, esportes, atividades aquáticas, academia, dança, recreação e shows para diferentes idades. A programação é diária, com atividades para adultos das 9h às 23h e para crianças de 4 a 12 anos pela manhã e à tarde, e pode mudar conforme período e clima.
+  tema: lazer
+  paginas:
+    - lazer
+    - esportes
+  ordem: 800
+  fontes: &id005
+    - /lazer/
+lz-02:
+  pergunta: As atividades do Grand Oca Maragogi acontecem todos os dias?
+  resposta: Sim. O Grand Oca Maragogi mantém programação diária de lazer, mas modalidades, horários e locais podem variar conforme o período, o clima e a operação do resort. O resort também divulga programações específicas, como a de chuva, a de Natal e a de Réveillon.
+  tema: lazer
+  paginas:
+    - lazer
+    - esportes
+  ordem: 801
+  fontes: *id005
+lz-03:
+  pergunta: Qual é o horário das atividades para adultos no Grand Oca Maragogi?
+  resposta: A programação para adultos do Grand Oca Maragogi pode acontecer diariamente das 9h às 23h, com atividades esportivas, aquáticas, recreativas e de dança, além de shows e música à noite. Os horários exatos de cada atividade constam na agenda do dia, divulgada no resort.
+  tema: lazer
+  paginas:
+    - lazer
+    - esportes
+  ordem: 802
+  fontes: *id005
+lz-04:
+  pergunta: O Grand Oca Maragogi tem shows e entretenimento à noite?
+  resposta: Sim. O Grand Oca Maragogi oferece programação noturna com shows e música para adultos e crianças. Os espetáculos acontecem principalmente na Esplanada Tropical, e a Arena Taba recebe apresentações ao ar livre durante o verão, com temas regionais, nacionais e internacionais.
+  tema: lazer
+  paginas:
+    - bares
+    - lazer
+  ordem: 803
+  fontes: *id005
+lz-05:
+  pergunta: O Grand Oca Maragogi tem atividades para casais?
+  resposta: Sim. Casais no Grand Oca Maragogi podem combinar praia, piscinas, academia, atividades aquáticas, passeios às piscinas naturais e momentos de descanso, além de restaurantes temáticos e bares com coquetéis. A experiência VIP Premium, na praia, também é opção para casais adultos.
+  tema: lazer
+  paginas:
+    - lazer
+    - bemEstar
+  ordem: 804
+  fontes: *id005
+lz-06:
+  pergunta: O Grand Oca Maragogi tem atividades para grupos de amigos?
+  resposta: Sim. O Grand Oca Maragogi oferece esportes, jogos, dança e atividades recreativas que favorecem a interação em grupo, como vôlei, beach tênis, futebol e hidro. À noite, a Esplanada Tropical e o SportBar são pontos de encontro para quem viaja com amigos.
+  tema: lazer
+  paginas:
+    - lazer
+    - bemEstar
+  ordem: 805
+  fontes: *id005
+lz-07:
+  pergunta: O Grand Oca Maragogi tem Wi-Fi nas áreas de lazer?
+  resposta: O Grand Oca Maragogi oferece acesso à internet Wi-Fi para os hóspedes nas áreas do resort. A cobertura e a qualidade do sinal podem variar conforme o local e a ocupação, e quem precisa trabalhar ou se conectar com frequência deve confirmar as condições com a recepção na chegada.
+  tema: lazer
+  paginas:
+    - servicos
+    - lazer
+  ordem: 806
+  fontes: *id005
+lz-08:
+  pergunta: O que fazer no Grand Oca Maragogi em dia de chuva?
+  resposta: O Grand Oca Maragogi divulga uma programação de chuva, com atividades alternativas, além de academia e espaços internos, como restaurantes e bares cobertos. A agenda do dia é informada no resort, e atividades ao ar livre podem mudar conforme o clima e a operação.
+  tema: lazer
+  paginas:
+    - piscinas
+    - experiencias
+  ordem: 807
+  fontes: *id005
+p-01:
+  pergunta: Como são as piscinas do Grand Oca Maragogi?
+  resposta: As piscinas do Grand Oca Maragogi se estendem por quase 400 metros em frente aos bangalôs, com diferentes profundidades, espaços para descanso e atividades aquáticas. A nova área D’Água soma solário, borda infinita e parque aquático, e bares dentro e ao lado da água servem bebidas e snacks.
+  tema: lazer
+  paginas:
+    - home
+    - fotos
+    - lazer
+    - piscinas
+    - acomodacao:apartamento-standard
+    - post:o-que-levar-na-mala
+  ordem: 900
+  fontes: *id005
+p-02:
+  pergunta: Quantas piscinas o Grand Oca Maragogi possui?
+  resposta: O Grand Oca Maragogi possui várias piscinas distribuídas pelo resort, formando um amplo complexo aquático que se estende por quase 400 metros. O resort não informa o número exato, mas destaca as piscinas em frente aos bangalôs, a piscina principal e as da nova área D’Água.
+  tema: lazer
+  paginas:
+    - resort
+    - fotos
+    - lazer
+    - piscinas
+    - acomodacao:deluxe-duas-camas-grandes
+  ordem: 901
+  fontes: *id005
+p-03:
+  pergunta: Qual é o tamanho da área de piscinas do Grand Oca Maragogi?
+  resposta: O Grand Oca Maragogi informa que as piscinas se estendem por quase 400 metros ao longo do resort, com diferentes profundidades e posicionadas em frente aos bangalôs. O resort não divulga a área em metros quadrados, e a nova área D’Água amplia o conjunto com solário e parque aquático.
+  tema: lazer
+  paginas:
+    - piscinas
+    - acomodacao:standard-comunicante
+  ordem: 902
+  fontes: *id005
+p-04:
+  pergunta: As piscinas do Grand Oca Maragogi têm profundidades diferentes?
+  resposta: Sim. As piscinas do Grand Oca Maragogi têm diferentes profundidades, o que atende adultos, crianças e atividades de lazer. Há áreas rasas, com brinquedos, para os pequenos, e áreas mais fundas que servem para nadar e para as atividades aquáticas da programação.
+  tema: lazer
+  paginas:
+    - piscinas
+    - acomodacao:duplo-deluxe-sofa-cama
+    - post:como-escolher-acomodacao
+  ordem: 903
+  fontes: *id005
+p-05:
+  pergunta: O Grand Oca Maragogi tem piscina infantil?
+  resposta: Sim. O Grand Oca Maragogi possui áreas rasas e estrutura aquática voltada para crianças, com brinquedos e espaços de brincadeira, além do parque aquático com toboágua. O Kids Club também organiza atividades na piscina, como o hidro kids, o polo aquático e o basquete aquático.
+  tema: lazer
+  paginas:
+    - piscinas
+    - criancas
+    - acomodacao:bangalo-vista-jardim
+  ordem: 904
+  fontes: *id005
+p-06:
+  pergunta: O Grand Oca Maragogi tem parque aquático?
+  resposta: Sim. O Grand Oca Maragogi tem parque aquático infantil, com brinquedos, toboágua e espaços rasos para os pequenos, na área de piscinas. A nova área D’Água fica ao lado, com os quartos Deluxe de varanda para a piscina, e a vista do parque aquático é um dos atrativos dessa área.
+  tema: lazer
+  paginas:
+    - piscinas
+    - acomodacao:suite-deluxe
+    - post:resort-com-criancas
+  ordem: 905
+  fontes: *id005
+p-07:
+  pergunta: O Grand Oca Maragogi tem nova área de piscinas?
+  resposta: Sim. O Grand Oca Maragogi tem uma nova área de piscinas, a área D’Água, com solário, espaços para descanso, borda infinita e um bar com snacks, gelados e chá da tarde. Os quartos Deluxe, o Duplo Deluxe, a Suíte Deluxe e o Deluxe Adaptado ficam nessa área.
+  tema: lazer
+  paginas:
+    - piscinas
+    - esportes
+    - acomodacao:bangalo-vista-piscina
+    - post:resort-com-criancas
+  ordem: 906
+  fontes: *id005
+p-08:
+  pergunta: O Grand Oca Maragogi tem atividades nas piscinas?
+  resposta: Sim. As piscinas do Grand Oca Maragogi recebem atividades como hidro, hidro fitness e recreação aquática, e o Kids Club inclui piscina na programação infantil. A agenda varia conforme o período, o clima e a operação, e a programação diária é informada no resort.
+  tema: lazer
+  paginas:
+    - piscinas
+  ordem: 907
+  fontes: *id005
+p-09:
+  pergunta: As piscinas do Grand Oca Maragogi ficam perto dos bangalôs?
+  resposta: Sim. Parte das piscinas do Grand Oca Maragogi está distribuída em frente aos bangalôs e integrada aos jardins, ao longo de quase 400 metros. Os Bangalôs Vista Piscina, os Bangalôs Triplos e os Apartamentos Standard ficam em áreas próximas, e a Family Suíte é vizinha da piscina central.
+  tema: lazer
+  paginas:
+    - piscinas
+    - acomodacao:bangalo-triplo
+  ordem: 908
+  fontes: *id005
+p-10:
+  pergunta: As piscinas do Grand Oca Maragogi são boas para famílias?
+  resposta: Sim. As piscinas do Grand Oca Maragogi combinam áreas rasas, parque aquático e recreação infantil com espaços para adultos, bares e atividades aquáticas, o que as torna adequadas para famílias. Menores de idade devem estar sempre acompanhados por um responsável nas áreas de água.
+  tema: lazer
+  paginas:
+    - piscinas
+  ordem: 909
+  fontes: *id005
+p-11:
+  pergunta: As piscinas do Grand Oca Maragogi são boas para casais?
+  resposta: Sim. O Grand Oca Maragogi oferece piscinas, solário e áreas de descanso para casais que buscam relaxamento, com bares dentro e ao lado da água e a possibilidade de caminhar até a Praia de Ponta de Mangue. A área D’Água, de borda infinita, é uma das preferidas.
+  tema: lazer
+  paginas:
+    - bares
+    - acomodacao:suite
+  ordem: 910
+  fontes: *id005
+c-01:
+  pergunta: O Grand Oca Maragogi é bom para crianças?
+  resposta: Sim. O Grand Oca Maragogi oferece Kids Club, recreação, piscinas rasas, parque aquático com toboágua, playground com cama elástica, oficinas, shows infantis e uma baby area, além do Play Zone. A programação infantil é diária, o que torna o resort uma opção completa para férias em família.
+  tema: lazer
+  paginas:
+    - home
+    - fotos
+    - lazer
+    - criancas
+    - data-especial:reveillon
+    - post:resort-com-criancas
+  ordem: 1000
+  fontes: *id005
+onde-reservar:
+  pergunta: Onde fazer a sua reserva para o resort all inclusive Grand Oca Maragogi Resort?
+  resposta: Você pode reservar o Grand Oca Maragogi Resort pelo nosso site https://grandocamaragogi.resortallinclusive.com.br/reservas/ ou pela central de reservas 0800 737 6787, da Resorts Online. Dá para reservar só a hospedagem ou o pacote com aéreo até Recife ou Maceió, com pagamento em até 10x sem juros no cartão ou 5% de desconto no Pix.
+  tema: reservas
+  paginas:
+    - todas
+  ordem: 1000
+  fontes: &id007
+    - /reservas/
+c-02:
+  pergunta: Qual é a idade da recreação infantil no Grand Oca Maragogi?
+  resposta: A recreação infantil do Grand Oca Maragogi é voltada principalmente para crianças de 4 a 12 anos, com atividades por faixa etária. Crianças de até 3 anos podem participar de algumas atividades acompanhadas por um responsável, e o resort também tem uma baby area para os menores.
+  tema: lazer
+  paginas:
+    - home
+    - lazer
+    - criancas
+    - blog
+    - data-especial:carnaval
+    - post:resort-com-criancas
+  ordem: 1001
+  fontes: *id005
+c-03:
+  pergunta: Qual é o horário da recreação infantil no Grand Oca Maragogi?
+  resposta: No Grand Oca Maragogi, a recreação infantil acontece das 9h às 12h e das 14h às 18h, com atividades internas, na piscina e na praia. Os horários e as atividades seguem a programação vigente, que pode mudar conforme o período, o clima e a operação do resort.
+  tema: lazer
+  paginas:
+    - resort
+    - criancas
+    - blog
+    - data-especial:natal
+    - post:resort-com-criancas
+  ordem: 1002
+  fontes: *id005
+c-04:
+  pergunta: Crianças menores de 4 anos podem participar das atividades no Grand Oca Maragogi?
+  resposta: Sim. Crianças de até 3 anos podem participar de algumas atividades do Grand Oca Maragogi, acompanhadas por um responsável adulto. O Kids Club é voltado a crianças de 4 a 12 anos, e a baby area do resort apoia famílias que viajam com bebês e crianças pequenas.
+  tema: lazer
+  paginas:
+    - criancas
+    - data-especial:pascoa
+    - post:resort-com-criancas
+  ordem: 1003
+  fontes: *id005
+c-05:
+  pergunta: O Grand Oca Maragogi tem Kids Club?
+  resposta: Sim. O Kids Club do Grand Oca Maragogi organiza atividades diárias para crianças de 4 a 12 anos, com jogos, oficinas, shows e opções internas, na piscina e na praia, sob a supervisão da equipe de entretenimento infantil. A programação muda ao longo da semana e conforme o clima.
+  tema: lazer
+  paginas:
+    - criancas
+    - politicaHospedagem
+    - data-especial:tiradentes
+    - post:resort-com-criancas
+  ordem: 1004
+  fontes: *id005
+c-06:
+  pergunta: Quais atividades existem para crianças de 4 a 7 anos no Grand Oca Maragogi?
+  resposta: Crianças de 4 a 7 anos participam de brincadeiras e oficinas, como castelo de areia, pequenos pintores, massinha, brigadeiro, cupcake e pizza, além de caça ao tesouro e hidro kids. As atividades seguem a programação do Kids Club e podem mudar conforme o dia e o clima.
+  tema: lazer
+  paginas:
+    - piscinas
+    - criancas
+    - politicaHospedagem
+    - data-especial:dia-do-trabalho
+  ordem: 1005
+  fontes: *id005
+c-07:
+  pergunta: Quais atividades existem para crianças de 8 a 12 anos no Grand Oca Maragogi?
+  resposta: Crianças de 8 a 12 anos encontram jogos esportivos, basquete aquático, polo aquático, corrida de prancha, gincanas, caminhada ecológica, festa da espuma e o Family Oca, dentro da programação do Kids Club. Modalidades e horários mudam conforme o período e a operação do resort.
+  tema: lazer
+  paginas:
+    - criancas
+    - data-especial:sete-de-setembro
+  ordem: 1006
+  fontes: *id005
+c-08:
+  pergunta: O Grand Oca Maragogi tem playground para crianças?
+  resposta: Sim. O Grand Oca Maragogi possui playground com opções como cama elástica e escorregadores, além do Play Zone, espaço de brinquedos infantis, e do parque aquático com toboágua. É um complemento ao Kids Club para quem quer brincar fora do horário das atividades monitoradas.
+  tema: lazer
+  paginas:
+    - criancas
+    - data-especial:dia-das-criancas
+  ordem: 1007
+  fontes: *id005
+c-09:
+  pergunta: O Grand Oca Maragogi tem atividades na praia para crianças?
+  resposta: Sim. A programação infantil do Grand Oca Maragogi inclui atividades na praia, na piscina e em ambientes internos. O resort fica a cerca de 10 metros da Praia de Ponta de Mangue, o que facilita as brincadeiras na areia, como o castelo de areia, sempre com acompanhamento adequado.
+  tema: lazer
+  paginas:
+    - criancas
+    - data-especial:finados
+  ordem: 1008
+  fontes: *id005
+c-10:
+  pergunta: O Grand Oca Maragogi tem oficinas e shows para crianças?
+  resposta: Sim. O Grand Oca Maragogi oferece oficinas como massinha, brigadeiro, cupcake, pizza e pintura, conforme a programação, e inclui shows e apresentações infantis no entretenimento do resort. A equipe de animação prepara atividades diárias para as crianças, ao longo de todo o ano.
+  tema: lazer
+  paginas:
+    - criancas
+    - data-especial:proclamacao-da-republica
+  ordem: 1009
+  fontes: *id005
+c-11:
+  pergunta: Os pais podem aproveitar o resort enquanto as crianças estão na recreação?
+  resposta: Sim. Enquanto as crianças participam do Kids Club do Grand Oca Maragogi, os adultos podem aproveitar piscinas, praia, academia, restaurantes, bares e as atividades da programação adulta, das 9h às 23h. A recreação é organizada por equipe de entretenimento, em horários definidos pelo resort.
+  tema: lazer
+  paginas:
+    - comparativo
+    - datasEspeciais
+    - data-especial:consciencia-negra
+  ordem: 1010
+  fontes: *id005
+c-12:
+  pergunta: Quais acomodações do Grand Oca Maragogi são mais indicadas para famílias com crianças?
+  resposta: Para famílias, o Grand Oca Maragogi oferece o Duplo Deluxe com Sofá-cama, de 50 m², o Standard Comunicante, para seis, e a Suíte Deluxe, de 72 m², além do Bangalô Triplo e do Standard para três hóspedes. A idade de cada criança deve ser informada na cotação.
+  tema: lazer
+  paginas:
+    - comparativo
+  ordem: 1011
+  fontes: *id005
+e-01:
+  pergunta: O Grand Oca Maragogi tem atividades esportivas?
+  resposta: Sim. O Grand Oca Maragogi oferece modalidades como vôlei, beach tênis, futebol, caiaque e hidro, além de dança e aulas de ginástica na academia. A programação esportiva é diária, mas horários, locais e modalidades podem mudar conforme o período, o clima e a operação do resort.
+  tema: lazer
+  paginas:
+    - lazer
+    - esportes
+  ordem: 1100
+  fontes: *id005
+e-02:
+  pergunta: O Grand Oca Maragogi tem caiaque?
+  resposta: Sim. O caiaque faz parte da programação diurna de lazer do Grand Oca Maragogi, na Praia de Ponta de Mangue, conforme as condições do mar e a operação do resort. A atividade segue a agenda do dia, divulgada no resort, e pode ser alterada em caso de mau tempo.
+  tema: lazer
+  paginas:
+    - lazer
+    - esportes
+  ordem: 1101
+  fontes: *id005
+e-03:
+  pergunta: O Grand Oca Maragogi tem beach tênis e vôlei?
+  resposta: Sim. O vôlei aparece em diferentes dias da programação esportiva do Grand Oca Maragogi, e o beach tênis é uma das atividades ao ar livre da programação de lazer. Os horários e os locais variam conforme o dia, o clima e a operação, e constam na agenda do resort.
+  tema: lazer
+  paginas:
+    - esportes
+  ordem: 1102
+  fontes: *id005
+e-04:
+  pergunta: Quais atividades fitness existem no Grand Oca Maragogi?
+  resposta: O Grand Oca Maragogi pode oferecer Cardio HIT, GAP, funcional, Pilates com bola, alongamento e hidro fitness, conforme a programação vigente. A academia fica aberta para quem quer manter a rotina de exercícios durante as férias, e as aulas seguem a agenda do período.
+  tema: lazer
+  paginas:
+    - esportes
+    - bemEstar
+  ordem: 1103
+  fontes: *id005
+e-05:
+  pergunta: O Grand Oca Maragogi tem centro de mergulho?
+  resposta: Sim. O Grand Oca Maragogi tem um centro de mergulho com certificação PADI, que oferece aulas e passeios até as piscinas naturais em frente ao resort, em mergulho ou em snorkel. O serviço é contratado à parte, e os horários dependem das marés e das condições do mar.
+  tema: lazer
+  paginas:
+    - servicos
+    - esportes
+    - bemEstar
+    - experiencias
+    - post:o-que-levar-na-mala
+  ordem: 1104
+  fontes: *id005
+e-06:
+  pergunta: Dá para fazer snorkel em Maragogi?
+  resposta: Sim. As piscinas naturais de Maragogi são ideais para mergulho e snorkel, com profundidade média de cerca de um metro, em área de preservação ambiental. O centro de mergulho do Grand Oca Maragogi oferece aulas e passeios, e os bancos de corais têm muitos peixes coloridos.
+  tema: lazer
+  paginas:
+    - esportes
+    - bemEstar
+    - experiencias
+    - destino
+    - post:o-que-levar-na-mala
+  ordem: 1105
+  fontes: *id005
+e-07:
+  pergunta: Existe programação de esportes para adultos no Grand Oca Maragogi?
+  resposta: Sim. O Grand Oca Maragogi oferece atividades esportivas, aquáticas, recreativas e de dança para adultos, com programação diária das 9h às 23h. As atividades incluem vôlei, beach tênis, futebol, hidro e aulas de academia, e a agenda do dia informa os horários e os locais.
+  tema: lazer
+  paginas:
+    - criancas
+    - esportes
+  ordem: 1106
+  fontes: *id005
+w-01:
+  pergunta: O Grand Oca Maragogi tem spa?
+  resposta: Sim. O Grand Oca Maragogi Resort conta com o Grand Oca Spa e com o Espaço Beleza, um salão que abre todos os dias, com serviços de manicure e cabeleireiro. O resort não publica o menu de tratamentos nem os valores, então vale consultar as condições antes da viagem ou na chegada.
+  tema: lazer
+  paginas:
+    - bemEstar
+    - experiencias
+  ordem: 1200
+  fontes: *id005
+w-02:
+  pergunta: O Grand Oca Maragogi tem salão de beleza?
+  resposta: Sim. O Grand Oca Maragogi tem um salão de beleza, o Espaço Beleza, que abre sete dias por semana e oferece serviços de manicure e cabeleireiro. Não faz parte da diária all inclusive, e os valores e horários de atendimento são informados no resort, de acordo com a disponibilidade.
+  tema: lazer
+  paginas:
+    - bemEstar
+    - experiencias
+  ordem: 1201
+  fontes: *id005
+w-03:
+  pergunta: O spa do Grand Oca Maragogi está incluído no all inclusive?
+  resposta: O Grand Oca Maragogi não informa que os serviços de spa e de beleza estejam na diária all inclusive. O sistema all inclusive cobre refeições, bebidas selecionadas e lazer, e os serviços extras não gastronômicos têm condições próprias, que o hóspede confirma no resort antes de agendar.
+  tema: lazer
+  paginas:
+    - bemEstar
+  ordem: 1202
+  fontes: *id005
+w-04:
+  pergunta: Como manter a rotina de exercícios no Grand Oca Maragogi?
+  resposta: O Grand Oca Maragogi tem academia, com aulas programadas, como Cardio HIT, GAP, funcional, Pilates com bola e alongamento, e hidro fitness na piscina. Para treinar ao ar livre, a Praia de Ponta de Mangue está a poucos passos, e as atividades esportivas da programação completam as opções.
+  tema: lazer
+  paginas:
+    - esportes
+    - bemEstar
+  ordem: 1203
+  fontes: *id005
+w-05:
+  pergunta: O Grand Oca Maragogi tem massagem?
+  resposta: O resort divulga o Grand Oca Spa entre os serviços de bem-estar, mas não publica o menu de tratamentos. Quem deseja massagem deve consultar a disponibilidade, os tipos de serviço e os valores diretamente no resort, de preferência no início da estadia, para garantir horário.
+  tema: lazer
+  paginas:
+    - bemEstar
+  ordem: 1204
+  fontes: *id005
+x-01:
+  pergunta: Quais experiências o Grand Oca Maragogi oferece além do all inclusive?
+  resposta: Além do all inclusive, o Grand Oca Maragogi oferece experiências contratadas à parte, como aulas e passeios de mergulho e snorkel com o centro PADI, traslados e passeios pela agência de viagens, serviços do spa e do salão de beleza e a experiência VIP Premium, com área exclusiva na praia.
+  tema: lazer
+  paginas:
+    - lazer
+    - esportes
+    - experiencias
+  ordem: 1300
+  fontes: *id005
+x-02:
+  pergunta: Como contratar passeios no Grand Oca Maragogi?
+  resposta: Os passeios e traslados do Grand Oca Maragogi são contratados na agência de viagens do resort, que reserva saídas pelos arredores, como as piscinas naturais da Costa dos Corais. Os valores, os horários e a disponibilidade são informados no momento da contratação e podem variar conforme a época.
+  tema: lazer
+  paginas:
+    - esportes
+    - experiencias
+  ordem: 1301
+  fontes: *id005
+x-03:
+  pergunta: O mergulho está incluído no all inclusive do Grand Oca Maragogi?
+  resposta: O Grand Oca Maragogi não informa que o mergulho faça parte do all inclusive. O centro de mergulho com certificação PADI oferece aulas e passeios às piscinas naturais, contratados à parte, e os valores e os horários são informados no resort conforme a disponibilidade e as condições do mar.
+  tema: lazer
+  paginas:
+    - bemEstar
+    - experiencias
+  ordem: 1302
+  fontes: *id005
+x-04:
+  pergunta: Como funciona a experiência VIP Premium do Grand Oca Maragogi?
+  resposta: A VIP Premium oferece uma área exclusiva na praia do Grand Oca Maragogi, com atendimento de hostess, camas de praia, bebidas e brunch no Ix’U. A área funciona das 9h às 17h, com brunch das 10h às 12h, e não admite menores de 14 anos. Tem preços e condições próprios.
+  tema: lazer
+  paginas:
+    - bemEstar
+    - experiencias
+  ordem: 1303
+  fontes: *id005
+x-05:
+  pergunta: É possível contratar traslado no Grand Oca Maragogi?
+  resposta: Sim. A agência de viagens do Grand Oca Maragogi reserva traslados, conforme a disponibilidade e as condições do serviço, e a Resorts Online também ajuda a cotar o transfer junto com a hospedagem ou o pacote com aéreo. O serviço não faz parte da diária all inclusive.
+  tema: lazer
+  paginas:
+    - experiencias
+    - reservasPacoteComAereo
+  ordem: 1304
+  fontes: *id005
+d-01:
+  pergunta: Onde fica Maragogi?
+  resposta: Maragogi fica no litoral norte de Alagoas, entre as cidades de Recife e Maceió, e é conhecida como a Costa dos Corais. Reúne praias de coqueirais, mar azul-esmeralda, recifes de corais e piscinas naturais, e é a segunda cidade turística do estado, atrás apenas de Maceió.
+  tema: destino
+  paginas:
+    - destino
+    - blog
+    - outrosResorts
+    - guia:costa-dos-corais
+  ordem: 1400
+  fontes: &id006
+    - /destino/
+d-02:
+  pergunta: O que é a Costa dos Corais?
+  resposta: A Costa dos Corais é o nome dado ao litoral de Maragogi e da região, famoso pelos recifes de corais, pelas piscinas naturais, pelas praias de coqueirais e pelo mar azul-esverdeado. A área é protegida como APA, Área de Preservação Ambiental, e atrai mergulhadores e turistas do Brasil e do mundo.
+  tema: destino
+  paginas:
+    - destino
+    - guia:costa-dos-corais
+  ordem: 1401
+  fontes: *id006
+d-03:
+  pergunta: O que são as piscinas naturais de Maragogi?
+  resposta: As piscinas naturais de Maragogi são áreas de águas rasas e cristalinas formadas pelos recifes de corais, com muitos peixes coloridos. Ficam em área de preservação ambiental e são ideais para mergulho e snorkel, já que a profundidade média da área de corais não passa de cerca de um metro.
+  tema: destino
+  paginas:
+    - destino
+    - guia:costa-dos-corais
+    - post:o-que-levar-na-mala
+  ordem: 1402
+  fontes: *id006
+d-04:
+  pergunta: Maragogi é boa para mergulho e snorkel?
+  resposta: Sim. Maragogi é uma das áreas de corais mais conhecidas do país, em uma região protegida, com grande variedade de espécies marinhas, como peixes coloridos. A profundidade média, de cerca de um metro, também a torna indicada para o snorkel. O Grand Oca Maragogi tem um centro de mergulho PADI.
+  tema: destino
+  paginas:
+    - experiencias
+    - destino
+    - guia:costa-dos-corais
+    - post:o-que-levar-na-mala
+  ordem: 1403
+  fontes: *id006
+d-05:
+  pergunta: Como era Maragogi antes do turismo?
+  resposta: Maragogi era uma vila de pescadores, e a pesca e a agricultura, em especial a cana-de-açúcar, eram as principais fontes de recursos. Hoje o turismo é a principal atividade da região, e a cidade é a segunda mais turística de Alagoas, atrás da capital, Maceió.
+  tema: destino
+  paginas:
+    - experiencias
+    - destino
+    - guia:costa-dos-corais
+  ordem: 1404
+  fontes: *id006
+d-06:
+  pergunta: Que igrejas históricas Maragogi tem?
+  resposta: 'Maragogi tem três igrejas que formam seu principal patrimônio arquitetônico: a Matriz de Santo Antônio, construída no fim do século XIX, e as igrejas de Nossa Senhora da Guia e de São Bento, do século XVII, que hoje conservam apenas as paredes externas.'
+  tema: destino
+  paginas:
+    - destino
+    - guia:costa-dos-corais
+    - guia:cidade-de-maragogi
+  ordem: 1405
+  fontes: *id006
+d-07:
+  pergunta: Qual é a festa mais importante de Maragogi?
+  resposta: O Carnaval é a festa mais importante de Maragogi, com bailes, frevo e desfiles pelas ruas da cidade. Milhares de pessoas visitam o município na época para acompanhar a folia, e os resorts da região, como o Grand Oca Maragogi, ficam entre os mais procurados do ano.
+  tema: destino
+  paginas:
+    - datasEspeciais
+    - destino
+    - guia:cidade-de-maragogi
+  ordem: 1406
+  fontes: *id006
+d-08:
+  pergunta: Qual é a distância de Maragogi até Recife e Maceió?
+  resposta: O Grand Oca Maragogi informa cerca de 126 km até Recife e 136 km até Maceió, além de 153 km até Caruaru. As distâncias são rodoviárias e aproximadas. O tempo de viagem varia conforme o trânsito e as condições da estrada, então vale conferir a rota no mapa antes de sair.
+  tema: destino
+  paginas:
+    - destino
+    - comoChegar
+    - guia:cidade-de-maragogi
+  ordem: 1407
+  fontes: *id006
+d-09:
+  pergunta: Qual é a melhor época para viajar a Maragogi?
+  resposta: A fonte consultada não indica uma melhor época. Em geral, feriados prolongados e as férias escolares têm mais procura, com tarifas e disponibilidade variando conforme a data, a ocupação e a antecedência. Quem quer observar as piscinas naturais deve consultar os horários de maré com o centro de mergulho.
+  tema: destino
+  paginas:
+    - destino
+    - guia:cidade-de-maragogi
+  ordem: 1408
+  fontes: *id006
+d-10:
+  pergunta: O que fazer em Maragogi além do resort?
+  resposta: Além do resort, Maragogi permite passeios às piscinas naturais, mergulho e snorkel, caminhadas pelas praias de coqueirais e visitas ao centro da cidade, com suas igrejas históricas. Em época de Carnaval, a cidade tem bailes, frevo e desfiles. A agência do Grand Oca reserva traslados e passeios.
+  tema: destino
+  paginas:
+    - destino
+    - guia:cidade-de-maragogi
+  ordem: 1409
+  fontes: *id006
+d-11:
+  pergunta: Quando o Aeroporto Costa dos Corais deve começar a operar?
+  resposta: Ainda não há uma data definitiva confirmada para o início das operações do Aeroporto Costa dos Corais, em Maragogi, que está em construção e não opera voos comerciais regulares. Por enquanto, os hóspedes chegam ao Grand Oca Maragogi pelos aeroportos de Recife ou de Maceió.
+  tema: destino
+  paginas:
+    - destino
+    - guia:cidade-de-maragogi
+  ordem: 1410
+  fontes: *id006
+rs-01:
+  pergunta: Como reservar o Grand Oca Maragogi?
+  resposta: É possível reservar o Grand Oca Maragogi pelo site, escolhendo só a hospedagem ou o pacote com aéreo, ou pela central de reservas da Resorts Online, no 0800 737 6787. Informe as datas, os hóspedes e a idade das crianças, e a equipe confirma a disponibilidade e as condições.
+  tema: reservas
+  paginas:
+    - home
+    - experiencias
+    - blog
+    - outrosResorts
+    - reservas
+    - reservasPacoteComAereo
+    - contato
+    - acomodacao:suite
+    - data-especial:reveillon
+    - data-especial:consciencia-negra
+  ordem: 1500
+  fontes: *id007
+rs-02:
+  pergunta: Qual a diferença entre só hospedagem e pacote com aéreo?
+  resposta: A reserva só de hospedagem serve para quem já tem passagem aérea, vai de carro ou prefere organizar o deslocamento até Maragogi. O pacote com hotel e aéreo reúne hospedagem all inclusive e passagens numa única cotação. Em ambos, o all inclusive e as acomodações são os mesmos.
+  tema: reservas
+  paginas:
+    - blog
+    - outrosResorts
+    - reservas
+    - reservasPacoteComAereo
+    - contato
+    - acomodacao:deluxe-duas-camas-grandes
+    - data-especial:carnaval
+  ordem: 1501
+  fontes: *id007
+rs-03:
+  pergunta: Dá para parcelar a reserva do Grand Oca Maragogi?
+  resposta: Sim. A Resorts Online oferece parcelamento em até 10 vezes sem juros no cartão de crédito para hospedagem e pacote com aéreo. As condições valem para as tarifas elegíveis e podem variar conforme a oferta e o período, e as válidas são sempre as exibidas no momento da reserva.
+  tema: reservas
+  paginas:
+    - outrosResorts
+    - reservas
+    - reservasPacoteComAereo
+    - contato
+    - acomodacao:duplo-deluxe-sofa-cama
+    - data-especial:natal
+  ordem: 1502
+  fontes: *id007
+rs-04:
+  pergunta: Há desconto para pagar no Pix?
+  resposta: Sim. A Resorts Online informa desconto de 5% para pagamento à vista no Pix, em hospedagem e pacote com aéreo. O desconto vale para as tarifas elegíveis, e as condições podem variar conforme a oferta e o período. Confirme as regras na cotação, antes de finalizar o pagamento.
+  tema: reservas
+  paginas:
+    - reservas
+    - reservasPacoteComAereo
+    - contato
+    - acomodacao:suite-deluxe
+    - data-especial:pascoa
+  ordem: 1503
+  fontes: *id007
+rs-05:
+  pergunta: Como confirmar a disponibilidade do Grand Oca Maragogi?
+  resposta: Para consultar a disponibilidade, informe as datas, o número de quartos, os adultos e a idade de cada criança na página de reservas ou fale com a central da Resorts Online, por telefone ou WhatsApp. A equipe consulta a categoria desejada e envia a tarifa, que depende da data e da ocupação.
+  tema: reservas
+  paginas:
+    - reservas
+    - reservasHospedagem
+    - data-especial:tiradentes
+    - post:resort-com-criancas
+  ordem: 1504
+  fontes: *id007
+rs-06:
+  pergunta: O que conferir antes de finalizar a reserva do Grand Oca Maragogi?
+  resposta: Antes de finalizar, confira as datas e o número de noites, a idade de cada criança, a categoria e a capacidade, a regra de cancelamento da tarifa, o que está incluso no all inclusive e os documentos de todos os hóspedes. Tarifas promocionais podem ter regras diferentes das tarifas flexíveis.
+  tema: reservas
+  paginas:
+    - servicos
+    - reservas
+    - reservasHospedagem
+    - acomodacao:apartamento-standard
+    - data-especial:dia-do-trabalho
+  ordem: 1505
+  fontes: *id007
+rs-07:
+  pergunta: Como funciona o cancelamento da reserva do Grand Oca Maragogi?
+  resposta: O cancelamento segue a regra da tarifa escolhida, informada antes do pagamento, e tarifas promocionais podem não ser reembolsáveis. Compras a distância podem ser canceladas em até 7 dias após a contratação, com devolução integral, conforme o art. 49 do Código de Defesa do Consumidor.
+  tema: reservas
+  paginas:
+    - acomodacoes
+    - comparativo
+    - reservas
+    - reservasHospedagem
+    - politicaHospedagem
+    - quemSomos
+    - acomodacao:standard-comunicante
+    - data-especial:sete-de-setembro
+    - post:como-escolher-acomodacao
+  ordem: 1506
+  fontes: *id007
+rs-08:
+  pergunta: Com quanto tempo de antecedência reservar o Grand Oca Maragogi?
+  resposta: Quanto antes, melhor, em especial para feriados, Réveillon, Carnaval e férias escolares, quando as categorias esgotam mais rápido e as tarifas variam conforme a ocupação. A disponibilidade das categorias menores, como as duas Suítes, é mais limitada. Consulte a equipe da Resorts Online para saber a melhor data.
+  tema: reservas
+  paginas:
+    - datasEspeciais
+    - reservas
+    - reservasHospedagem
+    - politicaHospedagem
+    - quemSomos
+    - acomodacao:bangalo-vista-jardim
+    - data-especial:dia-das-criancas
+  ordem: 1507
+  fontes: *id007
+rs-09:
+  pergunta: A Resorts Online é o site oficial do Grand Oca Maragogi?
+  resposta: Não. Este site é um portal da Resorts Online, agência de viagens que vende hospedagem e pacotes para o Grand Oca Maragogi. As informações sobre o resort foram reunidas a partir de fontes públicas e reescritas, e o atendimento de reservas é feito pela central da agência.
+  tema: reservas
+  paginas:
+    - datasEspeciais
+    - reservas
+    - reservasHospedagem
+    - quemSomos
+    - acomodacao:bangalo-vista-piscina
+    - data-especial:finados
+  ordem: 1508
+  fontes: *id007
+rs-10:
+  pergunta: O voucher da reserva é enviado na hora?
+  resposta: Quando o pagamento é aprovado no motor online, a reserva fica garantida e o voucher é enviado imediatamente. Se a cotação for feita com a equipe da Resorts Online, o voucher segue após o pagamento acertado, e a equipe informa as regras da reserva por WhatsApp ou telefone.
+  tema: reservas
+  paginas:
+    - datasEspeciais
+    - acomodacao:bangalo-triplo
+    - data-especial:proclamacao-da-republica
+  ordem: 1509
+  fontes: *id007
+po-01:
+  pergunta: Qual é o horário de check-in e check-out no Grand Oca Maragogi?
+  resposta: No Grand Oca Maragogi, o check-in começa às 15h e o check-out deve ser feito até as 12h. Early check-in e late check-out, quando oferecidos, dependem de disponibilidade e das regras da reserva. Organize o horário de chegada considerando o início oficial do check-in.
+  tema: reservas
+  paginas:
+    - acomodacoes
+    - allInclusive
+    - blog
+    - comoChegar
+    - reservas
+    - reservasHospedagem
+    - politicaHospedagem
+    - contato
+    - acomodacao:apartamento-standard
+    - acomodacao:duplo-deluxe-sofa-cama
+    - restaurante:restaurante-dos-corais
+    - post:como-escolher-acomodacao
+  ordem: 1600
+  fontes: *id007
+po-02:
+  pergunta: Dá para fazer early check-in ou late check-out no Grand Oca Maragogi?
+  resposta: Early check-in e late check-out dependem de disponibilidade e das regras da reserva e, quando oferecidos, podem ter condições próprias. A recomendação é combinar com a equipe da Resorts Online antes da viagem e confirmar com a recepção na chegada, já que o horário padrão é check-in às 15h e check-out às 12h.
+  tema: reservas
+  paginas:
+    - acomodacoes
+    - comoChegar
+    - reservas
+    - reservasHospedagem
+    - politicaHospedagem
+    - acomodacao:standard-comunicante
+    - acomodacao:suite-deluxe
+    - restaurante:ixu
+  ordem: 1601
+  fontes: *id007
+po-03:
+  pergunta: Quais documentos são necessários para se hospedar no Grand Oca Maragogi?
+  resposta: No check-in, são pedidos documento oficial com foto de todos os hóspedes, inclusive das crianças, CPF (estrangeiros apresentam o passaporte), endereço completo com CEP e telefone e e-mail de contato. As informações alimentam a Ficha Nacional de Registro de Hóspedes.
+  tema: reservas
+  paginas:
+    - reservas
+    - reservasHospedagem
+    - reservasPacoteComAereo
+    - politicaHospedagem
+    - acomodacao:bangalo-vista-jardim
+    - restaurante:il-giardino
+    - post:o-que-levar-na-mala
+  ordem: 1602
+  fontes: *id007
+po-04:
+  pergunta: Menores de 18 anos podem se hospedar sozinhos no Grand Oca Maragogi?
+  resposta: Não. Menores de 18 anos só se hospedam acompanhados dos pais ou de um responsável legal e, com outro adulto, precisam de autorização expressa dos pais, conforme o Estatuto da Criança e do Adolescente. Toda criança apresenta documento com a filiação, e bebidas alcoólicas não são servidas a menores.
+  tema: reservas
+  paginas:
+    - reservasHospedagem
+    - reservasPacoteComAereo
+    - politicaHospedagem
+    - acomodacao:bangalo-vista-piscina
+    - restaurante:la-brasa
+  ordem: 1603
+  fontes: *id007
+po-05:
+  pergunta: Até que idade a criança é considerada na capacidade das acomodações?
+  resposta: Depende da categoria. O Apartamento Standard considera crianças de até 12 anos na capacidade, e o Bangalô aceita um bebê em berço. As categorias com crianças contam limites de adultos e crianças, como o Duplo Deluxe, com no máximo quatro adultos e uma criança. Confirme na cotação.
+  tema: reservas
+  paginas:
+    - comparativo
+    - politicaHospedagem
+    - acomodacao:bangalo-triplo
+    - restaurante:praca-de-alimentacao
+    - post:resort-com-criancas
+  ordem: 1604
+  fontes: *id007
+po-06:
+  pergunta: O Grand Oca Maragogi muda a programação sem aviso?
+  resposta: Sim. Modalidades, horários, disponibilidade, locais e programação podem mudar de acordo com o período, o clima e a operação do resort, e marcas, receitas e pontos de serviço do all inclusive também. O Grand Oca Maragogi orienta consultar a programação vigente durante a hospedagem.
+  tema: reservas
+  paginas:
+    - comparativo
+    - politicaHospedagem
+    - acomodacao:suite
+  ordem: 1605
+  fontes: *id007
+po-07:
+  pergunta: O Grand Oca Maragogi tem política para o uso das piscinas por crianças?
+  resposta: O resort não divulga regras específicas de idade para as piscinas. Em geral, menores de idade devem estar acompanhados por um responsável nas áreas de água, e as atividades do Kids Club são organizadas por faixa etária. Confirme eventuais restrições com a equipe na chegada.
+  tema: reservas
+  paginas:
+    - restaurantes
+    - politicaHospedagem
+    - acomodacao:deluxe-duas-camas-grandes
+  ordem: 1606
+  fontes: *id007
+ag-01:
+  pergunta: Quem é a Resorts Online?
+  resposta: A Resorts Online Viagens e Turismo é uma agência fundada em maio de 2002, em São Paulo, especializada em hotéis e resorts, com atuação no Brasil e em destinos internacionais. Mantém o portal Resort All Inclusive, que reúne sites de resorts all inclusive e vende hospedagem e pacotes para o Grand Oca Maragogi.
+  tema: reservas
+  paginas:
+    - reservas
+    - contato
+    - quemSomos
+  ordem: 1700
+  fontes: *id007
+ag-02:
+  pergunta: Quais são os canais de atendimento da Resorts Online?
+  resposta: A Resorts Online atende pela central de reservas no 0800 737 6787, pelo telefone de São Paulo (11) 5555-5696, pelo WhatsApp (11) 93920-1897 e pelo e-mail reservas@resortallinclusive.com.br. O atendimento funciona de segunda a sexta, das 10h às 18h, e aos sábados, das 10h às 13h.
+  tema: reservas
+  paginas:
+    - contato
+    - quemSomos
+  ordem: 1701
+  fontes: *id007
+ag-03:
+  pergunta: A Resorts Online vende outros resorts all inclusive?
+  resposta: Sim. A Resorts Online mantém a Rede Resort All Inclusive, com portais de vários resorts all inclusive pelo Brasil, e a página Outros resorts reúne as opções para comparar destinos e estruturas. A mesma equipe atende as cotações de todos eles por telefone, WhatsApp e e-mail.
+  tema: reservas
+  paginas:
+    - outrosResorts
+    - contato
+    - quemSomos
+  ordem: 1702
+  fontes: *id007
+ag-04:
+  pergunta: Como a Resorts Online ajuda a escolher a categoria?
+  resposta: A equipe da Resorts Online conhece as categorias do Grand Oca Maragogi e ajuda a indicar a mais adequada para cada perfil, comparando capacidade, vista e localização. Também informa tarifas, regras de cancelamento e condições de pagamento antes da compra, para a decisão ser mais segura.
+  tema: reservas
+  paginas:
+    - outrosResorts
+    - reservasPacoteComAereo
+    - contato
+    - quemSomos
+  ordem: 1703
+  fontes: *id007
+ag-05:
+  pergunta: O endereço da Resorts Online é o do hotel?
+  resposta: Não. A Resorts Online fica em São Paulo, na Rua Vergueiro, 2253, conjunto 1216, Vila Mariana, e é uma agência independente do hotel. O Grand Oca Maragogi Resort fica na Rodovia AL-101 Norte, em Ponta de Mangue, Maragogi (AL), a cerca de 10 metros da praia, e funciona com atendimento próprio.
+  tema: reservas
+  paginas:
+    - outrosResorts
+    - contato
+    - quemSomos
+  ordem: 1704
+  fontes: *id007
+ct-01:
+  pergunta: Como falar com a Resorts Online sobre o Grand Oca Maragogi?
+  resposta: Fale com a Resorts Online pela central de reservas no 0800 737 6787, pelo WhatsApp (11) 93920-1897 ou pelo e-mail reservas@resortallinclusive.com.br. A equipe atende de segunda a sexta, das 10h às 18h, e aos sábados, das 10h às 13h, com cotações de hospedagem e de pacotes com aéreo.
+  tema: reservas
+  paginas:
+    - contato
+    - quemSomos
+  ordem: 1800
+  fontes: *id007
+ct-02:
+  pergunta: Como alterar datas ou acomodação de uma reserva feita na Resorts Online?
+  resposta: Para alterar datas ou acomodação de uma reserva feita com a agência, fale com a equipe da Resorts Online pelos canais de atendimento. A mudança segue a regra da tarifa escolhida e depende da disponibilidade, e a equipe confirma as condições antes de qualquer alteração.
+  tema: reservas
+  paginas:
+    - contato
+    - quemSomos
+  ordem: 1801
+  fontes: *id007
+ct-03:
+  pergunta: A Resorts Online responde por pedidos feitos durante a estadia?
+  resposta: Não. Pedidos durante a estadia, como a reserva dos restaurantes temáticos no Guest Service, o mergulho e os passeios, são feitos diretamente no Grand Oca Maragogi. A Resorts Online cuida das reservas feitas por ela, como alterações de datas e de acomodação.
+  tema: reservas
+  paginas:
+    - contato
+    - quemSomos
+  ordem: 1802
+  fontes: *id007
+f-01:
+  pergunta: Onde ver as fotos do Grand Oca Maragogi?
+  resposta: 'As fotos do Grand Oca Maragogi estão na galeria desta página, organizadas por área: o resort e a praia, as acomodações, as piscinas, o parque aquático, a gastronomia e a academia. Use os filtros para ver só o que interessa e abra cada imagem em tamanho maior, em qualquer dispositivo.'
+  tema: resort
+  paginas:
+    - fotos
+  ordem: 1900
+  fontes: *id001
+f-02:
+  pergunta: As fotos do site mostram o resort como ele é?
+  resposta: As imagens são fotografias do Grand Oca Maragogi, tratadas para realçar as cores. Decoração, mobiliário, jardins e a aparência das áreas podem mudar com o tempo e com a estação, então as imagens servem como referência e não substituem a descrição de cada categoria.
+  tema: resort
+  paginas:
+    - fotos
+  ordem: 1901
+  fontes: *id001
+f-03:
+  pergunta: Por que algumas fotos não mostram pessoas?
+  resposta: As imagens do site foram escolhidas sem pessoas, para mostrar os ambientes do resort, como acomodações, piscinas, restaurantes e jardins, com clareza e sem interferir no direito de imagem de ninguém. A vida do resort, com hóspedes e atividades, é percebida melhor pessoalmente.
+  tema: resort
+  paginas:
+    - fotos
+  ordem: 1902
+  fontes: *id001
+f-04:
+  pergunta: Há fotos de todas as acomodações do Grand Oca Maragogi?
+  resposta: Há fotos de todas as nove categorias, algumas com mais imagens, como a Suíte Deluxe, e outras com poucas, como a Suíte. A página de cada acomodação reúne as fotos do quarto, do banheiro e da varanda disponíveis, e a equipe pode enviar mais detalhes sob consulta.
+  tema: resort
+  paginas:
+    - fotos
+  ordem: 1903
+  fontes: *id001
+s-01:
+  pergunta: O Grand Oca Maragogi tem serviços de lavanderia ou room service?
+  resposta: O resort não publica uma lista de serviços de lavanderia. O room service não faz parte do all inclusive do Grand Oca Maragogi, e quem precisa de algum serviço específico deve consultar o Guest Service, ao lado da recepção, para saber o que está disponível e em quais condições.
+  tema: resort
+  paginas:
+    - servicos
+  ordem: 2000
+  fontes: *id001
+s-02:
+  pergunta: O Grand Oca Maragogi tem estacionamento?
+  resposta: O resort não informa dados sobre estacionamento, como número de vagas ou cobrança. Quem pretende ir de carro deve confirmar a disponibilidade com a recepção do Grand Oca Maragogi, que fica na Rodovia AL-101 Norte, em Ponta de Mangue, com acesso direto pela rodovia.
+  tema: resort
+  paginas:
+    - servicos
+  ordem: 2001
+  fontes: *id001
+s-03:
+  pergunta: O Grand Oca Maragogi aceita animais de estimação?
+  resposta: O resort não detalha a política de pets nas fontes consultadas. Quem pretende viajar com animal de estimação deve confirmar com a equipe da Resorts Online antes de reservar, para saber se há categorias, taxas e regras específicas aplicáveis à estadia.
+  tema: resort
+  paginas:
+    - servicos
+  ordem: 2002
+  fontes: *id001
+s-04:
+  pergunta: O Grand Oca Maragogi tem eventos e casamentos?
+  resposta: As fontes consultadas não detalham a estrutura de eventos e casamentos do Grand Oca Maragogi, embora o grupo Oca Hotels destaque o segmento de eventos e negócios. Para consultar espaços, capacidade e condições, fale com a equipe da Resorts Online, que encaminha o pedido.
+  tema: resort
+  paginas:
+    - servicos
+  ordem: 2003
+  fontes: *id001
+dg-01:
+  pergunta: O Grand Oca Maragogi é all inclusive nos feriados?
+  resposta: Sim. O sistema all inclusive do Grand Oca Maragogi vale também nos feriados, com refeições, snacks, bebidas selecionadas e lazer incluídos, conforme as regras do plano contratado. Nas datas de alta procura, o resort pode divulgar programação própria, e as condições mudam conforme o ano e a categoria.
+  tema: reservas
+  paginas:
+    - datasEspeciais
+    - data-especial:reveillon
+    - data-especial:pascoa
+    - data-especial:tiradentes
+    - data-especial:dia-do-trabalho
+    - data-especial:sete-de-setembro
+    - data-especial:dia-das-criancas
+    - data-especial:finados
+  ordem: 2100
+  fontes: *id007
+dg-02:
+  pergunta: Com quanta antecedência reservar um feriado no Grand Oca Maragogi?
+  resposta: Feriados concentram a procura, então o ideal é consultar a disponibilidade com antecedência. As tarifas e as categorias disponíveis mudam conforme as reservas são feitas, e datas como Réveillon, Carnaval e Natal podem exigir noites mínimas. A equipe da Resorts Online confirma as condições de cada período.
+  tema: reservas
+  paginas:
+    - datasEspeciais
+    - data-especial:reveillon
+    - data-especial:carnaval
+    - data-especial:tiradentes
+    - data-especial:dia-do-trabalho
+    - data-especial:sete-de-setembro
+    - data-especial:dia-das-criancas
+    - data-especial:finados
+    - data-especial:proclamacao-da-republica
+  ordem: 2101
+  fontes: *id007
+dg-03:
+  pergunta: Os feriados têm noites mínimas no Grand Oca Maragogi?
+  resposta: Em períodos de alta procura, como Réveillon, Carnaval e Natal, pode haver exigência de noites mínimas, que varia a cada ano. O resort não publica uma regra fixa, então a equipe da Resorts Online confirma o mínimo de noites na hora da cotação para as datas escolhidas.
+  tema: reservas
+  paginas:
+    - datasEspeciais
+    - data-especial:reveillon
+    - data-especial:carnaval
+    - data-especial:natal
+    - data-especial:dia-do-trabalho
+    - data-especial:sete-de-setembro
+    - data-especial:dia-das-criancas
+    - data-especial:finados
+    - data-especial:proclamacao-da-republica
+    - data-especial:consciencia-negra
+  ordem: 2102
+  fontes: *id007
+dg-04:
+  pergunta: O Grand Oca Maragogi é bom para passar feriados em família?
+  resposta: Sim. O Grand Oca Maragogi une praia, piscinas, parque aquático, Kids Club, restaurantes e bares em um só lugar, o que ajuda famílias a aproveitar feriados sem sair do resort. Categorias maiores, como a Suíte Deluxe e as Suítes, esgotam primeiro, por isso vale reservar cedo.
+  tema: reservas
+  paginas:
+    - datasEspeciais
+    - data-especial:reveillon
+    - data-especial:carnaval
+    - data-especial:natal
+    - data-especial:pascoa
+    - data-especial:sete-de-setembro
+    - data-especial:dia-das-criancas
+    - data-especial:finados
+    - data-especial:proclamacao-da-republica
+    - data-especial:consciencia-negra
+  ordem: 2103
+  fontes: *id007
+dg-05:
+  pergunta: Existe oferta com preço para os feriados no Grand Oca Maragogi?
+  resposta: Os preços de feriado variam conforme a data, a ocupação, a categoria e a antecedência, e este site não publica valores fixos. A equipe da Resorts Online envia a tarifa atualizada, com a forma de pagamento, em até 10x sem juros no cartão ou 5% de desconto no Pix, quando elegível.
+  tema: reservas
+  paginas:
+    - datasEspeciais
+    - data-especial:reveillon
+    - data-especial:carnaval
+    - data-especial:natal
+    - data-especial:pascoa
+    - data-especial:tiradentes
+    - data-especial:dia-das-criancas
+    - data-especial:finados
+    - data-especial:proclamacao-da-republica
+    - data-especial:consciencia-negra
+  ordem: 2104
+  fontes: *id007
+dg-06:
+  pergunta: Quais feriados costumam ter mais procura no Grand Oca Maragogi?
+  resposta: Costumam ter mais procura o Réveillon, o Carnaval, o Natal, a Páscoa e os feriados que formam emenda com o fim de semana, como Tiradentes, Dia do Trabalho, 7 de Setembro, Dia das Crianças, Finados, Proclamação da República e Consciência Negra. Em cada ano, a posição no calendário muda o interesse.
+  tema: reservas
+  paginas:
+    - datasEspeciais
+    - data-especial:reveillon
+    - data-especial:carnaval
+    - data-especial:natal
+    - data-especial:pascoa
+    - data-especial:tiradentes
+    - data-especial:dia-do-trabalho
+    - data-especial:finados
+    - data-especial:proclamacao-da-republica
+    - data-especial:consciencia-negra
+  ordem: 2105
+  fontes: *id007
+dg-07:
+  pergunta: O tempo em Maragogi atrapalha o feriado no resort?
+  resposta: A chuva pode alterar atividades ao ar livre, e o Grand Oca Maragogi divulga uma programação de chuva, com alternativas, além de restaurantes, bares, academia e espaços cobertos. O resort não publica previsão do tempo, então vale acompanhar as condições antes da viagem.
+  tema: reservas
+  paginas:
+    - datasEspeciais
+    - data-especial:carnaval
+    - data-especial:natal
+    - data-especial:pascoa
+    - data-especial:tiradentes
+    - data-especial:dia-do-trabalho
+    - data-especial:sete-de-setembro
+    - data-especial:proclamacao-da-republica
+    - data-especial:consciencia-negra
+  ordem: 2106
+  fontes: *id007
+dg-08:
+  pergunta: Dá para reservar só a hospedagem para o feriado no Grand Oca Maragogi?
+  resposta: Sim. É possível reservar só a hospedagem para qualquer feriado, informando datas, hóspedes e idade das crianças, ou escolher o pacote com aéreo, que junta hotel e passagens numa única cotação. Em feriados, as duas opções dependem da disponibilidade de categorias e de voos.
+  tema: reservas
+  paginas:
+    - datasEspeciais
+    - data-especial:natal
+    - data-especial:pascoa
+    - data-especial:tiradentes
+    - data-especial:dia-do-trabalho
+    - data-especial:sete-de-setembro
+    - data-especial:dia-das-criancas
+    - data-especial:consciencia-negra
+  ordem: 2107
+  fontes: *id007
+e-acomodacao-apartamento-standard-01:
+  pergunta: Como é o Apartamento Standard do Grand Oca Maragogi?
+  resposta: Os 120 Apartamentos Standard do Grand Oca Maragogi têm estilo e decoração rústica, vista para os jardins e o coqueiral e ar-condicionado split, TV de 32 polegadas, frigobar, telefone e banheiro com chuveiro e secador de cabelo. É a categoria mais numerosa do resort e atende casais, pequenos grupos e famílias.
+  tema: hospedagem
+  paginas:
+    - acomodacao:apartamento-standard
+  ordem: 5020
+  fontes: *id003
+e-acomodacao-apartamento-standard-02:
+  pergunta: Quantas pessoas cabem no Apartamento Standard do Grand Oca Maragogi?
+  resposta: O Apartamento Standard acomoda até três adultos, ou dois adultos e uma criança de até 12 anos, conforme a configuração da reserva. As camas são uma de casal e uma de solteiro, ou três de solteiro. Informe a idade de cada criança na cotação, porque ela define a tarifa.
+  tema: hospedagem
+  paginas:
+    - acomodacao:apartamento-standard
+  ordem: 5021
+  fontes: *id003
+e-acomodacao-apartamento-standard-03:
+  pergunta: Qual é a vista do Apartamento Standard do Grand Oca Maragogi?
+  resposta: O Apartamento Standard fica voltado para os jardins e o coqueiral do resort, em um ambiente mais verde e tranquilo do que o das categorias de frente para a piscina. Os prédios têm dois andares com varandas de madeira, em meio ao gramado e às palmeiras.
+  tema: hospedagem
+  paginas:
+    - acomodacao:apartamento-standard
+  ordem: 5022
+  fontes: *id003
+e-acomodacao-apartamento-standard-04:
+  pergunta: Qual é a diferença entre o Apartamento Standard e o Standard Comunicante?
+  resposta: O Apartamento Standard tem um quarto, para até três hóspedes. O Standard Comunicante reúne dois quartos interligados, com duas varandas e dois banheiros, com uma cama de casal e três de solteiro. Os dois têm estilo rústico, e a escolha depende do tamanho do grupo.
+  tema: hospedagem
+  paginas:
+    - acomodacao:apartamento-standard
+  ordem: 5023
+  fontes: *id003
+e-acomodacao-apartamento-standard-05:
+  pergunta: Para quem o Apartamento Standard do Grand Oca Maragogi é indicado?
+  resposta: O Standard é indicado para casais, pequenos grupos e famílias com uma criança que pretendem aproveitar o dia nas piscinas, na praia e nos restaurantes e usar o quarto para descansar. Para famílias maiores, o Standard Comunicante e as categorias Deluxe oferecem mais espaço.
+  tema: hospedagem
+  paginas:
+    - acomodacao:apartamento-standard
+  ordem: 5024
+  fontes: *id003
+e-acomodacao-standard-comunicante-01:
+  pergunta: Como é o Standard Comunicante do Grand Oca Maragogi?
+  resposta: O Standard Comunicante do Grand Oca Maragogi une dois quartos comunicantes, com duas varandas e dois banheiros, em uma extensa área de jardins cercada pela natureza. Tem estilo e decoração rústica, grandes janelas, ar-condicionado split, Smart TV, frigobar e telefone, e é indicado para grupos e famílias numerosas.
+  tema: hospedagem
+  paginas:
+    - acomodacao:standard-comunicante
+  ordem: 5040
+  fontes: *id003
+e-acomodacao-standard-comunicante-02:
+  pergunta: Quais camas tem o Standard Comunicante do Grand Oca Maragogi?
+  resposta: O Standard Comunicante tem uma cama de casal e três camas de solteiro, distribuídas entre os dois quartos, e cada quarto tem o seu banheiro com chuveiro e secador de cabelo. A configuração permite a famílias e grupos dividir o mesmo espaço sem abrir mão da privacidade.
+  tema: hospedagem
+  paginas:
+    - acomodacao:standard-comunicante
+  ordem: 5041
+  fontes: *id003
+e-acomodacao-standard-comunicante-03:
+  pergunta: O Standard Comunicante do Grand Oca Maragogi é adaptado para mobilidade reduzida?
+  resposta: Não. O Grand Oca Maragogi informa que o Standard Comunicante não possui adaptação para hóspedes com deficiência física ou mobilidade reduzida. Quem precisa de acessibilidade deve informar a necessidade na cotação, para a equipe da Resorts Online confirmar com o resort a categoria mais adequada.
+  tema: hospedagem
+  paginas:
+    - acomodacao:standard-comunicante
+  ordem: 5042
+  fontes: *id003
+e-acomodacao-standard-comunicante-04:
+  pergunta: O Standard Comunicante do Grand Oca Maragogi tem varanda em cada quarto?
+  resposta: Sim. O Standard Comunicante tem duas varandas, uma para cada quarto, e duas portas de comunicação entre os ambientes. As grandes janelas e as varandas convidam ao descanso, com vista para o gramado e os coqueiros do resort. Vale pedir a vista preferida na cotação.
+  tema: hospedagem
+  paginas:
+    - acomodacao:standard-comunicante
+  ordem: 5043
+  fontes: *id003
+e-acomodacao-standard-comunicante-05:
+  pergunta: Para quem o Standard Comunicante do Grand Oca Maragogi é indicado?
+  resposta: O Standard Comunicante é indicado para duas famílias ou para grupos grandes que querem ficar lado a lado, mas com a privacidade de dois quartos e dois banheiros separados. É uma opção prática para quem prefere uma única reserva para o grupo todo.
+  tema: hospedagem
+  paginas:
+    - acomodacao:standard-comunicante
+  ordem: 5044
+  fontes: *id003
+e-acomodacao-bangalo-vista-jardim-01:
+  pergunta: Como é o Bangalô Vista Jardim do Grand Oca Maragogi?
+  resposta: O Bangalô Vista Jardim é uma das 49 unidades do Grand Oca Maragogi ao lado das piscinas, com vista para o jardim. Tem cama de casal ou duas de solteiro, ar-condicionado split, TV LED de 32 polegadas, frigobar, telefone e banheiro com chuveiro, secador de cabelo e comodidades exclusivas.
+  tema: hospedagem
+  paginas:
+    - acomodacao:bangalo-vista-jardim
+  ordem: 5060
+  fontes: *id003
+e-acomodacao-bangalo-vista-jardim-02:
+  pergunta: Quantas pessoas o Bangalô Vista Jardim acomoda?
+  resposta: O Bangalô Vista Jardim acomoda dois adultos ou dois adultos e um bebê em berço. Para um terceiro hóspede que não seja bebê, o Bangalô Triplo, com cama extra, e o Apartamento Standard são alternativas, e a Resorts Online confirma a configuração na cotação.
+  tema: hospedagem
+  paginas:
+    - acomodacao:bangalo-vista-jardim
+  ordem: 5061
+  fontes: *id003
+e-acomodacao-bangalo-vista-jardim-03:
+  pergunta: Qual é a diferença entre o Bangalô Vista Jardim e o Vista Piscina?
+  resposta: 'A principal diferença é a vista: o Vista Jardim, com 49 unidades, é voltado para o paisagismo e o verde do resort, e o Vista Piscina, com 48, olha para a água e para a área de lazer. Camas, equipamentos e capacidade são os mesmos nas duas versões.'
+  tema: hospedagem
+  paginas:
+    - acomodacao:bangalo-vista-jardim
+  ordem: 5062
+  fontes: *id003
+e-acomodacao-bangalo-vista-jardim-04:
+  pergunta: O Bangalô Vista Jardim do Grand Oca Maragogi fica perto das piscinas?
+  resposta: Sim. Os bangalôs ficam ao lado das piscinas do Grand Oca Maragogi, que se estendem por quase 400 metros em frente a eles. Isso facilita ir da porta para a água e para os bares, e a Praia de Ponta de Mangue fica a poucos passos.
+  tema: hospedagem
+  paginas:
+    - acomodacao:bangalo-vista-jardim
+  ordem: 5063
+  fontes: *id003
+e-acomodacao-bangalo-vista-jardim-05:
+  pergunta: Para quem o Bangalô Vista Jardim é indicado?
+  resposta: O Bangalô Vista Jardim é indicado para casais, com ou sem bebê de colo, que preferem uma casinha térrea a um prédio de apartamentos e gostam de um ambiente mais reservado, com paisagismo, coqueiros e o movimento das piscinas por perto.
+  tema: hospedagem
+  paginas:
+    - acomodacao:bangalo-vista-jardim
+  ordem: 5064
+  fontes: *id003
+e-acomodacao-bangalo-vista-piscina-01:
+  pergunta: Como é o Bangalô Vista Piscina do Grand Oca Maragogi?
+  resposta: O Bangalô Vista Piscina é uma das 48 unidades do Grand Oca Maragogi ao lado das piscinas, com vista para a água. Tem cama de casal ou duas de solteiro, ar-condicionado split, TV LED de 32 polegadas, frigobar, telefone e banheiro com chuveiro, secador de cabelo e comodidades exclusivas.
+  tema: hospedagem
+  paginas:
+    - acomodacao:bangalo-vista-piscina
+  ordem: 5080
+  fontes: *id003
+e-acomodacao-bangalo-vista-piscina-02:
+  pergunta: Quantas pessoas o Bangalô Vista Piscina acomoda?
+  resposta: O Bangalô Vista Piscina acomoda dois adultos ou dois adultos e um bebê em berço, com cama de casal ou duas camas de solteiro. Confirme com a equipe da Resorts Online a disponibilidade do berço na categoria escolhida ao pedir a cotação.
+  tema: hospedagem
+  paginas:
+    - acomodacao:bangalo-vista-piscina
+  ordem: 5081
+  fontes: *id003
+e-acomodacao-bangalo-vista-piscina-03:
+  pergunta: 'Qual bangalô escolher: Vista Piscina ou Vista Jardim?'
+  resposta: O Vista Piscina agrada a quem quer ficar de frente para a área de lazer e para a água, mais movimentada. O Vista Jardim é voltado para o verde, em clima mais reservado. Metragem não informada, camas e capacidade são os mesmos, e a escolha depende só da vista.
+  tema: hospedagem
+  paginas:
+    - acomodacao:bangalo-vista-piscina
+  ordem: 5082
+  fontes: *id003
+e-acomodacao-bangalo-vista-piscina-04:
+  pergunta: O Bangalô Vista Piscina do Grand Oca Maragogi aceita bebê em berço?
+  resposta: Sim. Os Bangalôs Vista Jardim e Vista Piscina acomodam dois adultos e um bebê em berço. Informe a idade do bebê na cotação, porque ela muda a tarifa, e confirme a disponibilidade do berço com a equipe da Resorts Online antes de finalizar a reserva.
+  tema: hospedagem
+  paginas:
+    - acomodacao:bangalo-vista-piscina
+  ordem: 5083
+  fontes: *id003
+e-acomodacao-bangalo-vista-piscina-05:
+  pergunta: Para quem o Bangalô Vista Piscina é indicado?
+  resposta: O Bangalô Vista Piscina é indicado para casais, com ou sem bebê de colo, que querem acordar de frente para as piscinas, perto dos bares e da programação de lazer, em uma acomodação térrea e descontraída, a poucos passos da Praia de Ponta de Mangue.
+  tema: hospedagem
+  paginas:
+    - acomodacao:bangalo-vista-piscina
+  ordem: 5084
+  fontes: *id003
+e-acomodacao-bangalo-triplo-01:
+  pergunta: Como é o Bangalô Triplo do Grand Oca Maragogi?
+  resposta: O Bangalô Triplo do Grand Oca Maragogi tem vista para os jardins, fica ao lado das piscinas principais e conta com cama de casal ou duas de solteiro, mais uma cama extra. Tem ar-condicionado split, TV LCD de 32 polegadas, frigobar, telefone e banheiro com chuveiro e secador de cabelo.
+  tema: hospedagem
+  paginas:
+    - acomodacao:bangalo-triplo
+  ordem: 5100
+  fontes: *id003
+e-acomodacao-bangalo-triplo-02:
+  pergunta: Quantas pessoas o Bangalô Triplo do Grand Oca Maragogi acomoda?
+  resposta: O Bangalô Triplo oferece uma cama de casal ou duas de solteiro e uma cama extra, o que o torna a categoria de bangalô para até três hóspedes. É prática para casais com uma criança, pequenas famílias e trios de amigos, e a idade das crianças deve constar na cotação.
+  tema: hospedagem
+  paginas:
+    - acomodacao:bangalo-triplo
+  ordem: 5101
+  fontes: *id003
+e-acomodacao-bangalo-triplo-03:
+  pergunta: Qual é a vista do Bangalô Triplo do Grand Oca Maragogi?
+  resposta: O Bangalô Triplo tem vista para os jardins do resort, com gramado, canteiros floridos e coqueiros, e fica próximo às piscinas principais. É uma categoria voltada ao verde, em ambiente agradável e descontraído, perto da área de lazer. A vista é a mesma para todas as unidades da categoria.
+  tema: hospedagem
+  paginas:
+    - acomodacao:bangalo-triplo
+  ordem: 5102
+  fontes: *id003
+e-acomodacao-bangalo-triplo-04:
+  pergunta: Quantos Bangalôs Triplos o Grand Oca Maragogi tem?
+  resposta: O Grand Oca Maragogi tem 49 Bangalôs Triplos, ao lado das piscinas principais. Os Bangalôs Vista Jardim somam 49 e os Vista Piscina, 48, e os Triplos são os bangalôs com cama extra para um terceiro hóspede. A disponibilidade varia conforme a data e a ocupação.
+  tema: hospedagem
+  paginas:
+    - acomodacao:bangalo-triplo
+  ordem: 5103
+  fontes: *id003
+e-acomodacao-bangalo-triplo-05:
+  pergunta: Para quem o Bangalô Triplo do Grand Oca Maragogi é indicado?
+  resposta: O Bangalô Triplo é indicado para casais, famílias com uma criança, pequenos grupos e crianças maiores, já que a cama extra acomoda o terceiro hóspede. Mantém a vantagem de ficar perto das piscinas principais, em um ambiente térreo entre os jardins.
+  tema: hospedagem
+  paginas:
+    - acomodacao:bangalo-triplo
+  ordem: 5104
+  fontes: *id003
+e-acomodacao-suite-01:
+  pergunta: Como são as Suítes do Grand Oca Maragogi?
+  resposta: O Grand Oca Maragogi tem apenas duas Suítes, no andar superior, perto da piscina central. São unidades diferenciadas, com cama king size, ar-condicionado split, Smart TV de 50 polegadas, frigobar com serviço premium e configuração de sala, quarto e banheiro, com banheiro amplo em mármore, chuveiro separado e amenities exclusivos.
+  tema: hospedagem
+  paginas:
+    - acomodacao:suite
+  ordem: 5120
+  fontes: *id003
+e-acomodacao-suite-02:
+  pergunta: As Suítes do Grand Oca Maragogi têm vista para o mar?
+  resposta: As Suítes oferecem vista para a piscina e vista parcial para a Praia de Ponta de Mangue, descrita pelo resort como a melhor praia de Maragogi. Ficam no andar superior, perto da piscina central, e são as únicas acomodações do resort com vista parcial para a praia.
+  tema: hospedagem
+  paginas:
+    - acomodacao:suite
+  ordem: 5121
+  fontes: *id003
+e-acomodacao-suite-03:
+  pergunta: As Suítes do Grand Oca Maragogi têm cama king size?
+  resposta: Sim. As Suítes do Grand Oca Maragogi têm cama king size, sala separada do quarto e banheiro amplo em mármore, com chuveiro separado e amenities exclusivos. A capacidade depende da configuração da reserva e deve ser confirmada na cotação com a equipe da Resorts Online.
+  tema: hospedagem
+  paginas:
+    - acomodacao:suite
+  ordem: 5122
+  fontes: *id003
+e-acomodacao-suite-04:
+  pergunta: Quantas Suítes o Grand Oca Maragogi tem?
+  resposta: O Grand Oca Maragogi tem apenas duas Suítes, o que as torna uma das opções mais exclusivas do resort. Por serem tão poucas, a disponibilidade é muito limitada, e as datas de alta procura, como feriados e fim de ano, esgotam rápido. Reserve com antecedência.
+  tema: hospedagem
+  paginas:
+    - acomodacao:suite
+  ordem: 5123
+  fontes: *id003
+e-acomodacao-suite-05:
+  pergunta: Qual é o diferencial do frigobar das Suítes do Grand Oca Maragogi?
+  resposta: As Suítes contam com frigobar com serviço premium, um dos diferenciais da categoria. Além dele, oferecem Smart TV de 50 polegadas, ar-condicionado split, cama king size e uma configuração única de sala, quarto e banheiro, o que as coloca entre as acomodações de padrão superior do resort.
+  tema: hospedagem
+  paginas:
+    - acomodacao:suite
+  ordem: 5124
+  fontes: *id003
+e-acomodacao-deluxe-duas-camas-grandes-01:
+  pergunta: Como é o Deluxe com 2 Camas Grandes do Grand Oca Maragogi?
+  resposta: O Deluxe com 2 Camas Grandes fica na nova área D’Água do Grand Oca Maragogi, em um espaço amplo e iluminado, com duas camas extragrandes, Smart TV e varanda de frente para a piscina. É indicado para quem quer a estrutura da área mais nova do resort.
+  tema: hospedagem
+  paginas:
+    - acomodacao:deluxe-duas-camas-grandes
+  ordem: 5140
+  fontes: *id003
+e-acomodacao-deluxe-duas-camas-grandes-02:
+  pergunta: Quantas pessoas o Deluxe com 2 Camas Grandes acomoda?
+  resposta: O Deluxe com 2 Camas Grandes acomoda até quatro hóspedes, com duas camas extragrandes. A categoria atende casais, famílias pequenas e amigos que viajam juntos, e a metragem não é informada, ao contrário do Duplo Deluxe, de 50 m², e da Suíte Deluxe, de 72 m².
+  tema: hospedagem
+  paginas:
+    - acomodacao:deluxe-duas-camas-grandes
+  ordem: 5141
+  fontes: *id003
+e-acomodacao-deluxe-duas-camas-grandes-03:
+  pergunta: O Deluxe com 2 Camas Grandes tem varanda?
+  resposta: Sim. O Deluxe com 2 Camas Grandes tem varanda com vista para a piscina e o parque aquático da área D’Água. É um dos ambientes preferidos de quem quer acompanhar o movimento da área de lazer sem sair do quarto.
+  tema: hospedagem
+  paginas:
+    - acomodacao:deluxe-duas-camas-grandes
+  ordem: 5142
+  fontes: *id003
+e-acomodacao-deluxe-duas-camas-grandes-04:
+  pergunta: O que é a nova área D’Água, onde fica o Deluxe com 2 Camas Grandes?
+  resposta: A área D’Água é a parte mais nova do Grand Oca Maragogi, com piscinas, solário, borda infinita, parque aquático e um bar com snacks e gelados, além do chá da tarde. É onde ficam os quartos Deluxe, com varandas voltadas para a piscina.
+  tema: hospedagem
+  paginas:
+    - acomodacao:deluxe-duas-camas-grandes
+  ordem: 5143
+  fontes: *id003
+e-acomodacao-deluxe-duas-camas-grandes-05:
+  pergunta: Para quem o Deluxe com 2 Camas Grandes do Grand Oca Maragogi é indicado?
+  resposta: O Deluxe é indicado para casais e famílias que querem mais conforto na área mais nova do resort, com vista para a piscina e Smart TV no quarto. A varanda de frente para o parque aquático é um diferencial para quem viaja com crianças.
+  tema: hospedagem
+  paginas:
+    - acomodacao:deluxe-duas-camas-grandes
+  ordem: 5144
+  fontes: *id003
+e-acomodacao-duplo-deluxe-sofa-cama-01:
+  pergunta: Como é o Duplo Deluxe com Sofá-cama do Grand Oca Maragogi?
+  resposta: O Duplo Deluxe com Sofá-cama tem 50 m² e fica na nova área D’Água do Grand Oca Maragogi, com configuração fixa de duas camas de casal e um sofá-cama. Tem varanda com vista para a piscina e foi pensado para famílias que querem mais espaço durante a hospedagem.
+  tema: hospedagem
+  paginas:
+    - acomodacao:duplo-deluxe-sofa-cama
+  ordem: 5160
+  fontes: *id003
+e-acomodacao-duplo-deluxe-sofa-cama-02:
+  pergunta: Quantas pessoas o Duplo Deluxe com Sofá-cama acomoda?
+  resposta: O Duplo Deluxe acomoda até cinco hóspedes, no máximo quatro adultos e uma criança, com duas camas de casal e um sofá-cama. A configuração é fixa, o que permite a famílias com crianças ou grupos de amigos dividir o mesmo apartamento com conforto.
+  tema: hospedagem
+  paginas:
+    - acomodacao:duplo-deluxe-sofa-cama
+  ordem: 5161
+  fontes: *id003
+e-acomodacao-duplo-deluxe-sofa-cama-03:
+  pergunta: Qual é a metragem do Duplo Deluxe com Sofá-cama?
+  resposta: O Duplo Deluxe com Sofá-cama tem 50 m², menos que a Suíte Deluxe, de 72 m², a maior do resort. É um quarto amplo, com a varanda de frente para a piscina da área D’Água, que se soma à área interna e dá mais espaço às famílias.
+  tema: hospedagem
+  paginas:
+    - acomodacao:duplo-deluxe-sofa-cama
+  ordem: 5162
+  fontes: *id003
+e-acomodacao-duplo-deluxe-sofa-cama-04:
+  pergunta: O Duplo Deluxe tem vista para a piscina?
+  resposta: Sim. O Duplo Deluxe tem varanda com vista para a piscina da área D’Água, uma das opções do Grand Oca Maragogi para quem quer ver o movimento da área de lazer, a poucos passos dos bares e do solário. Confirme a disponibilidade da categoria para as suas datas.
+  tema: hospedagem
+  paginas:
+    - acomodacao:duplo-deluxe-sofa-cama
+  ordem: 5163
+  fontes: *id003
+e-acomodacao-duplo-deluxe-sofa-cama-05:
+  pergunta: Para quem o Duplo Deluxe com Sofá-cama é indicado?
+  resposta: O Duplo Deluxe é indicado para famílias com crianças que buscam mais espaço na área mais nova do resort, com a comodidade do sofá-cama para uma pessoa a mais. Para seis hóspedes, a opção é a Suíte Deluxe ou o Standard Comunicante.
+  tema: hospedagem
+  paginas:
+    - acomodacao:duplo-deluxe-sofa-cama
+  ordem: 5164
+  fontes: *id003
+e-acomodacao-suite-deluxe-01:
+  pergunta: Como é a Suíte Deluxe do Grand Oca Maragogi?
+  resposta: A Suíte Deluxe é a maior acomodação do Grand Oca Maragogi, com 72 m², duas camas extragrandes e sala de estar com sofá-cama. Tem cafeteira Nespresso, Smart TV e varanda com vista para a piscina da nova área D’Água, e é um quarto pensado para as férias em família.
+  tema: hospedagem
+  paginas:
+    - acomodacao:suite-deluxe
+  ordem: 5180
+  fontes: *id003
+e-acomodacao-suite-deluxe-02:
+  pergunta: Quantas pessoas a Suíte Deluxe do Grand Oca Maragogi acomoda?
+  resposta: A Suíte Deluxe acomoda até seis hóspedes, no máximo quatro adultos e duas crianças, com duas camas extragrandes e um sofá-cama na sala de estar. É a categoria de maior capacidade do Grand Oca Maragogi, ao lado do Standard Comunicante, e a mais espaçosa para famílias.
+  tema: hospedagem
+  paginas:
+    - acomodacao:suite-deluxe
+  ordem: 5181
+  fontes: *id003
+e-acomodacao-suite-deluxe-03:
+  pergunta: A Suíte Deluxe do Grand Oca Maragogi tem cafeteira Nespresso?
+  resposta: Sim. A cafeteira Nespresso faz parte da Suíte Deluxe do Grand Oca Maragogi, junto com a Smart TV e a varanda com vista para a nova área D’Água. É a categoria de maior metragem do resort, com 72 m². Confirme os itens da categoria na cotação com a equipe.
+  tema: hospedagem
+  paginas:
+    - acomodacao:suite-deluxe
+  ordem: 5182
+  fontes: *id003
+e-acomodacao-suite-deluxe-04:
+  pergunta: Qual é a vista da Suíte Deluxe do Grand Oca Maragogi?
+  resposta: A Suíte Deluxe tem varanda com vista para a piscina da nova área D’Água, de frente para o parque aquático e para o solário. Os edifícios da área ficam de frente para a água, o que dá ao hóspede um cenário de piscina e céu aberto.
+  tema: hospedagem
+  paginas:
+    - acomodacao:suite-deluxe
+  ordem: 5183
+  fontes: *id003
+e-acomodacao-suite-deluxe-05:
+  pergunta: Para quem a Suíte Deluxe do Grand Oca Maragogi é indicada?
+  resposta: A Suíte Deluxe é indicada para famílias que buscam o máximo de espaço e conforto do resort, com sala própria e cafeteira Nespresso na maior acomodação da propriedade. É também uma das opções mais procuradas em feriados, quando esgota com antecedência.
+  tema: hospedagem
+  paginas:
+    - acomodacao:suite-deluxe
+  ordem: 5184
+  fontes: *id003
+e-restaurante-restaurante-dos-corais-01:
+  pergunta: Como é o Restaurante dos Corais do Grand Oca Maragogi?
+  resposta: O Restaurante dos Corais é o principal do Grand Oca Maragogi. Fica de frente para o mar, com janelas panorâmicas que criam sensação de amplitude, e serve café da manhã, almoço e jantar em buffet de culinária regional, com opções variadas, show cooking e mesas para famílias e grupos.
+  tema: all-inclusive
+  paginas:
+    - restaurante:restaurante-dos-corais
+  ordem: 5200
+  fontes: *id004
+e-restaurante-restaurante-dos-corais-02:
+  pergunta: Qual a capacidade do Restaurante dos Corais?
+  resposta: O Restaurante dos Corais tem capacidade para 340 pessoas e fica de frente para o mar, com janelas panorâmicas. É o maior restaurante do Grand Oca Maragogi, e os horários de refeições são distribuídos ao longo do dia, o que ajuda a evitar filas e a manter o serviço ágil.
+  tema: all-inclusive
+  paginas:
+    - restaurante:restaurante-dos-corais
+  ordem: 5201
+  fontes: *id004
+e-restaurante-restaurante-dos-corais-03:
+  pergunta: Quais são os horários do Restaurante dos Corais?
+  resposta: O café da manhã é servido das 7h às 10h, o almoço das 12h30 às 15h e o jantar das 19h às 22h, e o chá da tarde acontece das 16h30 às 17h30 no terraço junto ao Corais. Os horários podem mudar sem aviso prévio, então confirme no resort durante a hospedagem.
+  tema: all-inclusive
+  paginas:
+    - restaurante:restaurante-dos-corais
+  ordem: 5202
+  fontes: *id004
+e-restaurante-restaurante-dos-corais-04:
+  pergunta: O que tem no almoço e no jantar do Restaurante dos Corais?
+  resposta: O almoço e o jantar em buffet trazem saladas, pratos quentes, massas, acompanhamentos e sobremesas variadas, além do serviço de show cooking. O cardápio muda ao longo da estadia, e as marcas e as receitas podem ser alteradas sem aviso, conforme a operação.
+  tema: all-inclusive
+  paginas:
+    - restaurante:restaurante-dos-corais
+  ordem: 5203
+  fontes: *id004
+e-restaurante-restaurante-dos-corais-05:
+  pergunta: É preciso reservar o Restaurante dos Corais?
+  resposta: O resort não indica reserva obrigatória para o Restaurante dos Corais, que funciona em buffet para café, almoço e jantar. Já o Ix’U, o Il Giardino e o jantar do La Brasa pedem reserva prévia no Guest Service, e a programação pode mudar conforme a operação.
+  tema: all-inclusive
+  paginas:
+    - restaurante:restaurante-dos-corais
+  ordem: 5204
+  fontes: *id004
+e-restaurante-ixu-01:
+  pergunta: Como é o restaurante Ix’U do Grand Oca Maragogi?
+  resposta: O Ix’U é um restaurante moderno de cozinha fusion, em ambiente lounge às margens da praia, no Grand Oca Maragogi. Mistura culturas e sabores entre o antigo e o moderno, tem espaço para até 70 pessoas e carta exclusiva de vinhos, e é uma experiência diferenciada em Maragogi.
+  tema: all-inclusive
+  paginas:
+    - restaurante:ixu
+  ordem: 5220
+  fontes: *id004
+e-restaurante-ixu-02:
+  pergunta: O Ix’U está incluído no all inclusive do Grand Oca Maragogi?
+  resposta: Sim. O Ix’U faz parte do sistema all inclusive do Grand Oca Maragogi, com reserva prévia no Guest Service e conforme as condições vigentes. A quantidade de reservas incluídas depende do número de noites da hospedagem, e a carta de vinhos exclusiva segue condições próprias.
+  tema: all-inclusive
+  paginas:
+    - restaurante:ixu
+  ordem: 5221
+  fontes: *id004
+e-restaurante-ixu-03:
+  pergunta: Como reservar o Ix’U no Grand Oca Maragogi?
+  resposta: A reserva do Ix’U é feita no Guest Service, ao lado da recepção do Grand Oca Maragogi, depois da chegada ao resort. A quantidade de reservas incluídas varia conforme o número de noites, e as regras e a disponibilidade podem mudar, então confirme as condições na estadia.
+  tema: all-inclusive
+  paginas:
+    - restaurante:ixu
+  ordem: 5222
+  fontes: *id004
+e-restaurante-ixu-04:
+  pergunta: O que o Ix’U serve no Grand Oca Maragogi?
+  resposta: O cardápio de referência do Ix’U traz couvert com creme de queijo gorgonzola e manteigas, salada ou creme de abóbora de entrada, pescada amarela com arroz cremoso de camarão ou filé mignon com purê de batata e demi-glacé, e brownie de chocolate branco ou petit gâteau.
+  tema: all-inclusive
+  paginas:
+    - restaurante:ixu
+  ordem: 5223
+  fontes: *id004
+e-restaurante-ixu-05:
+  pergunta: O Ix’U fica de frente para o mar?
+  resposta: Sim. O Ix’U fica às margens da praia, no Grand Oca Maragogi, em ambiente lounge e voltado para a Praia de Ponta de Mangue. É um dos restaurantes temáticos do resort, ao lado do Il Giardino e do La Brasa, e também é local do brunch da experiência VIP Premium.
+  tema: all-inclusive
+  paginas:
+    - restaurante:ixu
+  ordem: 5224
+  fontes: *id004
+e-restaurante-il-giardino-01:
+  pergunta: Como é o restaurante Il Giardino do Grand Oca Maragogi?
+  resposta: O Il Giardino é o restaurante italiano do Grand Oca Maragogi, com pratos tradicionais da Itália, como massas, e um menu degustação. O resort o descreve como uma opção que encanta também os pequenos, e ele faz parte do sistema all inclusive, com reserva prévia no Guest Service.
+  tema: all-inclusive
+  paginas:
+    - restaurante:il-giardino
+  ordem: 5240
+  fontes: *id004
+e-restaurante-il-giardino-02:
+  pergunta: O Il Giardino está incluído no all inclusive do Grand Oca Maragogi?
+  resposta: Sim. O Il Giardino faz parte do sistema all inclusive do Grand Oca Maragogi e exige reserva prévia no Guest Service, conforme as condições vigentes. A quantidade de reservas incluídas na estadia varia conforme o número de noites da hospedagem.
+  tema: all-inclusive
+  paginas:
+    - restaurante:il-giardino
+  ordem: 5241
+  fontes: *id004
+e-restaurante-il-giardino-03:
+  pergunta: Qual é o menu degustação do Il Giardino?
+  resposta: O cardápio de referência traz focaccia de tomate e mozzarella, cappelloni com molho de queijos, spaghetti al nero di seppia com frutos do mar e camarão, filé mignon com maçã caramelizada e, de sobremesa, tiramisù ou panna cotta. Pratos podem mudar sem aviso prévio.
+  tema: all-inclusive
+  paginas:
+    - restaurante:il-giardino
+  ordem: 5242
+  fontes: *id004
+e-restaurante-il-giardino-04:
+  pergunta: O Il Giardino é bom para crianças?
+  resposta: O resort destaca que a comida italiana do Il Giardino encanta os pequenos, com massas tradicionais como protagonistas. Como o restaurante exige reserva prévia e funciona com menu degustação, vale combinar o horário no Guest Service e confirmar o que pode ser adaptado ao paladar das crianças.
+  tema: all-inclusive
+  paginas:
+    - restaurante:il-giardino
+  ordem: 5243
+  fontes: *id004
+e-restaurante-il-giardino-05:
+  pergunta: Como reservar o Il Giardino no Grand Oca Maragogi?
+  resposta: A reserva do Il Giardino é feita no Guest Service do Grand Oca Maragogi, ao lado da recepção, depois da chegada ao resort. O número de reservas incluídas no all inclusive depende das noites da estadia, e a disponibilidade pode mudar, então confirme as regras no dia da chegada.
+  tema: all-inclusive
+  paginas:
+    - restaurante:il-giardino
+  ordem: 5244
+  fontes: *id004
+e-restaurante-la-brasa-01:
+  pergunta: Como é o restaurante La Brasa do Grand Oca Maragogi?
+  resposta: 'O La Brasa tem duas faces no Grand Oca Maragogi: no almoço, é um espaço de churrasco informal, com carnes grelhadas, inclusive em traje de banho, dentro do all inclusive; à noite, vira um restaurante temático especializado em carnes na brasa, com reserva prévia no Guest Service.'
+  tema: all-inclusive
+  paginas:
+    - restaurante:la-brasa
+  ordem: 5260
+  fontes: *id004
+e-restaurante-la-brasa-02:
+  pergunta: O La Brasa está incluído no all inclusive do Grand Oca Maragogi?
+  resposta: Sim. O La Brasa participa do all inclusive do Grand Oca Maragogi. O almoço informal faz parte da experiência, e o jantar temático exige reserva prévia no Guest Service, com a quantidade de reservas incluídas variando conforme o número de noites da hospedagem.
+  tema: all-inclusive
+  paginas:
+    - restaurante:la-brasa
+  ordem: 5261
+  fontes: *id004
+e-restaurante-la-brasa-03:
+  pergunta: O que o La Brasa serve no Grand Oca Maragogi?
+  resposta: O cardápio de referência traz pão de alho, choripán, pastel e provoleta, linguiças, cortes bovinos e suínos, espetinhos de carne e de frango, arroz, farofa, banana à milanesa e vinagrete, e sobremesas como pudim, mousse de chocolate ou arroz doce. Itens mudam sem aviso.
+  tema: all-inclusive
+  paginas:
+    - restaurante:la-brasa
+  ordem: 5262
+  fontes: *id004
+e-restaurante-la-brasa-04:
+  pergunta: Dá para almoçar de traje de banho no La Brasa?
+  resposta: Sim. Durante o almoço, o La Brasa funciona como espaço de churrasco em ambiente descontraído, ideal para aproveitar carnes grelhadas de maneira informal, inclusive em traje de banho. À noite, o restaurante tem formato temático e exige reserva prévia no Guest Service.
+  tema: all-inclusive
+  paginas:
+    - restaurante:la-brasa
+  ordem: 5263
+  fontes: *id004
+e-restaurante-la-brasa-05:
+  pergunta: É preciso reservar o jantar do La Brasa?
+  resposta: Sim. O jantar do La Brasa exige reserva prévia no Guest Service, e o número de reservas incluídas no all inclusive depende da quantidade de noites da hospedagem. O almoço informal não é citado como dependente de reserva, mas as regras podem mudar conforme a operação.
+  tema: all-inclusive
+  paginas:
+    - restaurante:la-brasa
+  ordem: 5264
+  fontes: *id004
+e-restaurante-praca-de-alimentacao-01:
+  pergunta: O que é a Praça de Alimentação do Grand Oca Maragogi?
+  resposta: A Praça de Alimentação do Grand Oca Maragogi reúne pontos de petiscos, entre eles o Onda Oca Hamburguer Bar, na rua de compras, a Cantina Mex Oca, de comida mexicana, a Pizzoca, de pizzas, e a Gelattoca, de picolés e sorvetes. É a opção para lanchar entre as refeições principais.
+  tema: all-inclusive
+  paginas:
+    - restaurante:praca-de-alimentacao
+  ordem: 5280
+  fontes: *id004
+e-restaurante-praca-de-alimentacao-02:
+  pergunta: O que serve o Onda Oca Hamburguer Bar?
+  resposta: O Onda Oca Hamburguer Bar é uma opção gastronômica do Grand Oca Maragogi que funciona na rua de compras e oferece sanduíches, hambúrgueres, sucos e refrigerantes. A disponibilidade dos itens do cardápio, incluídos no all inclusive, segue as regras de cada ponto de serviço.
+  tema: all-inclusive
+  paginas:
+    - restaurante:praca-de-alimentacao
+  ordem: 5281
+  fontes: *id004
+e-restaurante-praca-de-alimentacao-03:
+  pergunta: O que serve a Cantina Mex Oca?
+  resposta: A Cantina Mex Oca é a opção de comida mexicana do Grand Oca Maragogi, com pratos e bebidas típicos, como tequila, burritos e tacos. Faz parte da praça de alimentação, e a disponibilidade dos itens no all inclusive segue o cardápio vigente de cada ponto de serviço.
+  tema: all-inclusive
+  paginas:
+    - restaurante:praca-de-alimentacao
+  ordem: 5282
+  fontes: *id004
+e-restaurante-praca-de-alimentacao-04:
+  pergunta: Onde comer pizza no Grand Oca Maragogi?
+  resposta: A Pizzoca é a pizzaria do Grand Oca Maragogi, com ampla variedade de pizzas inspiradas na culinária italiana. Fica na praça de alimentação, ao lado da hamburgueria, da cantina mexicana e da sorveteria, e os itens seguem o cardápio vigente do all inclusive.
+  tema: all-inclusive
+  paginas:
+    - restaurante:praca-de-alimentacao
+  ordem: 5283
+  fontes: *id004
+e-restaurante-praca-de-alimentacao-05:
+  pergunta: Onde tomar sorvete e picolé no Grand Oca Maragogi?
+  resposta: A Gelattoca serve picolés e sorvetes refrescantes na praça de alimentação do Grand Oca Maragogi. O bar da Piscina D’Água, na área nova de piscinas, também tem uma área de snacks e gelados, o que ajuda a refrescar nos dias quentes sem se afastar da água.
+  tema: all-inclusive
+  paginas:
+    - restaurante:praca-de-alimentacao
+  ordem: 5284
+  fontes: *id004
+e-data-especial-reveillon-01:
+  pergunta: Vale a pena passar o Réveillon no Grand Oca Maragogi?
+  resposta: O Réveillon no Grand Oca Maragogi une praia, piscinas e all inclusive em Maragogi, uma das épocas mais disputadas do ano. O resort divulga uma programação própria de fim de ano, e as tarifas, as noites mínimas e as categorias disponíveis variam, então consulte a Resorts Online com antecedência.
+  tema: reservas
+  paginas:
+    - data-especial:reveillon
+  ordem: 5300
+  fontes: *id007
+e-data-especial-reveillon-02:
+  pergunta: O Grand Oca Maragogi tem programação de Réveillon?
+  resposta: Sim. O Grand Oca Maragogi divulga uma programação de Réveillon, documento que muda a cada ano e detalha as atrações da virada. Os detalhes, como festas, ceia e atividades, são informados perto da data, e o site não antecipa valores ou condições que ainda não foram confirmados.
+  tema: reservas
+  paginas:
+    - data-especial:reveillon
+  ordem: 5301
+  fontes: *id007
+e-data-especial-reveillon-03:
+  pergunta: Qual é o período do Réveillon no Grand Oca Maragogi?
+  resposta: O período varia a cada ano e depende da política de noites mínimas do resort. Em geral, a procura se concentra em torno de 31 de dezembro e do Ano Novo. A equipe da Resorts Online confirma as datas, o mínimo de noites e a disponibilidade para o seu Réveillon.
+  tema: reservas
+  paginas:
+    - data-especial:reveillon
+  ordem: 5302
+  fontes: *id007
+e-data-especial-reveillon-04:
+  pergunta: O Réveillon no Grand Oca Maragogi é bom para famílias?
+  resposta: Sim. O resort combina praia, piscinas, parque aquático, Kids Club e restaurantes, o que ajuda famílias a passar a virada sem sair do resort. As categorias maiores, como a Suíte Deluxe e as Suítes, esgotam primeiro, então vale reservar cedo e informar a idade das crianças.
+  tema: reservas
+  paginas:
+    - data-especial:reveillon
+  ordem: 5303
+  fontes: *id007
+e-data-especial-carnaval-01:
+  pergunta: Vale a pena passar o Carnaval no Grand Oca Maragogi?
+  resposta: O Carnaval de Maragogi tem bailes, frevo e desfiles pelas ruas, e o Grand Oca Maragogi permite alternar a folia com dias de praia, piscinas e all inclusive. É um dos períodos mais procurados do ano, e as tarifas variam conforme a data, a ocupação e a antecedência da reserva.
+  tema: reservas
+  paginas:
+    - data-especial:carnaval
+  ordem: 5320
+  fontes: *id007
+e-data-especial-carnaval-02:
+  pergunta: Como é o Carnaval de Maragogi?
+  resposta: O Carnaval é a festa mais importante de Maragogi, com bailes, frevo e desfiles pelas ruas da cidade, que atraem milhares de visitantes. O Grand Oca Maragogi fica em Ponta de Mangue, ao norte do centro, então é preciso usar táxi, transfer ou carro para ir à cidade.
+  tema: reservas
+  paginas:
+    - data-especial:carnaval
+  ordem: 5321
+  fontes: *id007
+e-data-especial-carnaval-03:
+  pergunta: Quando é o Carnaval e quantas noites reservar no Grand Oca Maragogi?
+  resposta: O Carnaval depende do calendário da Páscoa e muda a cada ano. O feriadão costuma ir de sábado a quarta-feira, e algumas datas exigem noites mínimas. A equipe da Resorts Online confirma o período, o mínimo de noites e a disponibilidade na hora da cotação.
+  tema: reservas
+  paginas:
+    - data-especial:carnaval
+  ordem: 5322
+  fontes: *id007
+e-data-especial-carnaval-04:
+  pergunta: O Grand Oca Maragogi tem programação de Carnaval?
+  resposta: O resort mantém programação diária de lazer, com shows na Esplanada Tropical, e pode divulgar atrações especiais em feriados. O site não antecipa detalhes que ainda não foram confirmados, e a programação de cada ano é informada perto da data, pelo resort.
+  tema: reservas
+  paginas:
+    - data-especial:carnaval
+  ordem: 5323
+  fontes: *id007
+e-data-especial-natal-01:
+  pergunta: Vale a pena passar o Natal no Grand Oca Maragogi?
+  resposta: O Natal é um período de alta procura no Grand Oca Maragogi, e a praia, as piscinas, o parque aquático e o Kids Club ajudam a celebrar em família. O resort divulga uma programação própria de Natal, e as condições mudam a cada ano, então vale consultar com antecedência.
+  tema: reservas
+  paginas:
+    - data-especial:natal
+  ordem: 5340
+  fontes: *id007
+e-data-especial-natal-02:
+  pergunta: O Grand Oca Maragogi tem programação de Natal?
+  resposta: Sim. O Grand Oca Maragogi divulga uma programação de Natal, documento que muda a cada ano e detalha as atrações do período. Os detalhes, como ceia, festas e atividades, são informados perto da data, e o site não antecipa valores ou condições ainda não confirmados.
+  tema: reservas
+  paginas:
+    - data-especial:natal
+  ordem: 5341
+  fontes: *id007
+e-data-especial-natal-03:
+  pergunta: Dá para reservar só a hospedagem para o Natal no Grand Oca Maragogi?
+  resposta: Sim. É possível reservar só a hospedagem para o Natal, informando datas, hóspedes e a idade das crianças, ou escolher o pacote com aéreo, que reúne hotel e passagens. Em ambos os casos, as categorias maiores e os voos esgotam rápido, e a antecedência faz diferença.
+  tema: reservas
+  paginas:
+    - data-especial:natal
+  ordem: 5342
+  fontes: *id007
+e-data-especial-natal-04:
+  pergunta: O Natal no Grand Oca Maragogi tem noites mínimas?
+  resposta: Em períodos de alta procura, como o Natal, pode haver exigência de noites mínimas, que varia a cada ano. O resort não publica uma regra fixa, e a equipe da Resorts Online confirma o mínimo de noites e as tarifas na hora da cotação, de acordo com as datas escolhidas.
+  tema: reservas
+  paginas:
+    - data-especial:natal
+  ordem: 5343
+  fontes: *id007
+e-data-especial-pascoa-01:
+  pergunta: Vale a pena passar a Páscoa no Grand Oca Maragogi?
+  resposta: A Páscoa e a Sexta-feira Santa formam um feriadão que combina bem com os resorts de estrutura completa, como o Grand Oca Maragogi, com praia, piscinas, restaurantes e lazer em um só lugar. Como o feriado concentra a procura, as tarifas e as categorias mudam conforme as reservas.
+  tema: reservas
+  paginas:
+    - data-especial:pascoa
+  ordem: 5360
+  fontes: *id007
+e-data-especial-pascoa-02:
+  pergunta: Quando é a Páscoa e qual é o feriadão no Grand Oca Maragogi?
+  resposta: A Páscoa é uma data móvel, entre março e abril. O feriadão costuma ir da Sexta-feira Santa à segunda-feira, e algumas datas exigem noites mínimas. A equipe da Resorts Online confirma o período do ano, o mínimo de noites e a disponibilidade na cotação.
+  tema: reservas
+  paginas:
+    - data-especial:pascoa
+  ordem: 5361
+  fontes: *id007
+e-data-especial-pascoa-03:
+  pergunta: O Grand Oca Maragogi tem programação de Páscoa?
+  resposta: O resort mantém programação diária de lazer e pode divulgar atrações em feriados, mas o site não antecipa detalhes que ainda não foram confirmados. A programação de cada ano é informada perto da data, e os horários e as atividades podem mudar conforme o clima e a operação.
+  tema: reservas
+  paginas:
+    - data-especial:pascoa
+  ordem: 5362
+  fontes: *id007
+e-data-especial-pascoa-04:
+  pergunta: A Páscoa é boa para viajar em família ao Grand Oca Maragogi?
+  resposta: Sim. O Grand Oca Maragogi oferece Kids Club para crianças de 4 a 12 anos, parque aquático, playground e acomodações para até seis pessoas, o que facilita viagens de família no feriadão. Como a procura é alta, vale reservar com antecedência e informar a idade das crianças.
+  tema: reservas
+  paginas:
+    - data-especial:pascoa
+  ordem: 5363
+  fontes: *id007
+e-data-especial-tiradentes-01:
+  pergunta: Vale a pena viajar no feriado de Tiradentes para o Grand Oca Maragogi?
+  resposta: O feriado de Tiradentes, em 21 de abril, é uma boa chance para uma escapada ao Grand Oca Maragogi, em Maragogi. Quando cai perto de um fim de semana, forma um feriado prolongado, com praia, piscinas e all inclusive em um só lugar, e as datas esgotam rápido.
+  tema: reservas
+  paginas:
+    - data-especial:tiradentes
+  ordem: 5380
+  fontes: *id007
+e-data-especial-tiradentes-02:
+  pergunta: Tiradentes é sempre em 21 de abril?
+  resposta: Sim. O feriado de Tiradentes é fixo, em 21 de abril, mas o número de dias de descanso muda conforme o dia da semana em que a data cai. Quando coincide com a sexta ou a segunda-feira, vira um feriadão, e a procura pelo Grand Oca Maragogi sobe.
+  tema: reservas
+  paginas:
+    - data-especial:tiradentes
+  ordem: 5381
+  fontes: *id007
+e-data-especial-tiradentes-03:
+  pergunta: O Grand Oca Maragogi tem tarifa especial em Tiradentes?
+  resposta: O site não publica valores de feriado. As tarifas variam conforme a data, a ocupação e a antecedência, e a Resorts Online envia a tarifa atualizada, com as formas de pagamento disponíveis, como até 10x sem juros no cartão ou 5% de desconto no Pix, quando elegível.
+  tema: reservas
+  paginas:
+    - data-especial:tiradentes
+  ordem: 5382
+  fontes: *id007
+e-data-especial-tiradentes-04:
+  pergunta: Dá para viajar de avião para o Grand Oca Maragogi no feriado de Tiradentes?
+  resposta: Sim. Para chegar, os aeroportos mais usados são o do Recife e o de Maceió, e o trecho final é feito de carro, táxi ou transfer. Em feriados, voos e transfers esgotam mais rápido, então vale cotar o pacote com aéreo ou reservar a passagem com antecedência.
+  tema: reservas
+  paginas:
+    - data-especial:tiradentes
+  ordem: 5383
+  fontes: *id007
+e-data-especial-dia-do-trabalho-01:
+  pergunta: Vale a pena viajar no feriado de 1º de maio para o Grand Oca Maragogi?
+  resposta: O feriado de 1º de maio costuma elevar a procura por destinos de praia e resorts all inclusive, e o Grand Oca Maragogi, em Maragogi, é uma opção para descansar com piscinas, praia e refeições incluídas. Quando há emenda com o fim de semana, a procura é maior ainda.
+  tema: reservas
+  paginas:
+    - data-especial:dia-do-trabalho
+  ordem: 5400
+  fontes: *id007
+e-data-especial-dia-do-trabalho-02:
+  pergunta: O feriado do Dia do Trabalho vira feriadão no Grand Oca Maragogi?
+  resposta: Depende do dia da semana. O Dia do Trabalho é fixo, em 1º de maio, e forma um feriadão quando cai perto de um fim de semana. A Resorts Online confirma o mínimo de noites, as tarifas e a disponibilidade para o período escolhido na hora da cotação.
+  tema: reservas
+  paginas:
+    - data-especial:dia-do-trabalho
+  ordem: 5401
+  fontes: *id007
+e-data-especial-dia-do-trabalho-03:
+  pergunta: O Grand Oca Maragogi tem piscina e praia no Dia do Trabalho?
+  resposta: Sim. O resort funciona normalmente nos feriados, com piscinas, praia de Ponta de Mangue, restaurantes e bares, e a programação de lazer segue a agenda vigente. Horários e atividades podem mudar conforme o clima e a operação, e as condições valem para o plano contratado.
+  tema: reservas
+  paginas:
+    - data-especial:dia-do-trabalho
+  ordem: 5402
+  fontes: *id007
+e-data-especial-dia-do-trabalho-04:
+  pergunta: Como reservar o Grand Oca Maragogi para o feriado de 1º de maio?
+  resposta: Reserve pelo site, escolhendo só a hospedagem ou o pacote com aéreo, ou pela central da Resorts Online, no 0800 737 6787. Informe datas, hóspedes e a idade das crianças, e a equipe confirma a disponibilidade, a tarifa e as condições de pagamento do período.
+  tema: reservas
+  paginas:
+    - data-especial:dia-do-trabalho
+  ordem: 5403
+  fontes: *id007
+e-data-especial-sete-de-setembro-01:
+  pergunta: Vale a pena viajar no 7 de Setembro para o Grand Oca Maragogi?
+  resposta: O feriado de 7 de Setembro é uma boa oportunidade para conhecer Maragogi e o Grand Oca Maragogi, no litoral norte de Alagoas. Dependendo do dia da semana, a data forma um feriadão, com praia, piscinas, restaurantes e lazer, e a disponibilidade varia conforme a antecedência.
+  tema: reservas
+  paginas:
+    - data-especial:sete-de-setembro
+  ordem: 5420
+  fontes: *id007
+e-data-especial-sete-de-setembro-02:
+  pergunta: O 7 de Setembro sempre forma feriadão?
+  resposta: Não. O feriado de 7 de Setembro é fixo, mas só forma feriadão quando cai perto de um fim de semana, e o período varia a cada ano. A equipe da Resorts Online confirma a data, o mínimo de noites e a disponibilidade do Grand Oca Maragogi para o seu calendário.
+  tema: reservas
+  paginas:
+    - data-especial:sete-de-setembro
+  ordem: 5421
+  fontes: *id007
+e-data-especial-sete-de-setembro-03:
+  pergunta: O Grand Oca Maragogi tem tarifa diferente em 7 de Setembro?
+  resposta: O site não publica valores de feriado. As tarifas variam conforme a data, a ocupação e a antecedência da reserva, e a Resorts Online envia a tarifa atualizada na cotação, com as formas de pagamento elegíveis, como parcelamento em até 10x sem juros ou 5% de desconto no Pix.
+  tema: reservas
+  paginas:
+    - data-especial:sete-de-setembro
+  ordem: 5422
+  fontes: *id007
+e-data-especial-sete-de-setembro-04:
+  pergunta: Dá para viajar de carro para o Grand Oca Maragogi no feriado de 7 de Setembro?
+  resposta: Sim. O resort fica na Rodovia AL-101 Norte, em Ponta de Mangue, a cerca de 126 km do Recife e 136 km de Maceió. Em feriados, as estradas podem ter mais trânsito, então vale conferir a rota no mapa e sair com tempo.
+  tema: reservas
+  paginas:
+    - data-especial:sete-de-setembro
+  ordem: 5423
+  fontes: *id007
+e-data-especial-dia-das-criancas-01:
+  pergunta: Vale a pena passar o Dia das Crianças no Grand Oca Maragogi?
+  resposta: O Dia das Crianças, em 12 de outubro, é um feriado muito procurado por famílias, e o Grand Oca Maragogi tem Kids Club para crianças de 4 a 12 anos, parque aquático, playground e baby area. A procura sobe quando a data cai perto de um fim de semana.
+  tema: reservas
+  paginas:
+    - data-especial:dia-das-criancas
+  ordem: 5440
+  fontes: *id007
+e-data-especial-dia-das-criancas-02:
+  pergunta: O que as crianças fazem no Grand Oca Maragogi no Dia das Crianças?
+  resposta: O Kids Club oferece jogos, oficinas, atividades na piscina e na praia e shows infantis, das 9h às 12h e das 14h às 18h, além do parque aquático com toboágua e do playground com cama elástica. A programação especial do feriado, se houver, é informada perto da data.
+  tema: reservas
+  paginas:
+    - data-especial:dia-das-criancas
+  ordem: 5441
+  fontes: *id007
+e-data-especial-dia-das-criancas-03:
+  pergunta: Qual acomodação escolher para o Dia das Crianças no Grand Oca Maragogi?
+  resposta: Para famílias, o Grand Oca Maragogi oferece o Duplo Deluxe, de 50 m², o Standard Comunicante, com dois quartos, e a Suíte Deluxe, de 72 m². A idade de cada criança deve ser informada na cotação, porque define a tarifa e a faixa da recreação.
+  tema: reservas
+  paginas:
+    - data-especial:dia-das-criancas
+  ordem: 5442
+  fontes: *id007
+e-data-especial-dia-das-criancas-04:
+  pergunta: O Dia das Crianças é sempre em 12 de outubro?
+  resposta: Sim. O Dia das Crianças é fixo, em 12 de outubro, mas o número de dias de descanso muda conforme o dia da semana. Quando cai perto de um fim de semana, o feriado forma um bom período para viajar com os pequenos, e a procura pelo resort aumenta.
+  tema: reservas
+  paginas:
+    - data-especial:dia-das-criancas
+  ordem: 5443
+  fontes: *id007
+e-data-especial-finados-01:
+  pergunta: Vale a pena viajar no feriado de Finados para o Grand Oca Maragogi?
+  resposta: O feriado de Finados, em 2 de novembro, costuma formar boas pontes com o fim de semana, e o Grand Oca Maragogi, em Maragogi, é uma opção para descansar na praia de Ponta de Mangue e nas piscinas. As tarifas e a disponibilidade mudam conforme a data e a antecedência.
+  tema: reservas
+  paginas:
+    - data-especial:finados
+  ordem: 5460
+  fontes: *id007
+e-data-especial-finados-02:
+  pergunta: Finados é sempre em 2 de novembro?
+  resposta: Sim. O feriado de Finados é fixo, em 2 de novembro, e o número de dias de descanso depende do dia da semana. Quando cai na sexta ou na segunda-feira, forma um feriadão, e a Resorts Online confirma o mínimo de noites e as tarifas para o período.
+  tema: reservas
+  paginas:
+    - data-especial:finados
+  ordem: 5461
+  fontes: *id007
+e-data-especial-finados-03:
+  pergunta: O Grand Oca Maragogi funciona normalmente em Finados?
+  resposta: Sim. O resort funciona normalmente nos feriados, com restaurantes, bares, piscinas, praia e programação de lazer, e as condições valem para o plano contratado. Horários, atividades e funcionamento dos pontos de serviço podem mudar conforme o clima e a operação.
+  tema: reservas
+  paginas:
+    - data-especial:finados
+  ordem: 5462
+  fontes: *id007
+e-data-especial-finados-04:
+  pergunta: Como cotar o Grand Oca Maragogi para o feriado de Finados?
+  resposta: Informe as datas, os hóspedes e a idade das crianças pelo site ou pela central da Resorts Online, no 0800 737 6787, e a equipe consulta a disponibilidade e envia a tarifa. É possível escolher só a hospedagem ou o pacote com aéreo, e o parcelamento depende da tarifa.
+  tema: reservas
+  paginas:
+    - data-especial:finados
+  ordem: 5463
+  fontes: *id007
+e-data-especial-proclamacao-da-republica-01:
+  pergunta: Vale a pena viajar no feriado de 15 de Novembro para o Grand Oca Maragogi?
+  resposta: Dependendo do calendário, o feriado da Proclamação da República, em 15 de novembro, rende uma boa pausa para viajar, inclusive com emenda no fim de semana. O Grand Oca Maragogi oferece praia, piscinas, restaurantes e lazer em Maragogi, e a disponibilidade varia conforme o ano.
+  tema: reservas
+  paginas:
+    - data-especial:proclamacao-da-republica
+  ordem: 5480
+  fontes: *id007
+e-data-especial-proclamacao-da-republica-02:
+  pergunta: O feriado de 15 de Novembro sempre forma emenda?
+  resposta: Não. O feriado é fixo, em 15 de novembro, e só rende uma pausa maior quando cai perto de um fim de semana, o que muda todos os anos. A Resorts Online confirma o período, o mínimo de noites e as tarifas do Grand Oca Maragogi para o seu calendário.
+  tema: reservas
+  paginas:
+    - data-especial:proclamacao-da-republica
+  ordem: 5481
+  fontes: *id007
+e-data-especial-proclamacao-da-republica-03:
+  pergunta: O Grand Oca Maragogi lota no feriado de 15 de Novembro?
+  resposta: A procura costuma subir nas emendas de feriado, e algumas categorias, como as Suítes, têm poucas unidades. Por isso, vale consultar a disponibilidade com antecedência, e a equipe da Resorts Online informa quais categorias ainda estão livres. Quanto antes a consulta, mais opções de categoria.
+  tema: reservas
+  paginas:
+    - data-especial:proclamacao-da-republica
+  ordem: 5482
+  fontes: *id007
+e-data-especial-proclamacao-da-republica-04:
+  pergunta: É possível combinar o feriado de 15 de Novembro com o de Consciência Negra?
+  resposta: Sim. Em alguns anos, os feriados de 15 e de 20 de novembro ficam próximos e permitem estadias mais longas em Maragogi. O Grand Oca Maragogi não publica um calendário de ofertas, então a equipe da Resorts Online confirma noites mínimas e tarifas conforme as datas.
+  tema: reservas
+  paginas:
+    - data-especial:proclamacao-da-republica
+  ordem: 5483
+  fontes: *id007
+e-data-especial-consciencia-negra-01:
+  pergunta: Vale a pena viajar no feriado da Consciência Negra para o Grand Oca Maragogi?
+  resposta: Quando bem posicionado no calendário, o feriado da Consciência Negra, em 20 de novembro, forma um fim de semana prolongado ideal para o Grand Oca Maragogi, em Maragogi. O resort reúne praia de Ponta de Mangue, piscinas, restaurantes e lazer, e as tarifas variam conforme a data.
+  tema: reservas
+  paginas:
+    - data-especial:consciencia-negra
+  ordem: 5500
+  fontes: *id007
+e-data-especial-consciencia-negra-02:
+  pergunta: O feriado da Consciência Negra é sempre em 20 de novembro?
+  resposta: Sim. A data é fixa, em 20 de novembro, e o número de dias de descanso depende do dia da semana. Em anos em que cai perto de um fim de semana, o feriado vira um feriadão, e a procura pelo Grand Oca Maragogi, nos dias próximos, sobe bastante.
+  tema: reservas
+  paginas:
+    - data-especial:consciencia-negra
+  ordem: 5501
+  fontes: *id007
+e-data-especial-consciencia-negra-03:
+  pergunta: O Grand Oca Maragogi tem programação especial na Consciência Negra?
+  resposta: O resort mantém programação diária de lazer, com atividades para adultos e crianças e shows na Esplanada Tropical, e pode divulgar atrações em feriados. O site não antecipa detalhes ainda não confirmados, e a programação de cada ano é informada perto da data.
+  tema: reservas
+  paginas:
+    - data-especial:consciencia-negra
+  ordem: 5502
+  fontes: *id007
+e-data-especial-consciencia-negra-04:
+  pergunta: Como reservar o Grand Oca Maragogi para a Consciência Negra?
+  resposta: Reserve pelo site ou pela central da Resorts Online, no 0800 737 6787, informando datas, hóspedes e idade das crianças. É possível escolher só a hospedagem ou o pacote com aéreo, e a equipe confirma a categoria disponível, as noites mínimas e as condições de pagamento.
+  tema: reservas
+  paginas:
+    - data-especial:consciencia-negra
+  ordem: 5503
+  fontes: *id007
+e-guia-costa-dos-corais-01:
+  pergunta: O que são os recifes de Maragogi?
+  resposta: Os recifes de Maragogi são formações de corais que criam as piscinas naturais da Costa dos Corais, no litoral norte de Alagoas, em área protegida como APA, Área de Preservação Ambiental. Abrigam grande variedade de espécies marinhas, com destaque para os peixes coloridos, e são uma das principais atrações turísticas.
+  tema: destino
+  paginas:
+    - guia:costa-dos-corais
+  ordem: 5520
+  fontes: *id006
+e-guia-costa-dos-corais-02:
+  pergunta: Qual é a profundidade das piscinas naturais de Maragogi?
+  resposta: A profundidade média da área de corais de Maragogi não passa de cerca de um metro, o que torna a região adequada tanto para o mergulho quanto para o snorkel. As marés influenciam a visibilidade e o acesso, então os passeios seguem os horários definidos pelos operadores.
+  tema: destino
+  paginas:
+    - guia:costa-dos-corais
+  ordem: 5521
+  fontes: *id006
+e-guia-costa-dos-corais-03:
+  pergunta: Dá para fazer mergulho com cilindro em Maragogi?
+  resposta: Sim. O centro de mergulho do Grand Oca Maragogi tem certificação PADI e oferece aulas e passeios às piscinas naturais, tanto no mergulho quanto no snorkel. O serviço é contratado à parte, e os horários dependem das marés e das condições do mar no dia.
+  tema: destino
+  paginas:
+    - guia:costa-dos-corais
+  ordem: 5522
+  fontes: *id006
+e-guia-costa-dos-corais-04:
+  pergunta: Como é a praia em frente ao Grand Oca Maragogi?
+  resposta: O resort fica a cerca de 10 metros da Praia de Ponta de Mangue, conhecida pelas águas claras e tranquilas, sobretudo na maré baixa, com coqueirais ao fundo. Há um bar na área da praia e atividades como caiaque na programação diurna do resort.
+  tema: destino
+  paginas:
+    - guia:costa-dos-corais
+  ordem: 5523
+  fontes: *id006
+e-guia-costa-dos-corais-05:
+  pergunta: A região de Maragogi é protegida?
+  resposta: Sim. Os recifes de corais e as piscinas naturais de Maragogi ficam em uma APA, Área de Preservação Ambiental, o que justifica regras de visitação e cuidado com os corais. Os passeios organizados pela agência do resort e pelo centro de mergulho seguem as orientações dos operadores.
+  tema: destino
+  paginas:
+    - guia:costa-dos-corais
+  ordem: 5524
+  fontes: *id006
+e-guia-costa-dos-corais-06:
+  pergunta: Qual é a distância da Costa dos Corais até as capitais próximas?
+  resposta: 'Maragogi fica entre Recife e Maceió: o Grand Oca Maragogi informa cerca de 126 km até o Recife e 136 km até Maceió, além de 153 km até Caruaru. As distâncias são rodoviárias e aproximadas, e o tempo de viagem varia conforme o trânsito.'
+  tema: destino
+  paginas:
+    - guia:costa-dos-corais
+  ordem: 5525
+  fontes: *id006
+e-guia-cidade-de-maragogi-01:
+  pergunta: Qual é a história de Maragogi?
+  resposta: Maragogi foi uma vila de pescadores, com a pesca e a agricultura, sobretudo a cana-de-açúcar, como principais fontes de recursos. Hoje o turismo é a principal atividade, e a cidade é a segunda mais turística de Alagoas, atrás da capital, Maceió, por causa das praias, dos recifes e das piscinas naturais.
+  tema: destino
+  paginas:
+    - guia:cidade-de-maragogi
+  ordem: 5540
+  fontes: *id006
+e-guia-cidade-de-maragogi-02:
+  pergunta: Quais igrejas de Maragogi vale a pena conhecer?
+  resposta: 'Maragogi tem três igrejas históricas: a Matriz de Santo Antônio, do fim do século XIX, e as igrejas de Nossa Senhora da Guia e de São Bento, do século XVII, que hoje conservam apenas as paredes externas. Formam o principal patrimônio arquitetônico da cidade.'
+  tema: destino
+  paginas:
+    - guia:cidade-de-maragogi
+  ordem: 5541
+  fontes: *id006
+e-guia-cidade-de-maragogi-03:
+  pergunta: O Carnaval de Maragogi é famoso?
+  resposta: O Carnaval é a festa mais importante da cidade, com bailes, frevo e desfiles pelas ruas, e atrai milhares de visitantes. É um dos períodos mais procurados do ano, e os hotéis e resorts da região, como o Grand Oca Maragogi, costumam ter alta ocupação nessa época.
+  tema: destino
+  paginas:
+    - guia:cidade-de-maragogi
+  ordem: 5542
+  fontes: *id006
+e-guia-cidade-de-maragogi-04:
+  pergunta: O Grand Oca Maragogi fica no centro de Maragogi?
+  resposta: Não. O Grand Oca Maragogi fica em Ponta de Mangue, ao norte do centro da cidade, e normalmente é preciso usar táxi, transfer ou carro para ir ao centro. O resort tem agência de viagens que reserva traslados e passeios pelos arredores, contratados à parte.
+  tema: destino
+  paginas:
+    - guia:cidade-de-maragogi
+  ordem: 5543
+  fontes: *id006
+e-guia-cidade-de-maragogi-05:
+  pergunta: Como chegar a Maragogi saindo de Recife ou de Maceió?
+  resposta: Saindo de Recife, o acesso é feito por estrada, pelo litoral sul de Pernambuco até Maragogi, em cerca de 126 km. Saindo de Maceió, pelo litoral norte de Alagoas, são cerca de 136 km até Ponta de Mangue. O trecho final costuma ser feito de carro, táxi ou transfer.
+  tema: destino
+  paginas:
+    - guia:cidade-de-maragogi
+  ordem: 5544
+  fontes: *id006
+e-guia-cidade-de-maragogi-06:
+  pergunta: Maragogi é um destino bom para famílias?
+  resposta: Sim. A cidade combina praias calmas, piscinas naturais rasas e estrutura de hospedagem, e o Grand Oca Maragogi oferece Kids Club, parque aquático e playground para as crianças. Passeios às piscinas naturais exigem atenção com horários de maré e cuidados com os corais.
+  tema: destino
+  paginas:
+    - guia:cidade-de-maragogi
+  ordem: 5545
+  fontes: *id006
+e-post-como-escolher-acomodacao-01:
+  pergunta: Como escolher a acomodação ideal no Grand Oca Maragogi?
+  resposta: Comece pelo número de hóspedes e pela idade das crianças, depois compare a vista e a localização. Os bangalôs ficam ao lado das piscinas, o Standard Comunicante reúne até seis pessoas, os quartos Deluxe têm varanda para a piscina da área D’Água, e a Suíte Deluxe, de 72 m², é a maior do resort.
+  tema: hospedagem
+  paginas:
+    - post:como-escolher-acomodacao
+  ordem: 5560
+  fontes: *id003
+e-post-como-escolher-acomodacao-02:
+  pergunta: Vale a pena pagar mais por um quarto na área D’Água?
+  resposta: Depende do perfil. A área D’Água é a mais nova do Grand Oca Maragogi, com varanda para a piscina, solário, parque aquático e decoração mais clara, e é indicada para quem valoriza conforto e vista. Quem prefere um ambiente mais reservado e rústico pode ficar nos apartamentos Standard ou nos bangalôs.
+  tema: hospedagem
+  paginas:
+    - post:como-escolher-acomodacao
+  ordem: 5561
+  fontes: *id003
+e-post-como-escolher-acomodacao-03:
+  pergunta: Qual é a melhor acomodação para casal no Grand Oca Maragogi?
+  resposta: Para casais, o Grand Oca Maragogi tem o Bangalô, a Suíte, com cama king e vista parcial para a praia, e os quartos Deluxe, de varanda para a piscina. As Suítes são apenas duas, então reserve cedo, e os bangalôs oferecem a escolha entre vista para o jardim e para a piscina.
+  tema: hospedagem
+  paginas:
+    - post:como-escolher-acomodacao
+  ordem: 5562
+  fontes: *id003
+e-post-como-escolher-acomodacao-04:
+  pergunta: Qual é a melhor acomodação para uma família grande no Grand Oca Maragogi?
+  resposta: Para famílias maiores, o Standard Comunicante acomoda até seis hóspedes em dois quartos e dois banheiros, e a Suíte Deluxe, de 72 m², recebe até seis, com no máximo quatro adultos e duas crianças. O Duplo Deluxe acomoda cinco, e a idade das crianças muda a tarifa.
+  tema: hospedagem
+  paginas:
+    - post:como-escolher-acomodacao
+  ordem: 5563
+  fontes: *id003
+e-post-o-que-levar-na-mala-01:
+  pergunta: O que levar na mala para a praia e as piscinas do Grand Oca Maragogi?
+  resposta: Leve duas ou três roupas de banho, canga ou toalha de praia, chinelo, chapéu, óculos de sol e protetor solar, que deve ser reaplicado depois de cada mergulho. O resort fica a cerca de 10 metros da Praia de Ponta de Mangue, então a maior parte do tempo é de roupa leve e de banho.
+  tema: resort
+  paginas:
+    - post:o-que-levar-na-mala
+  ordem: 5580
+  fontes: *id001
+e-post-o-que-levar-na-mala-02:
+  pergunta: O que levar para os passeios às piscinas naturais de Maragogi?
+  resposta: Leve calçado próprio para a água, roupa de proteção solar, uma capa para o celular e, se quiser, máscara de snorkel. A profundidade média dos recifes é de cerca de um metro, mas o fundo tem corais. Aulas e passeios de mergulho são contratados à parte, no resort.
+  tema: resort
+  paginas:
+    - post:o-que-levar-na-mala
+  ordem: 5581
+  fontes: *id001
+e-post-o-que-levar-na-mala-03:
+  pergunta: As tomadas do Grand Oca Maragogi são 110 V ou 220 V?
+  resposta: Os apartamentos do Grand Oca Maragogi têm tomadas de 220 volts. Antes de viajar, confira se carregadores, secadores e outros aparelhos são bivolt ou leve um adaptador adequado. O resort oferece Wi-Fi, e um carregador portátil é útil para os passeios.
+  tema: resort
+  paginas:
+    - post:o-que-levar-na-mala
+  ordem: 5582
+  fontes: *id001
+e-post-o-que-levar-na-mala-04:
+  pergunta: Que documentos levar para o Grand Oca Maragogi?
+  resposta: Leve documento oficial com foto de todos os hóspedes, inclusive das crianças, CPF (estrangeiros levam o passaporte) e, para menores que viajam sem os pais, a autorização dos responsáveis. A certidão de nascimento ou o RG comprova a filiação de cada criança, conforme o Estatuto da Criança e do Adolescente.
+  tema: resort
+  paginas:
+    - post:o-que-levar-na-mala
+  ordem: 5583
+  fontes: *id001
+e-post-resort-com-criancas-01:
+  pergunta: Como funciona a recreação infantil para quem viaja com crianças ao Grand Oca Maragogi?
+  resposta: O Kids Club organiza atividades diárias para crianças de 4 a 12 anos, das 9h às 12h e das 14h às 18h, com jogos, oficinas, shows e opções na piscina e na praia. Menores de 4 anos participam de algumas atividades com um responsável, e a programação muda ao longo da semana.
+  tema: lazer
+  paginas:
+    - post:resort-com-criancas
+  ordem: 5600
+  fontes: *id005
+e-post-resort-com-criancas-02:
+  pergunta: Onde as crianças brincam no Grand Oca Maragogi?
+  resposta: As crianças brincam no Kids Club, no parque aquático com toboágua, nas áreas rasas das piscinas, no playground com cama elástica e escorregadores e na praia de Ponta de Mangue. O Play Zone é outro espaço de brinquedos, e a baby area apoia as famílias com bebês.
+  tema: lazer
+  paginas:
+    - post:resort-com-criancas
+  ordem: 5601
+  fontes: *id005
+e-post-resort-com-criancas-03:
+  pergunta: Qual acomodação escolher para a família no Grand Oca Maragogi?
+  resposta: Para três pessoas, o Apartamento Standard e o Bangalô Triplo funcionam bem; para cinco, o Duplo Deluxe; para seis, o Standard Comunicante ou a Suíte Deluxe. A idade de cada criança deve ser informada na cotação, porque ela define a tarifa e a capacidade.
+  tema: lazer
+  paginas:
+    - post:resort-com-criancas
+  ordem: 5602
+  fontes: *id005
+e-post-resort-com-criancas-04:
+  pergunta: Há berço e estrutura para bebês no Grand Oca Maragogi?
+  resposta: O resort tem uma baby area para atender hóspedes com crianças pequenas, e os bangalôs aceitam dois adultos e um bebê em berço. Confirme com a equipe da Resorts Online a disponibilidade do berço na categoria escolhida e as idades consideradas, antes de finalizar a reserva.
+  tema: lazer
+  paginas:
+    - post:resort-com-criancas
+  ordem: 5603
+  fontes: *id005

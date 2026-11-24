@@ -1,0 +1,27 @@
+---
+/** Observação em destaque (ressalvas, condições a confirmar na reserva). */
+import Icone from '@/components/ui/Icone.astro';
+
+interface Props {
+  tipo?: 'info' | 'atencao';
+  titulo?: string;
+  class?: string;
+}
+
+const { tipo = 'info', titulo, class: classe } = Astro.props;
+const estilos = {
+  info: 'bg-mar-50 ring-mar-200 text-tinta',
+  atencao: 'bg-sol-100 ring-sol-400 text-tinta',
+};
+---
+
+<aside
+  class:list={['flex gap-3 rounded-cartao p-4 ring-1', estilos[tipo], classe]}
+  aria-label={titulo ?? 'Observação'}
+>
+  <Icone nome="info" class="text-mar-700 mt-0.5 size-5" />
+  <div class="space-y-1 text-sm sm:text-base">
+    {titulo && <p class="text-mar-950 font-semibold">{titulo}</p>}
+    <slot />
+  </div>
+</aside>

@@ -1,0 +1,157 @@
+---
+/**
+ * Motor de reservas do operador embutido, no padrão do Enotel: cartão de bordas arredondadas
+ * à direita (cabeçalho "Reserva online" e o motor dentro, fixo ao rolar no desktop) e, à
+ * esquerda, um bloco limpo com o passo a passo, o que vem na diária e os contatos.
+ * Link para abrir o motor em nova aba (tela cheia ou problema com o quadro).
+ * Sem motor incorporável no site.config: no modo modelo, um espaço reservado mostra onde o motor
+ * entra; num site real, o lugar do motor vira o atendimento pela central.
+ */
+import { getCollection } from 'astro:content';
+
+import Botao from '@/components/ui/Botao.astro';
+import CartaoMotor from '@/components/ui/CartaoMotor.astro';
+import Icone from '@/components/ui/Icone.astro';
+import ListaCheck from '@/components/ui/ListaCheck.astro';
+import SeloPagamento from '@/components/ui/SeloPagamento.astro';
+import { allInclusive } from '@/data/all-inclusive';
+import { acoes } from '@/lib/acoes';
+import { formatarHora, formatarLista } from '@/lib/formatar';
+import { modelo, operador, resort } from '@/site.config';
+
+interface Props {
+  class?: string;
+}
+
+const { class: classe } = Astro.props;
+const { hospedagemUrl, hospedagemIncorporavel } = operador.reservas;
+const temMotor = hospedagemUrl !== null && hospedagemIncorporavel;
+const { horarios } = resort;
+const somenteCentral = (
+  await getCollection('acomodacoes', ({ data }) => data.reservaSomenteCentral)
+)
+  .sort((a, b) => a.data.ordem - b.data.ordem)
+  .map(({ data }) => data.nome);
+
+const passos = [
+  {
+    titulo: 'Escolha as datas',
+    texto: `Dia de entrada e de saída. O check-in é a partir das ${formatarHora(horarios.checkIn)}.`,
+  },
+  { titulo: 'Informe quartos e viajantes', texto: 'Adultos e a idade de cada criança.' },
+  { titulo: 'Compare e reserve', texto: 'Veja as categorias disponíveis, as tarifas e confirme.' },
+];
+
+const naDiaria = [
+  ...allInclusive.incluso.slice(0, 2),
+  'Recreação para crianças a partir de 4 anos e adolescentes',
+  ...(temMotor ? ['Confirmação imediata: pague e receba o voucher na hora'] : []),
+];
+---
+
+<div class:list={['grid items-start gap-10 lg:grid-cols-[minmax(0,1fr)_25rem] lg:gap-16', classe]}>
+  <div class="space-y-10 max-lg:order-2" data-revelar="esquerda">
+    <ol class="grid gap-6 sm:grid-cols-3 lg:grid-cols-1">
+      {passos.map((passo, indice) => (
+        <li class="flex gap-4">
+          <span
+            class="text-coral-700 text-2xl leading-none font-bold tabular-nums"
+            aria-hidden="true"
+          >
+            {String(indice + 1).padStart(2, '0')}
+          </span>
+          <div>
+            <p class="text-mar-800 font-semibold">{passo.titulo}</p>
+            <p class="text-tinta-suave mt-1 text-sm">{passo.texto}</p>
+          </div>
+        </li>
+      ))}
+    </ol>
+
+    <SeloPagamento />
+
+    <div class="border-areia-200 border-t pt-8">
+      <p class="text-mar-800 mb-4 font-semibold">Na diária do {resort.nomeCurto}</p>
+      <ListaCheck itens={naDiaria} />
+    </div>
+
+    <div class="border-areia-200 border-t pt-8">
+      <p class="text-mar-800 flex items-center gap-2 font-semibold">
+        <Icone nome="info" class="text-coral-700 size-5" />
+        Prefere falar com alguém?
+      </p>
+      <p class="text-tinta-suave mt-2 text-sm">
+        {somenteCentral.length > 0 &&
+          `${formatarLista(somenteCentral)} ${somenteCentral.length > 1 ? 'são reservados' : 'é reservado'} só pela central. `}
+        A nossa equipe também ajuda com dúvidas sobre datas, categorias e pacotes.
+      </p>
+      <div class="mt-4 flex flex-wrap gap-3">
+        <Botao
+          href={acoes.whatsapp.href}
+          evento={acoes.whatsapp.evento}
+          icone="whatsapp"
+          variante="whatsapp"
+          externo
+        >
+          {acoes.whatsapp.rotulo}
+        </Botao>
+        <Botao
+          href={acoes.ligar.href}
+          evento={acoes.ligar.evento}
+          icone="telefone"
+          variante="contorno"
+        >
+          {acoes.ligar.rotulo}
+        </Botao>
+      </div>
+    </div>
+  </div>
+
+  <div
+    class="relative z-30 w-full max-lg:order-1 lg:sticky lg:top-[calc(7rem+var(--bf-h,0px))] lg:flex lg:justify-end"
+    data-revelar="direita"
+  >
+    {temMotor ? (
+      <CartaoMotor />
+    ) : modelo.ativo ? (
+      <div class="border-mar-200 bg-mar-50 mx-auto flex h-[34rem] w-full max-w-md flex-col items-center justify-center gap-4 rounded-grande border-2 border-dashed p-8 text-center">
+        <Icone nome="calendario" class="text-mar-700 size-10" />
+        <p class="text-mar-800 text-xl font-bold">Motor de reservas</p>
+        <p class="text-tinta-suave text-sm">
+          No site-modelo, este é o espaço do motor de reservas embutido. No site do resort, ele
+          entra aqui a partir do endereço configurado em{' '}
+          <code>operador.reservas.hospedagemUrl</code>.
+        </p>
+      </div>
+    ) : (
+      <div class="fundo-mar-vivo superficie-escura mx-auto w-full max-w-md space-y-5 rounded-grande p-8 text-white shadow-flutuante">
+        <p class="text-2xl font-bold">Reserve com a nossa equipe</p>
+        <p class="text-white/90">
+          Informe as datas e os hóspedes pelo WhatsApp ou por telefone: a equipe consulta a
+          disponibilidade e envia a melhor tarifa.
+        </p>
+        <div class="grid gap-3">
+          <Botao
+            href={acoes.whatsapp.href}
+            evento={acoes.whatsapp.evento}
+            icone="whatsapp"
+            variante="verde"
+            externo
+            larguraTotal
+          >
+            {acoes.whatsapp.rotulo}
+          </Botao>
+          <Botao
+            href={acoes.ligar.href}
+            evento={acoes.ligar.evento}
+            icone="telefone"
+            variante="claro"
+            larguraTotal
+          >
+            {acoes.ligar.rotulo}
+          </Botao>
+        </div>
+      </div>
+    )}
+  </div>
+</div>

@@ -1,0 +1,364 @@
+---
+/**
+ * Listagem dos resorts da rede Resort All Inclusive (página /outros-resorts/), no formato da
+ * página "Melhores hotéis" do hoteisnoguaruja: filtros à esquerda (busca pelo nome e estados,
+ * com a contagem) e, à direita, cartões horizontais com a imagem, o nome, o destino, os selos, as
+ * condições de pagamento da agência e "Ver detalhes", que leva ao portal do resort.
+ * Só usa dados da coleção `outrosResorts` (sem comodidades ou mapa inventados).
+ * Sem JavaScript, a lista aparece inteira e os filtros ficam escondidos.
+ */
+import Icone from '@/components/ui/Icone.astro';
+import Imagem from '@/components/ui/Imagem.astro';
+import type { OutroResortExibido } from '@/lib/outros-resorts';
+import { condicoesPagamento } from '@/lib/pagamento';
+
+interface Props {
+  resorts: readonly OutroResortExibido[];
+}
+
+const { resorts } = Astro.props;
+const nomesEstados: Record<string, string> = {
+  AL: 'Alagoas',
+  AM: 'Amazonas',
+  BA: 'Bahia',
+  CE: 'Ceará',
+  MG: 'Minas Gerais',
+  MT: 'Mato Grosso',
+  PB: 'Paraíba',
+  PE: 'Pernambuco',
+  RJ: 'Rio de Janeiro',
+  RN: 'Rio Grande do Norte',
+  SC: 'Santa Catarina',
+  SE: 'Sergipe',
+  SP: 'São Paulo',
+};
+const contagem = new Map<string, number>();
+for (const { resort } of resorts) {
+  contagem.set(resort.data.uf, (contagem.get(resort.data.uf) ?? 0) + 1);
+}
+const estados = [...contagem.keys()].sort((a, b) =>
+  (nomesEstados[a] ?? a).localeCompare(nomesEstados[b] ?? b, 'pt-BR'),
+);
+// Cidades (destinos) com a contagem, em ordem alfabética.
+const cidades = new Map<string, number>();
+for (const { resort } of resorts) {
+  cidades.set(resort.data.destino, (cidades.get(resort.data.destino) ?? 0) + 1);
+}
+const listaCidades = [...cidades.keys()].sort((a, b) => a.localeCompare(b, 'pt-BR'));
+const [parcelas, pix] = condicoesPagamento;
+const normalizar = (texto: string) =>
+  texto
+    .normalize('NFD')
+    .replace(/\p{Diacritic}/gu, '')
+    .toLowerCase();
+---
+
+<div class="grid items-start gap-8 lg:grid-cols-[17rem_minmax(0,1fr)] lg:gap-10" data-lista-resorts>
+  {/* Filtros (só com JavaScript). */}
+  <aside
+    class="ring-areia-200 js:block hidden space-y-6 rounded-grande bg-white p-5 ring-1 lg:sticky lg:top-[calc(7rem+var(--bf-h,0px))]"
+    aria-label="Filtrar resorts"
+  >
+    <div class="space-y-2">
+      <label for="busca-resort" class="text-mar-950 block text-sm font-semibold">
+        Buscar pelo nome
+      </label>
+      <div class="relative">
+        <Icone
+          nome="lupa"
+          class="text-tinta-suave pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2"
+        />
+        <input
+          id="busca-resort"
+          type="search"
+          placeholder="Ex.: Vila Galé, Maragogi"
+          class="ring-areia-300 focus:ring-mar-700 w-full rounded-xl bg-white py-2.5 pr-3 pl-9 text-sm ring-1 outline-none focus:ring-2"
+          data-busca
+        />
+      </div>
+    </div>
+    <fieldset class="space-y-2">
+      <legend class="text-mar-950 mb-2 text-sm font-semibold">Estado</legend>
+      {estados.map((uf) => (
+        <label class="text-tinta flex cursor-pointer items-center justify-between gap-3 text-sm">
+          <span class="flex items-center gap-2.5">
+            <input
+              type="checkbox"
+              value={uf}
+              class="accent-mar-700 size-4 rounded"
+              data-filtro-uf
+            />
+            {nomesEstados[uf] ?? uf}
+          </span>
+          <span class="text-tinta-suave text-xs tabular-nums">{contagem.get(uf)}</span>
+        </label>
+      ))}
+    </fieldset>
+    <fieldset class="space-y-2">
+      <legend class="text-mar-950 mb-2 text-sm font-semibold">Cidade</legend>
+      <div class="max-h-64 space-y-2 overflow-y-auto pr-1">
+        {listaCidades.map((cidade) => (
+          <label class="text-tinta flex cursor-pointer items-center justify-between gap-3 text-sm">
+            <span class="flex items-center gap-2.5">
+              <input
+                type="checkbox"
+                value={cidade}
+                class="accent-mar-700 size-4 rounded"
+                data-filtro-cidade
+              />
+              {cidade}
+            </span>
+            <span class="text-tinta-suave text-xs tabular-nums">{cidades.get(cidade)}</span>
+          </label>
+        ))}
+      </div>
+    </fieldset>
+    <button
+      type="button"
+      class="text-mar-700 text-sm font-semibold hover:underline"
+      data-limpar
+      hidden
+    >
+      Limpar filtros
+    </button>
+  </aside>
+
+  <div>
+    <div class="mb-5 flex flex-wrap items-center justify-between gap-3">
+      <p class="text-tinta" aria-live="polite">
+        <strong class="text-mar-950" data-total>
+          {resorts.length}
+        </strong>
+        <span data-total-rotulo>{resorts.length === 1 ? 'resort' : 'resorts'}</span>
+      </p>
+      <label class="js:flex hidden items-center gap-2 text-sm">
+        <span class="text-tinta-suave">Ordenar por</span>
+        <select
+          class="ring-areia-300 focus:ring-mar-700 rounded-full bg-white py-2 pr-8 pl-4 text-sm ring-1 outline-none focus:ring-2"
+          data-ordenar
+        >
+          <option value="recomendados">Recomendados</option>
+          <option value="nome">Nome: A a Z</option>
+          <option value="estado">Estado</option>
+        </select>
+      </label>
+    </div>
+
+    <ul class="grid gap-5" data-itens>
+      {resorts.map(({ resort, foto, resumo, link }) => (
+        <li
+          data-item
+          data-nome={normalizar(`${resort.data.nome} ${resort.data.destino}`)}
+          data-uf={resort.data.uf}
+          data-cidade={resort.data.destino}
+          data-ordem={resort.data.ordem}
+          data-titulo={resort.data.nome}
+        >
+          <article class="group ring-areia-200 ease-suave relative grid overflow-hidden rounded-grande bg-white ring-1 transition duration-500 hover:-translate-y-0.5 hover:shadow-flutuante sm:grid-cols-[minmax(0,15rem)_minmax(0,1fr)] lg:grid-cols-[minmax(0,17rem)_minmax(0,1fr)]">
+            <div class="relative aspect-16/10 overflow-hidden sm:aspect-auto sm:min-h-52">
+              {foto ? (
+                <Imagem
+                  src={foto.src}
+                  alt={foto.alt}
+                  sizes="(min-width: 640px) 17rem, 100vw"
+                  largura={800}
+                  class="ease-suave h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                />
+              ) : (
+                <div
+                  class="from-mar-700 to-mar-950 absolute inset-0 overflow-hidden bg-linear-to-br"
+                  aria-hidden="true"
+                >
+                  <Icone
+                    nome="coqueiro"
+                    class="ease-suave absolute -right-8 -bottom-6 size-44 text-white/10 transition-transform duration-700 group-hover:scale-110"
+                  />
+                  <Icone nome="sol" class="text-sol-400/70 absolute top-5 right-5 size-10" />
+                </div>
+              )}
+              <span class="text-mar-900 absolute top-3 left-3 inline-flex items-center gap-1 rounded-full bg-white/95 px-2.5 py-1 text-[0.6875rem] font-bold shadow-cartao">
+                <Icone nome="estrela" class="text-coral-500 size-3.5" />
+                Rede Resort All Inclusive
+              </span>
+            </div>
+
+            <div class="grid gap-4 p-5 sm:grid-cols-[minmax(0,1fr)_auto] sm:p-6">
+              <div class="space-y-3">
+                <div>
+                  <h3 class="leading-snug">{resort.data.nome}</h3>
+                  <p class="text-tinta-suave mt-1 flex items-center gap-1.5 text-sm">
+                    <Icone nome="local" class="text-coral-700 size-4 shrink-0" />
+                    {resort.data.destino}, {nomesEstados[resort.data.uf] ?? resort.data.uf}
+                  </p>
+                </div>
+                <p class="text-tinta text-sm leading-relaxed">{resumo}</p>
+                <ul class="text-tinta flex flex-wrap gap-x-4 gap-y-1.5 text-sm">
+                  <li class="flex items-center gap-1.5">
+                    <Icone nome="taca" class="text-mar-700 size-4" />
+                    All inclusive
+                  </li>
+                  <li class="flex items-center gap-1.5">
+                    <Icone nome="aviao" class="text-mar-700 size-4" />
+                    Hospedagem ou pacote com aéreo
+                  </li>
+                </ul>
+              </div>
+              <div class="flex flex-col justify-between gap-4 sm:items-end sm:text-right">
+                {parcelas && pix && (
+                  <p class="text-sm leading-snug">
+                    <span class="text-tinta-suave block">
+                      Até {parcelas.destaque.replace(' sem juros', '')} no cartão
+                    </span>
+                    <strong class="text-verde-700 block">
+                      {pix.destaque.replace(' de desconto', '')} OFF no Pix
+                    </strong>
+                  </p>
+                )}
+                {/* Com portal: "Ver detalhes"; sem portal ainda: a cotação pelo WhatsApp. */}
+                <a
+                  href={link.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  data-evento={link.evento}
+                  class:list={[
+                    'ease-suave link-esticado inline-flex min-h-11 items-center justify-center gap-2 rounded-full px-5 text-sm font-semibold whitespace-nowrap text-white no-underline transition hover:-translate-y-0.5 hover:no-underline',
+                    link.portal
+                      ? 'bg-coral-700 hover:bg-coral-800'
+                      : 'bg-verde-800 hover:bg-verde-900',
+                  ]}
+                >
+                  {link.portal ? (
+                    <>
+                      Ver detalhes
+                      <Icone nome="seta-direita" class="size-4" />
+                    </>
+                  ) : (
+                    <>
+                      <Icone nome="whatsapp" class="size-4" />
+                      Cotar no WhatsApp
+                    </>
+                  )}
+                  <span class="sr-only"> do {resort.data.nome} (abre em nova aba)</span>
+                </a>
+              </div>
+            </div>
+          </article>
+        </li>
+      ))}
+    </ul>
+    {/* Paginação (montada pelo script; sem JavaScript, a lista aparece inteira). */}
+    <nav
+      aria-label="Páginas da lista de resorts"
+      class="mt-8 flex flex-wrap items-center justify-center gap-2"
+      data-paginacao
+    ></nav>
+    <p class="text-tinta-suave mt-8 text-center" data-vazio hidden>
+      Nenhum resort encontrado com esses filtros.
+    </p>
+  </div>
+</div>
+
+<script>
+  /** Filtros, busca e ordenação da lista de resorts (só no navegador). */
+  const normalizar = (texto: string) =>
+    texto
+      .normalize('NFD')
+      .replace(/\p{Diacritic}/gu, '')
+      .toLowerCase()
+      .trim();
+
+  for (const raiz of document.querySelectorAll<HTMLElement>('[data-lista-resorts]')) {
+    const busca = raiz.querySelector<HTMLInputElement>('[data-busca]');
+    const estados = [...raiz.querySelectorAll<HTMLInputElement>('[data-filtro-uf]')];
+    const cidades = [...raiz.querySelectorAll<HTMLInputElement>('[data-filtro-cidade]')];
+    const ordenar = raiz.querySelector<HTMLSelectElement>('[data-ordenar]');
+    const limpar = raiz.querySelector<HTMLButtonElement>('[data-limpar]');
+    const lista = raiz.querySelector<HTMLElement>('[data-itens]');
+    const itens = [...raiz.querySelectorAll<HTMLElement>('[data-item]')];
+    const total = raiz.querySelector<HTMLElement>('[data-total]');
+    const rotulo = raiz.querySelector<HTMLElement>('[data-total-rotulo]');
+    const vazio = raiz.querySelector<HTMLElement>('[data-vazio]');
+    const paginacao = raiz.querySelector<HTMLElement>('[data-paginacao]');
+    const POR_PAGINA = 10;
+    let pagina = 1;
+
+    /** Mostra só os resorts da página atual (entre os que passaram nos filtros). */
+    const paginar = (filtrados: HTMLElement[]) => {
+      const total = Math.max(1, Math.ceil(filtrados.length / POR_PAGINA));
+      pagina = Math.min(pagina, total);
+      const inicio = (pagina - 1) * POR_PAGINA;
+      filtrados.forEach((item, i) => {
+        item.hidden = i < inicio || i >= inicio + POR_PAGINA;
+      });
+      if (!paginacao) return;
+      paginacao.replaceChildren();
+      if (total <= 1) return;
+      const botao = (rotulo: string, alvo: number, atual = false, desativado = false) => {
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.textContent = rotulo;
+        b.disabled = desativado;
+        if (atual) b.setAttribute('aria-current', 'page');
+        b.className = atual
+          ? 'bg-mar-700 inline-flex size-11 items-center justify-center rounded-full text-sm font-semibold text-white'
+          : 'ring-areia-300 text-mar-800 hover:bg-mar-50 inline-flex min-w-11 h-11 items-center justify-center rounded-full bg-white px-3 text-sm font-semibold ring-1 disabled:opacity-40';
+        b.addEventListener('click', () => {
+          pagina = alvo;
+          aplicar();
+          raiz.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+        return b;
+      };
+      paginacao.append(botao('‹ Anterior', pagina - 1, false, pagina === 1));
+      for (let n = 1; n <= total; n++) paginacao.append(botao(String(n), n, n === pagina));
+      paginacao.append(botao('Próxima ›', pagina + 1, false, pagina === total));
+    };
+
+    const aplicar = () => {
+      const termo = normalizar(busca?.value ?? '');
+      const ufs = estados.filter((caixa) => caixa.checked).map((caixa) => caixa.value);
+      const destinos = cidades.filter((caixa) => caixa.checked).map((caixa) => caixa.value);
+      let visiveis = 0;
+      for (const item of itens) {
+        const passa =
+          (!termo || (item.dataset.nome ?? '').includes(termo)) &&
+          (ufs.length === 0 || ufs.includes(item.dataset.uf ?? '')) &&
+          (destinos.length === 0 || destinos.includes(item.dataset.cidade ?? ''));
+        item.hidden = !passa;
+        if (passa) visiveis += 1;
+      }
+      if (total) total.textContent = String(visiveis);
+      if (rotulo) rotulo.textContent = visiveis === 1 ? 'resort' : 'resorts';
+      if (vazio) vazio.hidden = visiveis > 0;
+      if (limpar) limpar.hidden = !termo && ufs.length === 0 && destinos.length === 0;
+
+      const criterio = ordenar?.value ?? 'recomendados';
+      const ordenados = [...itens].sort((a, b) => {
+        if (criterio === 'nome') {
+          return (a.dataset.titulo ?? '').localeCompare(b.dataset.titulo ?? '', 'pt-BR');
+        }
+        if (criterio === 'estado') {
+          return (a.dataset.uf ?? '').localeCompare(b.dataset.uf ?? '', 'pt-BR');
+        }
+        return Number(a.dataset.ordem) - Number(b.dataset.ordem);
+      });
+      lista?.append(...ordenados);
+      paginar(ordenados.filter((item) => !item.hidden));
+    };
+
+    // Filtro, busca ou ordenação novos voltam para a primeira página.
+    const doInicio = () => {
+      pagina = 1;
+      aplicar();
+    };
+    busca?.addEventListener('input', doInicio);
+    ordenar?.addEventListener('change', doInicio);
+    for (const caixa of [...estados, ...cidades]) caixa.addEventListener('change', doInicio);
+    limpar?.addEventListener('click', () => {
+      if (busca) busca.value = '';
+      for (const caixa of [...estados, ...cidades]) caixa.checked = false;
+      doInicio();
+    });
+    aplicar();
+  }
+</script>

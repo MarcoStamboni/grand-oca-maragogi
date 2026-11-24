@@ -1,0 +1,67 @@
+---
+/**
+ * Nota do Tripadvisor como dado de terceiro (decisão 4): sempre com data da consulta
+ * e link para a fonte. Não gera AggregateRating/Review e não reproduz depoimentos.
+ */
+import Icone from '@/components/ui/Icone.astro';
+import { formatarDecimal, formatarDataCurta, formatarNumero } from '@/lib/formatar';
+import { resort } from '@/site.config';
+
+interface Props {
+  escuro?: boolean;
+  /** Versão em destaque (home): nota grande, sempre com a data da consulta e o link. */
+  grande?: boolean;
+  class?: string;
+}
+
+const { escuro = false, grande = false, class: classe } = Astro.props;
+// Sem nota configurada no site.config (`tripadvisor: null`), o componente não mostra nada.
+const avaliacao = resort.tripadvisor;
+---
+
+{avaliacao &&
+  (grande ? (
+    <div
+      class:list={['flex flex-col items-center gap-6 text-center sm:flex-row sm:text-left', classe]}
+    >
+      <p class="text-mar-950 shrink-0 leading-none font-semibold tracking-tight">
+        <span class="text-7xl sm:text-8xl">{formatarDecimal(avaliacao.nota)}</span>
+        <span class="text-tinta-suave text-2xl font-medium"> de {avaliacao.escala}</span>
+      </p>
+      <div class="space-y-2">
+        <p class="text-mar-950 flex items-center justify-center gap-2 text-lg font-semibold sm:justify-start">
+          <Icone nome="estrela" class="text-coral-700 size-5" />
+          No Tripadvisor, com {formatarNumero(avaliacao.totalAvaliacoes)} avaliações
+        </p>
+        <p class="text-tinta-suave text-sm">
+          Dado de terceiro consultado em {formatarDataCurta(avaliacao.consultadoEm)}.{' '}
+          <a href={avaliacao.url} target="_blank" rel="noopener noreferrer" class="underline">
+            Ver avaliações<span class="sr-only"> no Tripadvisor (abre em nova aba)</span>
+          </a>
+        </p>
+      </div>
+    </div>
+  ) : (
+    <div class:list={['space-y-1 text-sm', classe]}>
+      <p class:list={['flex items-center gap-2', escuro ? 'text-white' : 'text-tinta']}>
+        <Icone nome="estrela" class:list={['size-4', escuro ? 'text-sol-400' : 'text-coral-700']} />
+        <span>
+          <strong class="font-semibold">
+            {formatarDecimal(avaliacao.nota)} de {avaliacao.escala}
+          </strong>{' '}
+          no Tripadvisor, com {formatarNumero(avaliacao.totalAvaliacoes)} avaliações
+        </span>
+      </p>
+      <p class:list={[escuro ? 'text-white/80' : 'text-tinta-suave']}>
+        Dado de terceiro consultado em {formatarDataCurta(avaliacao.consultadoEm)}.
+        <a
+          href={avaliacao.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          class:list={['underline', escuro && 'text-mar-200']}
+        >
+          Ver avaliações<span class="sr-only"> no Tripadvisor (abre em nova aba)</span>
+        </a>
+      </p>
+    </div>
+  ))}

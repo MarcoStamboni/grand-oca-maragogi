@@ -1,0 +1,149 @@
+---
+/**
+ * Hub de lazer: atalhos para piscinas, crianças, esportes, programação e bem-estar, faixas
+ * etárias da recreação, entretenimento e o que é pago à parte. Atividades: coleção `atividades`.
+ */
+import GrupoAtividades from '@/components/sections/GrupoAtividades.astro';
+import Botao from '@/components/ui/Botao.astro';
+import Card from '@/components/ui/Card.astro';
+import ChipsFatos from '@/components/ui/ChipsFatos.astro';
+import ListaCheck from '@/components/ui/ListaCheck.astro';
+import Secao from '@/components/ui/Secao.astro';
+import TabelaFatos from '@/components/ui/TabelaFatos.astro';
+import { faixasEtarias } from '@/data/faixas-etarias';
+import { type RotaChave, rotas } from '@/data/rotas';
+import PaginaLayout from '@/layouts/PaginaLayout.astro';
+import { atividadesPublicadas } from '@/lib/atividades';
+import { DATA_CONTEUDO } from '@/lib/datas';
+import { obterImagem } from '@/lib/imagens';
+import { resort } from '@/site.config';
+
+const atividades = await atividadesPublicadas();
+const entretenimento = atividades.filter(({ data }) => data.categoria === 'entretenimento');
+const fotoEntretenimento = await obterImagem('grand-oca/resort/vista-aerea-praia-piscina.jpg');
+const pagas = atividades.filter(({ data }) => data.cobranca === 'pago');
+
+const atalhos: { rota: RotaChave; foto: string; descricao: string }[] = [
+  {
+    rota: 'piscinas',
+    foto: 'grand-oca/piscinas/piscina-solario.jpg',
+    descricao: 'Quase 400 metros de piscinas, com área D’Água, solário, parque aquático e bares.',
+  },
+  {
+    rota: 'criancas',
+    foto: 'grand-oca/criancas/parque-aquatico-escorregadores.jpg',
+    descricao:
+      'Kids Club de 4 a 12 anos, parque aquático, playground com cama elástica e baby area.',
+  },
+  {
+    rota: 'esportes',
+    foto: 'grand-oca/resort/jardim-cabanas-coqueiral.jpg',
+    descricao:
+      'Caiaque, vôlei, beach tênis, futebol, hidro, academia e mergulho na Costa dos Corais.',
+  },
+  {
+    rota: 'bemEstar',
+    foto: 'grand-oca/resort/nascer-do-sol-mar.jpg',
+    descricao: 'Grand Oca Spa, Espaço Beleza e academia com aulas programadas e hidro fitness.',
+  },
+];
+const [topo, ...fotosAtalhos] = await Promise.all([
+  obterImagem('grand-oca/resort/jardim-cabanas-coqueiral.jpg'),
+  ...atalhos.map(({ foto }) => obterImagem(foto)),
+]);
+const idade = (minima: number | null, maxima: number | null) =>
+  minima === null || maxima === null
+    ? 'Grupo próprio na programação'
+    : `${minima} a ${maxima} anos`;
+---
+
+<PaginaLayout rota="lazer" imagem={topo} atualizadoEm={DATA_CONTEUDO}>
+  <Fragment slot="acoes">
+    <Botao href={rotas.criancas.caminho} tamanho="lg" iconeFim="seta-direita">
+      Ver a recreação por idade
+    </Botao>
+  </Fragment>
+  <ChipsFatos
+    slot="fatos"
+    itens={[
+      { rotulo: 'Atividades', valor: String(atividades.length), icone: 'sol' },
+      { rotulo: 'Faixas etárias', valor: String(faixasEtarias.length), icone: 'pessoas' },
+      { rotulo: 'Shows', valor: 'Conforme a programação', icone: 'musica' },
+    ]}
+  />
+
+  <Secao
+    introducao={`Piscinas, praia, esportes, recreação infantil e shows à noite: o lazer no ${resort.nome} preenche o dia, e o mergulho, os passeios e os serviços de spa e beleza têm condições próprias.`}
+    foto="grand-oca/resort/praia-espreguicadeiras-aerea.jpg"
+    titulo={`O que fazer no lazer do ${resort.nome}?`}
+    sobretitulo="Lazer"
+  >
+    <ul class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      {atalhos.map((atalho, indice) => (
+        <li>
+          <Card
+            titulo={rotas[atalho.rota].rotulo}
+            href={rotas[atalho.rota].caminho}
+            descricao={atalho.descricao}
+            imagem={fotosAtalhos[indice]}
+          />
+        </li>
+      ))}
+    </ul>
+  </Secao>
+
+  <Secao
+    introducao={`O Kids Club recebe crianças de 4 a 12 anos, das 9h às 12h e das 14h às 18h, com atividades internas, na piscina e na praia. Menores de 4 anos participam de algumas atividades com um responsável.`}
+    foto="grand-oca/criancas/parque-aquatico-escorregadores.jpg"
+    titulo={`Como a recreação do ${resort.nomeCurto} é dividida por idade?`}
+    sobretitulo="Faixas etárias"
+    fundo="areia"
+  >
+    <div class="max-w-2xl">
+      <TabelaFatos
+        legenda="Faixas etárias da recreação"
+        legendaOculta
+        linhas={faixasEtarias.map(({ nome, idadeMinima, idadeMaxima }) => ({
+          rotulo: nome,
+          valor: idade(idadeMinima, idadeMaxima),
+        }))}
+      />
+    </div>
+  </Secao>
+
+  {entretenimento.length > 0 && (
+    <Secao
+      introducao={`O entretenimento no ${resort.nome} inclui shows na Esplanada Tropical, apresentações ao ar livre na Arena Taba durante o verão e programação adulta das 9h às 23h. A programação pode mudar sem aviso prévio.`}
+      foto="grand-oca/resort/nascer-do-sol-mar.jpg"
+      titulo={`Que entretenimento o ${resort.nomeCurto} oferece?`}
+      sobretitulo="Entretenimento"
+    >
+      <ul class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        <li class="sm:col-span-2 lg:col-span-1">
+          <GrupoAtividades
+            titulo="Shows e programação"
+            resumo="Shows na Esplanada Tropical, apresentações na Arena Taba e programação para adultos das 9h às 23h."
+            icone="musica"
+            foto={fotoEntretenimento}
+            atividades={entretenimento}
+          />
+        </li>
+      </ul>
+    </Secao>
+  )}
+
+  {pagas.length > 0 && (
+    <Secao
+      foto="grand-oca/resort/praia-areia-ampla.jpg"
+      introducao={`Algumas atividades do ${resort.nomeCurto} são cobradas à parte. Confira a lista antes da viagem.`}
+      titulo={`Quais atividades do ${resort.nomeCurto} são pagas à parte?`}
+      sobretitulo="Pago à parte"
+      fundo="areia"
+    >
+      <ListaCheck
+        itens={pagas.map(({ data }) => `${data.nome}: ${data.resumo}`)}
+        class="max-w-3xl"
+      />
+    </Secao>
+  )}
+</PaginaLayout>

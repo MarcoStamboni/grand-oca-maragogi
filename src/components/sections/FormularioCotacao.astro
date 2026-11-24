@@ -1,0 +1,153 @@
+---
+/**
+ * Formulário de cotação ou contato. Só é usado quando há PUBLIC_FORM_ENDPOINT (a página
+ * testa `enderecoFormulario` antes de renderizar a seção); sem endpoint, ficam os canais
+ * de atendimento.
+ * - Sem JavaScript: envio nativo para o endpoint, com a validação do navegador.
+ * - Com JavaScript (src/scripts/formulario.ts): validação com mensagens por campo, foco no
+ *   primeiro erro, envio por fetch, resposta numa região aria-live e, se o envio falhar, link
+ *   para continuar pelo WhatsApp.
+ * Campo-armadilha (honeypot) contra robôs. Os campos vêm de src/lib/formulario.ts.
+ */
+import { rotas } from '@/data/rotas';
+import { acomodacoesOrdenadas } from '@/lib/acomodacoes';
+import { enderecoFormulario } from '@/lib/ambiente';
+import { classesBotao } from '@/lib/botoes';
+import {
+  assuntoDoFormulario,
+  CAMPO_ARMADILHA,
+  type Campo,
+  camposDoFormulario,
+  type TipoFormulario,
+} from '@/lib/formulario';
+import { operador, resort } from '@/site.config';
+
+interface Props {
+  tipo: TipoFormulario;
+  class?: string;
+}
+
+const { tipo, class: classe } = Astro.props;
+const prefixo = `formulario-${tipo}`;
+const campos = camposDoFormulario(tipo);
+const acomodacoes =
+  tipo === 'contato' ? [] : (await acomodacoesOrdenadas()).map(({ data }) => data.nome);
+
+const id = (campo: Campo, sufixo = '') => `${prefixo}-${campo.nome}${sufixo}`;
+const descricao = (campo: Campo) =>
+  [campo.dica ? id(campo, '-dica') : '', id(campo, '-erro')].filter(Boolean).join(' ');
+const classeCampo =
+  'border-areia-300 text-tinta aria-invalid:border-coral-700 block w-full rounded-md border bg-white px-4 py-2.5';
+const textoBotao = tipo === 'contato' ? 'Enviar mensagem' : 'Pedir cotação';
+---
+
+<form
+  id={prefixo}
+  action={enderecoFormulario}
+  method="post"
+  accept-charset="utf-8"
+  class:list={['ring-areia-200 space-y-6 rounded-cartao bg-white p-5 ring-1 sm:p-8', classe]}
+  data-formulario={tipo}
+  data-whatsapp={operador.whatsapp.numero}
+  data-resort={resort.nome}
+>
+  <p class="text-tinta-suave text-sm">
+    Campos com{' '}
+    <span aria-hidden="true" class="text-coral-700 font-semibold">
+      *
+    </span>{' '}
+    são obrigatórios.
+  </p>
+
+  <div class="grid gap-5 sm:grid-cols-2">
+    {campos.map((campo) => (
+      <div class:list={[campo.linhaInteira && 'sm:col-span-2']}>
+        <label for={id(campo)} class="text-mar-950 mb-1.5 block font-semibold">
+          {campo.rotulo}
+          {campo.obrigatorio && (
+            <span aria-hidden="true" class="text-coral-700">
+              {' '}
+              *
+            </span>
+          )}
+        </label>
+        {campo.tipo === 'textarea' ? (
+          <textarea
+            id={id(campo)}
+            name={campo.nome}
+            rows="5"
+            maxlength={campo.max}
+            required={campo.obrigatorio}
+            aria-describedby={descricao(campo)}
+            class={classeCampo}
+          />
+        ) : campo.tipo === 'select' ? (
+          <select
+            id={id(campo)}
+            name={campo.nome}
+            required={campo.obrigatorio}
+            aria-describedby={descricao(campo)}
+            class={classeCampo}
+          >
+            <option value="">Ainda não sei</option>
+            {acomodacoes.map((nome) => (
+              <option value={nome}>{nome}</option>
+            ))}
+          </select>
+        ) : (
+          <input
+            id={id(campo)}
+            name={campo.nome}
+            type={campo.tipo}
+            autocomplete={campo.autocomplete}
+            inputmode={
+              campo.tipo === 'tel' ? 'tel' : campo.tipo === 'number' ? 'numeric' : undefined
+            }
+            min={campo.min}
+            max={campo.max}
+            required={campo.obrigatorio}
+            aria-describedby={descricao(campo)}
+            class={classeCampo}
+          />
+        )}
+        {campo.dica && (
+          <p id={id(campo, '-dica')} class="text-tinta-suave mt-1 text-sm">
+            {campo.dica}
+          </p>
+        )}
+        <p id={id(campo, '-erro')} class="text-coral-700 mt-1 text-sm font-semibold" hidden />
+      </div>
+    ))}
+  </div>
+
+  {/* Armadilha para robôs: fora da tela, fora da ordem de tabulação e escondida de leitores de tela. */}
+  <div class="absolute -left-[9999px] h-px w-px overflow-hidden" aria-hidden="true">
+    <label for={`${prefixo}-armadilha`}>Deixe este campo em branco</label>
+    <input
+      id={`${prefixo}-armadilha`}
+      name={CAMPO_ARMADILHA}
+      type="text"
+      tabindex="-1"
+      autocomplete="off"
+    />
+  </div>
+  <input type="hidden" name="assunto" value={assuntoDoFormulario(tipo, resort.nomeCurto)} />
+  <input type="hidden" name="pagina" value={Astro.url.pathname} />
+
+  <p class="text-tinta-suave text-sm">
+    Usamos estes dados só para responder ao seu pedido. Saiba mais na{' '}
+    <a href={rotas.privacidade.caminho}>política de privacidade</a>.
+  </p>
+
+  <div class="flex flex-wrap items-center gap-4">
+    <button type="submit" class:list={classesBotao('primario', 'lg')} data-formulario-enviar>
+      {textoBotao}
+    </button>
+  </div>
+
+  <div role="status" aria-live="polite" class="empty:hidden" data-formulario-status></div>
+</form>
+
+<script>
+  import '@/scripts/formulario';
+</script>

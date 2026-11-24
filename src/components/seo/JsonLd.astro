@@ -1,0 +1,75 @@
+---
+/**
+ * Dados estruturados (JSON-LD) da página: um único `<script type="application/ld+json">` com
+ * o `@graph` montado por src/lib/schema.ts (WebSite, operador, Resort, WebPage, BreadcrumbList
+ * e a entidade principal). Tipo e assunto saem da rota; o build confere tudo
+ * (src/integrations/validar-json-ld.ts).
+ */
+import type { RotaChave } from '@/data/rotas';
+import { restaurantesOrdenados } from '@/lib/gastronomia';
+import {
+  CHAVE_IMAGEM_PADRAO,
+  type ImagemResolvida,
+  imagemSchema,
+  obterImagem,
+} from '@/lib/imagens';
+import type { Link } from '@/lib/navegacao';
+import {
+  grafoDaPagina,
+  type OpcoesDadosEstruturados,
+  perfilDaRota,
+  serializarJsonLd,
+  urlAbsoluta,
+} from '@/lib/schema';
+
+interface Props extends OpcoesDadosEstruturados {
+  caminho: string;
+  /** Título completo (o mesmo do <title>). */
+  titulo: string;
+  descricao: string;
+  atualizadoEm?: Date;
+  /** Foto principal exibida na página. */
+  imagem?: ImagemResolvida;
+  rota?: RotaChave;
+  trilha?: readonly Link[];
+}
+
+const {
+  caminho,
+  titulo,
+  descricao,
+  atualizadoEm,
+  imagem,
+  rota,
+  trilha,
+  principal,
+  perguntas,
+  entidades,
+} = Astro.props;
+
+const [imagemPagina, imagemResort, restaurantes] = await Promise.all([
+  imagem ? imagemSchema(imagem) : undefined,
+  obterImagem(CHAVE_IMAGEM_PADRAO).then(imagemSchema),
+  restaurantesOrdenados(),
+]);
+
+const perfil = rota ? perfilDaRota(rota) : {};
+const grafo = grafoDaPagina({
+  ...perfil,
+  url: urlAbsoluta(caminho),
+  titulo,
+  descricao,
+  atualizadoEm,
+  imagem: imagemPagina,
+  trilha,
+  principal: principal ?? perfil.principal,
+  perguntas,
+  entidades,
+  resort: {
+    imagem: imagemResort,
+    restaurantes: restaurantes.map(({ id, data }) => ({ id, nome: data.nome })),
+  },
+});
+---
+
+<script is:inline type="application/ld+json" set:html={serializarJsonLd(grafo)} />

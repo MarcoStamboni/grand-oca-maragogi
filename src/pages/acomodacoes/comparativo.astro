@@ -1,0 +1,194 @@
+---
+/**
+ * Comparativo de todas as acomodações (recurso do site do Enotel): atalhos para cada categoria,
+ * tabela completa (área, ambientes, capacidade, vista, hidromassagem, piscina privativa, perfil),
+ * pontos fortes e de atenção de cada categoria (`comparacao`) e o resumo final por perfil. Tudo sai
+ * da coleção `acomodacoes`.
+ */
+import Botao from '@/components/ui/Botao.astro';
+import Icone from '@/components/ui/Icone.astro';
+import Imagem from '@/components/ui/Imagem.astro';
+import ListaCheck from '@/components/ui/ListaCheck.astro';
+import Secao from '@/components/ui/Secao.astro';
+import TabelaComparativa from '@/components/ui/TabelaComparativa.astro';
+import { caminhoAcomodacao, rotas } from '@/data/rotas';
+import PaginaLayout from '@/layouts/PaginaLayout.astro';
+import { reservarHospedagem } from '@/lib/acoes';
+import { acomodacoesComCapa, fatosCurtos, linhaComparativo } from '@/lib/acomodacoes';
+import { DATA_CONTEUDO } from '@/lib/datas';
+import { iconeDoTexto } from '@/lib/icone-do-texto';
+import { obterImagem } from '@/lib/imagens';
+import { resort } from '@/site.config';
+
+const [topo, acomodacoes] = await Promise.all([
+  obterImagem('grand-oca/acomodacoes/suite-deluxe-varanda.jpg'),
+  acomodacoesComCapa(),
+]);
+const linhas = acomodacoes.map(({ entrada }) => ({ entrada, linha: linhaComparativo(entrada) }));
+const comparadas = acomodacoes.filter(({ entrada }) => entrada.data.comparacao);
+/** Resumo final: a categoria indicada para cada perfil (texto de `indicadoPara` + o diferencial). */
+const resumoFinal = comparadas.map(({ entrada }) => ({
+  perfil: entrada.data.indicadoPara,
+  nome: entrada.data.nome,
+  href: caminhoAcomodacao(entrada.id),
+  porque: entrada.data.comparacao?.fortes[0] ?? entrada.data.resumo,
+}));
+---
+
+<PaginaLayout rota="comparativo" imagem={topo} atualizadoEm={DATA_CONTEUDO} chaveFaq="comparativo">
+  <Fragment slot="acoes">
+    <Botao
+      variante="verde"
+      href={reservarHospedagem.href}
+      icone={reservarHospedagem.icone}
+      evento={reservarHospedagem.evento}
+      externo={reservarHospedagem.externo}
+      tamanho="lg"
+    >
+      Ver disponibilidade
+    </Botao>
+  </Fragment>
+  <ul slot="fatos" class="flex flex-wrap justify-center gap-2" aria-label="Ir para a categoria">
+    {acomodacoes.map(({ entrada }) => (
+      <li>
+        <a
+          href={caminhoAcomodacao(entrada.id)}
+          class="bg-mar-50 text-mar-800 hover:bg-mar-100 inline-flex min-h-10 items-center rounded-full px-4 text-sm font-semibold no-underline"
+        >
+          {entrada.data.nome}
+        </a>
+      </li>
+    ))}
+  </ul>
+
+  <Secao
+    foto="grand-oca/acomodacoes/duplo-deluxe-varanda.jpg"
+    titulo={`Quais são as diferenças entre as acomodações do ${resort.nome}?`}
+    sobretitulo="Comparação"
+    introducao={`A tabela mostra a mesma informação de cada categoria do ${resort.nomeCurto}, lado a lado: área, ambientes, capacidade, vista e itens de destaque. No celular, role a tabela para o lado.`}
+  >
+    <TabelaComparativa
+      legenda="Comparativo das acomodações"
+      colunas={[
+        'Categoria',
+        'Área',
+        'Ambientes',
+        'Capacidade',
+        'Vista',
+        'Hidromassagem',
+        'Piscina privativa',
+        'Indicada para',
+      ]}
+      linhas={linhas.map(({ entrada, linha }) => ({
+        cabecalho: entrada.data.nome,
+        celulas: [
+          linha.area,
+          linha.ambientes,
+          linha.capacidade,
+          linha.vista,
+          linha.hidromassagem,
+          linha.piscinaPrivativa,
+          linha.indicadoPara,
+        ],
+      }))}
+      nota="A capacidade de cada categoria considera adultos e crianças, e algumas têm limites próprios, como o Standard, que aceita crianças de até 12 anos. Informe a idade de cada criança na cotação."
+    />
+  </Secao>
+
+  <Secao
+    introducao={`Em que cada acomodação do ${resort.nomeCurto} se diferencia das outras, com os pontos fortes e os pontos de atenção de cada uma, a partir da tabela acima.`}
+    titulo={`Quais são os pontos fortes e fracos de cada acomodação do ${resort.nomeCurto}?`}
+    sobretitulo="Categoria por categoria"
+    fundo="areia"
+  >
+    <ul class="space-y-6">
+      {comparadas.map(({ entrada, capa }) => (
+        <li
+          class:list={[
+            'ring-areia-200 grid overflow-hidden rounded-grande bg-white shadow-cartao ring-1',
+            capa && 'lg:grid-cols-[minmax(0,2fr)_minmax(0,5fr)]',
+          ]}
+          data-revelar
+        >
+          {capa && (
+            <div class="aspect-16/10 lg:aspect-auto">
+              <Imagem
+                src={capa.src}
+                alt={capa.alt}
+                sizes="(min-width: 1024px) 28vw, 100vw"
+                class="h-full w-full object-cover"
+              />
+            </div>
+          )}
+          <div class="space-y-5 p-6 sm:p-8">
+            <div class="space-y-2">
+              <p class="sobretitulo">
+                {fatosCurtos(entrada).join(' · ')}
+                {entrada.data.premium && ' · Premium'}
+              </p>
+              <h3 class="">
+                <a
+                  href={caminhoAcomodacao(entrada.id)}
+                  class="text-mar-800 hover:text-coral-700 no-underline"
+                >
+                  {entrada.data.nome}
+                </a>
+              </h3>
+              <p class="text-tinta-suave">{entrada.data.comparacao?.diferenca}</p>
+            </div>
+            <div class="grid gap-6 md:grid-cols-2">
+              <div>
+                <p class="text-mar-800 mb-3 font-semibold">Pontos fortes</p>
+                <ListaCheck itens={entrada.data.comparacao?.fortes ?? []} />
+              </div>
+              <div>
+                <p class="text-mar-800 mb-3 font-semibold">Pontos de atenção</p>
+                <ul class="grid gap-y-3">
+                  {(entrada.data.comparacao?.atencao ?? []).map((item) => (
+                    <li class="flex gap-3">
+                      <span class="text-coral-700 mt-0.5 flex shrink-0">
+                        <Icone nome={iconeDoTexto(item, 'info')} class="size-5" />
+                      </span>
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+            <p>
+              <a href={caminhoAcomodacao(entrada.id)} class="text-coral-700 font-semibold">
+                Ver {entrada.data.artigo} {entrada.data.nome} →
+              </a>
+            </p>
+          </div>
+        </li>
+      ))}
+    </ul>
+  </Secao>
+
+  <Secao
+    introducao={`Em resumo: a escolha depende de quantas pessoas vão viajar, da vista que você quer e de quanto espaço e privacidade fazem diferença na sua estadia no ${resort.nomeCurto}.`}
+    titulo={`Qual acomodação do ${resort.nomeCurto} escolher, em resumo?`}
+    sobretitulo="Resumo"
+    foto="grand-oca/acomodacoes/bangalo-triplo-quarto.jpg"
+  >
+    <ul class="grid gap-4 sm:grid-cols-2">
+      {resumoFinal.map((item) => (
+        <li class="ring-areia-200 rounded-cartao bg-white p-5 shadow-cartao ring-1">
+          <p class="text-tinta-suave text-sm">{item.perfil}</p>
+          <p class="mt-1">
+            <a href={item.href} class="text-coral-700 font-semibold">
+              {item.nome} →
+            </a>
+          </p>
+          <p class="text-tinta-suave mt-1">{item.porque}</p>
+        </li>
+      ))}
+    </ul>
+    <p class="mt-8">
+      <Botao href={rotas.acomodacoes.caminho} variante="contorno" iconeFim="seta-direita">
+        Ver todas as acomodações
+      </Botao>
+    </p>
+  </Secao>
+</PaginaLayout>

@@ -1,0 +1,47 @@
+---
+/**
+ * Mosaico de fotos no topo de uma página de detalhe (acomodação): a primeira foto grande à
+ * esquerda e até quatro menores, com zoom no hover. Com uma ou duas fotos, o mosaico se ajusta.
+ * completa da página (âncora `destino`). Com uma ou duas fotos, o mosaico se ajusta.
+ */
+import Imagem from '@/components/ui/Imagem.astro';
+import type { ImagemResolvida } from '@/lib/imagens';
+
+interface Props {
+  fotos: readonly ImagemResolvida[];
+  rotulo: string;
+}
+
+const { fotos, rotulo } = Astro.props;
+const visiveis = fotos.slice(0, 5);
+const colunas = visiveis.length >= 3 ? 'md:grid-cols-4' : 'md:grid-cols-2';
+---
+
+{visiveis.length > 0 && (
+  <section class="container-site pt-12 sm:pt-16" aria-label={rotulo} data-revelar="aparecer">
+    <div
+      class:list={[
+        'relative grid auto-rows-[10rem] grid-cols-2 gap-2 sm:auto-rows-[13rem] sm:gap-3',
+        colunas,
+      ]}
+    >
+      {visiveis.map((foto, indice) => (
+        <div
+          class:list={[
+            'group overflow-hidden rounded-cartao',
+            indice === 0 && visiveis.length >= 3 && 'col-span-2 row-span-2',
+          ]}
+        >
+          <Imagem
+            src={foto.src}
+            alt={foto.alt}
+            sizes={
+              indice === 0 ? '(min-width: 768px) 50vw, 100vw' : '(min-width: 768px) 25vw, 50vw'
+            }
+            class="ease-suave transition duration-[1.2s] group-hover:scale-110 group-hover:brightness-105"
+          />
+        </div>
+      ))}
+    </div>
+  </section>
+)}

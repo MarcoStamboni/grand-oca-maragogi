@@ -1,0 +1,171 @@
+---
+/**
+ * Artigo do blog (coleção `blog`): BlogPosting no JSON-LD (noPost), autor e datas visíveis,
+ * índice "Neste artigo" a partir dos H2, páginas relacionadas do site e outros artigos.
+ */
+import { render } from 'astro:content';
+
+import Card from '@/components/ui/Card.astro';
+import Icone from '@/components/ui/Icone.astro';
+import Secao from '@/components/ui/Secao.astro';
+import { paginas, type RotaComTexto } from '@/data/paginas';
+import { caminhoPost, rotas } from '@/data/rotas';
+import PaginaLayout from '@/layouts/PaginaLayout.astro';
+import { minutosDeLeitura, type Post, postsEmOrdem, rotulosCategoriaBlog } from '@/lib/blog';
+import { dataIso, formatarData } from '@/lib/formatar';
+import { imagemSchema, obterImagem } from '@/lib/imagens';
+import { noPost } from '@/lib/schema';
+import { operador, resort } from '@/site.config';
+
+export async function getStaticPaths() {
+  const posts = await postsEmOrdem();
+  return posts.map((post) => ({ params: { id: post.id }, props: { post, posts } }));
+}
+
+interface Props {
+  post: Post;
+  posts: Post[];
+}
+
+const { post, posts } = Astro.props;
+const { id, data } = post;
+const [{ Content, headings }, capa] = await Promise.all([render(post), obterImagem(data.capa)]);
+const indice = headings.filter(({ depth }) => depth === 2);
+const autor = data.autor ?? `Equipe ${operador.nome}`;
+const artigo = noPost({
+  id,
+  titulo: data.titulo,
+  descricao: data.seo.descricao,
+  publicadoEm: data.publicadoEm,
+  atualizadoEm: data.atualizadoEm,
+  autor: data.autor,
+  imagem: await imagemSchema(capa),
+});
+
+const relacionadas = data.relacionadas.map((chave) => ({
+  titulo: rotas[chave].rotulo,
+  href: rotas[chave].caminho,
+  descricao: chave in paginas ? paginas[chave as RotaComTexto].subtitulo : undefined,
+}));
+const outros = await Promise.all(
+  posts
+    .filter((outro) => outro.id !== id)
+    .slice(0, 3)
+    .map(async (outro) => ({ post: outro, capa: await obterImagem(outro.data.capa) })),
+);
+---
+
+<PaginaLayout
+  titulo={data.seo.titulo}
+  descricao={data.seo.descricao}
+  rota="blog"
+  respostaNaSecao={false}
+  trilhaExtra={[{ rotulo: data.titulo, href: caminhoPost(id) }]}
+  h1={data.titulo}
+  sobretitulo={rotulosCategoriaBlog[data.categoria]}
+  subtitulo={data.resumo}
+  respostaDireta={data.respostaDireta}
+  imagem={capa}
+  atualizadoEm={data.atualizadoEm}
+  chaveFaq={`post:${id}`}
+  tipoOg="article"
+  dadosEstruturados={{ principal: artigo }}
+>
+  <Secao>
+    <div class="grid gap-10 lg:grid-cols-[minmax(0,1fr)_16rem]">
+      <article class="min-w-0">
+        <p class="text-tinta-suave border-areia-200 mb-8 flex flex-wrap items-center gap-x-5 gap-y-2 border-b pb-6 text-sm">
+          <span class="inline-flex items-center gap-1.5">
+            <Icone nome="pessoas" class="size-4" />
+            Por {autor}
+          </span>
+          <span class="inline-flex items-center gap-1.5">
+            <Icone nome="calendario" class="size-4" />
+            Publicado em{' '}
+            <time datetime={dataIso(data.publicadoEm)}>{formatarData(data.publicadoEm)}</time>
+          </span>
+          {data.atualizadoEm.getTime() !== data.publicadoEm.getTime() && (
+            <span>
+              Atualizado em{' '}
+              <time datetime={dataIso(data.atualizadoEm)}>{formatarData(data.atualizadoEm)}</time>
+            </span>
+          )}
+          <span class="inline-flex items-center gap-1.5">
+            <Icone nome="relogio" class="size-4" />
+            {minutosDeLeitura(post.body)} min de leitura
+          </span>
+        </p>
+        <div class="conteudo">
+          <Content />
+        </div>
+      </article>
+
+      {indice.length > 1 && (
+        <nav aria-labelledby="titulo-indice" class="order-first lg:order-last">
+          <div class="ring-areia-200 rounded-cartao bg-white p-5 shadow-cartao ring-1 lg:sticky lg:top-[calc(7rem+var(--bf-h,0px))]">
+            <p id="titulo-indice" class="text-mar-950 mb-3 font-semibold">
+              Neste artigo
+            </p>
+            <ol class="space-y-2 text-sm">
+              {indice.map((titulo) => (
+                <li>
+                  <a
+                    href={`#${titulo.slug}`}
+                    class="text-mar-800 hover:text-coral-700 underline-offset-4 hover:underline"
+                  >
+                    {titulo.text}
+                  </a>
+                </li>
+              ))}
+            </ol>
+          </div>
+        </nav>
+      )}
+    </div>
+  </Secao>
+
+  {relacionadas.length > 0 && (
+    <Secao
+      introducao={`Páginas do site que aprofundam os temas deste artigo, com as informações completas sobre o ${resort.nomeCurto}.`}
+      titulo="Onde saber mais no site?"
+      sobretitulo="Páginas relacionadas"
+      fundo="areia"
+    >
+      <ul class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        {relacionadas.map((pagina) => (
+          <li>
+            <Card
+              titulo={pagina.titulo}
+              href={pagina.href}
+              descricao={pagina.descricao}
+              imagem={false}
+            />
+          </li>
+        ))}
+      </ul>
+    </Secao>
+  )}
+
+  {outros.length > 0 && (
+    <Secao
+      introducao={`Mais dicas para planejar a viagem a um resort all inclusive, da escolha da acomodação à mala.`}
+      titulo="Que outros artigos ler?"
+      sobretitulo="Blog"
+    >
+      <ul class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {outros.map((outro) => (
+          <li>
+            <Card
+              titulo={outro.post.data.titulo}
+              href={caminhoPost(outro.post.id)}
+              sobretitulo={rotulosCategoriaBlog[outro.post.data.categoria]}
+              descricao={outro.post.data.resumo}
+              imagem={outro.capa}
+              chamada="Ler o artigo"
+            />
+          </li>
+        ))}
+      </ul>
+    </Secao>
+  )}
+</PaginaLayout>

@@ -1,0 +1,186 @@
+---
+/**
+ * All inclusive: como funciona, o que está incluso e o que é pago à parte, as refeições do
+ * dia, restaurantes, bares e carta de bebidas.
+ * Textos: src/data/paginas.ts e src/data/home.ts; regras: src/data/all-inclusive.ts.
+ */
+import GrupoCartao from '@/components/sections/GrupoCartao.astro';
+import Botao from '@/components/ui/Botao.astro';
+import Card from '@/components/ui/Card.astro';
+import ChipsFatos from '@/components/ui/ChipsFatos.astro';
+import Icone from '@/components/ui/Icone.astro';
+import ListaCheck from '@/components/ui/ListaCheck.astro';
+import Secao from '@/components/ui/Secao.astro';
+import TabelaFatos from '@/components/ui/TabelaFatos.astro';
+import { refeicoesDoDia } from '@/data/all-inclusive';
+import { allInclusive } from '@/data/all-inclusive';
+import { textosHome } from '@/data/home';
+import { caminhoRestaurante, rotas } from '@/data/rotas';
+import PaginaLayout from '@/layouts/PaginaLayout.astro';
+import { DATA_CONTEUDO } from '@/lib/datas';
+import { iconeDoTexto } from '@/lib/icone-do-texto';
+import { baresOrdenados, restaurantesOrdenados, textoTipo } from '@/lib/gastronomia';
+import { obterImagem } from '@/lib/imagens';
+import { resort } from '@/site.config';
+
+const [topo, restaurantes, bares] = await Promise.all([
+  obterImagem('grand-oca/gastronomia/restaurante-salao-mesas.jpg'),
+  restaurantesOrdenados(),
+  baresOrdenados(),
+]);
+const comFoto = <T extends { data: { fotos: string[] } }>(itens: readonly T[]) =>
+  Promise.all(
+    itens.map(async (item) => ({
+      item,
+      foto: item.data.fotos[0] ? await obterImagem(item.data.fotos[0]) : undefined,
+    })),
+  );
+const [restaurantesComFoto, baresComFoto] = await Promise.all([
+  comFoto(restaurantes),
+  comFoto(bares),
+]);
+const restComFoto = restaurantesComFoto.filter(({ foto }) => foto);
+const restSemFoto = restaurantesComFoto.filter(({ foto }) => !foto);
+const fotoGrupoRest = await obterImagem('grand-oca/gastronomia/restaurante-salao-mesas.jpg');
+const fotoGrupoBar = await obterImagem('grand-oca/gastronomia/bar-piscina-noite.jpg');
+---
+
+<PaginaLayout rota="allInclusive" imagem={topo} atualizadoEm={DATA_CONTEUDO}>
+  <Fragment slot="acoes">
+    <Botao href={rotas.restaurantes.caminho} tamanho="lg" iconeFim="seta-direita">
+      Ver os restaurantes
+    </Botao>
+  </Fragment>
+  <ChipsFatos
+    slot="fatos"
+    itens={[
+      { rotulo: 'Restaurantes', valor: String(restaurantes.length), icone: 'talheres' },
+      { rotulo: 'Bares', valor: 'Sete', icone: 'drink' },
+      { rotulo: 'Refeições', valor: 'Café, almoço, chá e jantar', icone: 'relogio' },
+      { rotulo: 'Bebidas', valor: 'Selecionadas, com e sem álcool', icone: 'taca' },
+    ]}
+  />
+
+  <Secao
+    introducao={`No all inclusive do ${resort.nomeCurto}, refeições, bebidas selecionadas, snacks e boa parte do lazer já estão na diária, e os restaurantes temáticos seguem regras próprias de reserva.`}
+    foto="grand-oca/gastronomia/restaurante-corais-buffet.jpg"
+    titulo={`Como funciona o all inclusive do ${resort.nomeCurto} Resort?`}
+    sobretitulo="Como funciona"
+  >
+    <div class="conteudo">
+      {textosHome.allInclusive.map((paragrafo) => (
+        <p>{paragrafo}</p>
+      ))}
+    </div>
+  </Secao>
+
+  <Secao
+    foto="grand-oca/resort/praia-coqueiral.jpg"
+    introducao={`Veja o que entra na diária all inclusive e o que é cobrado à parte, para planejar a viagem sem surpresas no check-out.`}
+    titulo={`O que está incluso no all inclusive do ${resort.nomeCurto}?`}
+    sobretitulo="Incluso × pago"
+    fundo="areia"
+  >
+    <div class="grid gap-6 lg:grid-cols-2">
+      <div class="rounded-cartao bg-white p-6 shadow-cartao ring-1 ring-black/8 sm:p-8">
+        <h3 class="mb-5">Incluído na diária</h3>
+        <ListaCheck itens={allInclusive.incluso} />
+      </div>
+      <div class="rounded-cartao bg-white p-6 shadow-cartao ring-1 ring-black/8 sm:p-8">
+        <h3 class="mb-5">Cobrado à parte</h3>
+        <ul class="grid gap-3">
+          {allInclusive.naoIncluso.map((item) => (
+            <li class="flex gap-3">
+              <span class="text-coral-700 mt-0.5 flex shrink-0">
+                <Icone nome={iconeDoTexto(item, 'info')} class="size-5" />
+              </span>
+              <span>{item}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  </Secao>
+
+  <Secao
+    introducao={`As refeições são servidas ao longo do dia, do café da manhã ao jantar, com snacks entre elas. Horários e funcionamento podem mudar sem aviso prévio.`}
+    foto="grand-oca/gastronomia/restaurante-corais-noite.jpg"
+    titulo={`Quais são as refeições do ${resort.nomeCurto}?`}
+    sobretitulo="Refeições"
+  >
+    <div class="space-y-5">
+      <TabelaFatos legenda="Refeições do dia" legendaOculta linhas={[...refeicoesDoDia]} />
+      <p class="text-tinta-suave text-sm">
+        Horários sujeitos a alteração sem aviso prévio. A programação do dia é informada no resort.
+      </p>
+    </div>
+  </Secao>
+
+  <Secao
+    introducao={`Do buffet de frente para o mar do Corais aos restaurantes temáticos Ix’U, Il Giardino e La Brasa, os restaurantes entram no all inclusive do ${resort.nomeCurto}, com reserva prévia nos temáticos.`}
+    titulo={`Quais são os restaurantes do ${resort.nomeCurto}?`}
+    sobretitulo="Restaurantes"
+    fundo="areia"
+  >
+    <ul class="grid gap-6 sm:grid-cols-2">
+      {restComFoto.map(({ item, foto }) => (
+        <li>
+          <Card
+            titulo={item.data.nome}
+            href={caminhoRestaurante(item.id)}
+            sobretitulo={textoTipo(item)}
+            descricao={item.data.resumo}
+            imagem={foto}
+            iconeSemFoto="talheres"
+          />
+        </li>
+      ))}
+      {restSemFoto.length > 0 && (
+        <li>
+          <GrupoCartao
+            titulo="Ix’U e praça de alimentação"
+            resumo="O restaurante de cozinha fusion à beira da praia e os pontos de petiscos da rua de compras."
+            icone="talheres"
+            foto={fotoGrupoRest}
+            rotulo="restaurantes"
+            itens={restSemFoto.map(({ item }) => ({
+              nome: item.data.nome,
+              resumo: item.data.resumo,
+              href: caminhoRestaurante(item.id),
+            }))}
+          />
+        </li>
+      )}
+    </ul>
+  </Secao>
+
+  <Secao
+    introducao={`Os sete bares completam o all inclusive com drinks, cervejas e snacks, da piscina à praia e ao SportBar.`}
+    titulo={`Quais bares do ${resort.nomeCurto} estão incluídos?`}
+    sobretitulo="Bares"
+    fundo="areia"
+  >
+    <ul class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      <li class="sm:col-span-2 lg:col-span-1">
+        <GrupoCartao
+          titulo="Sete bares, da piscina à praia"
+          resumo="Coqueirais, Galés, Drink Parrot, Ponta de Mangue, Esplanada Tropical, Piscina D’Água e SportBar."
+          icone="drink"
+          foto={fotoGrupoBar}
+          rotulo="bares"
+          itens={baresComFoto.map(({ item }) => ({
+            nome: item.data.nome,
+            resumo: item.data.resumo,
+            detalhe: item.data.local,
+            href: `${rotas.bares.caminho}#${item.id}`,
+          }))}
+        />
+      </li>
+    </ul>
+    <p class="mt-10 flex flex-wrap gap-3">
+      <Botao href={rotas.bares.caminho} variante="contorno" iconeFim="seta-direita">
+        Ver os bares
+      </Botao>
+    </p>
+  </Secao>
+</PaginaLayout>

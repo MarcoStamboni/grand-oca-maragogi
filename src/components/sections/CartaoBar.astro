@@ -1,0 +1,82 @@
+---
+/**
+ * Ficha de um bar ou estação (página /all-inclusive/bares/): foto, proposta, local,
+ * horários, bebidas, comidas, público e serviços pagos à parte, como a fonte informa.
+ */
+import Icone from '@/components/ui/Icone.astro';
+import Imagem from '@/components/ui/Imagem.astro';
+import ImagemIndisponivel from '@/components/ui/ImagemIndisponivel.astro';
+import { formatarListaFrase } from '@/lib/formatar';
+import { iconeDoTexto } from '@/lib/icone-do-texto';
+import { type Bar, textoHorario } from '@/lib/gastronomia';
+import type { ImagemResolvida } from '@/lib/imagens';
+
+interface Props {
+  bar: Bar;
+  foto: ImagemResolvida | undefined;
+  nivelTitulo?: 2 | 3;
+  /** Sem o id de âncora (quando a ficha aparece numa janela e a âncora fica no carrossel). */
+  semAncora?: boolean;
+}
+
+const { bar, foto, nivelTitulo = 3, semAncora = false } = Astro.props;
+const { data } = bar;
+const Titulo = `h${nivelTitulo}` as const;
+
+const linhas = [
+  { rotulo: 'Onde fica', valor: data.local },
+  { rotulo: 'Horário', valor: data.horarios.map(textoHorario).join(' · ') },
+  ...(data.bebidas.length > 0
+    ? [{ rotulo: 'Bebidas', valor: formatarListaFrase(data.bebidas) }]
+    : []),
+  ...(data.comidas.length > 0
+    ? [{ rotulo: 'Para comer', valor: formatarListaFrase(data.comidas) }]
+    : []),
+  ...(data.servicosPagos.length > 0
+    ? [{ rotulo: 'Pago à parte', valor: formatarListaFrase(data.servicosPagos) }]
+    : []),
+];
+---
+
+<article
+  id={semAncora ? undefined : bar.id}
+  class="ring-areia-200 grid gap-5 rounded-cartao bg-white p-4 ring-1 sm:p-5 md:grid-cols-[2fr_3fr] md:gap-6"
+>
+  <div class="aspect-4/3 overflow-hidden rounded-md md:aspect-auto md:h-full md:min-h-56 [&_img]:h-full [&_img]:w-full [&_img]:object-cover">
+    {foto ? (
+      <Imagem
+        src={foto.src}
+        alt={foto.alt}
+        sizes="(min-width: 1280px) 30rem, (min-width: 768px) 40vw, 100vw"
+        largura={1000}
+      />
+    ) : (
+      <ImagemIndisponivel referencia={`/all-inclusive/bares/#${bar.id}`} icone="drink" />
+    )}
+  </div>
+  <div class="space-y-3">
+    <div class="flex flex-wrap items-center gap-2">
+      <Titulo class="flex items-start gap-2">
+        <Icone
+          nome={iconeDoTexto(data.nome, 'drink')}
+          class="text-coral-700 mt-1 size-5 shrink-0"
+        />
+        {data.nome}
+      </Titulo>
+      {data.publico === 'adulto' && (
+        <span class="bg-coral-100 text-coral-800 rounded-full px-2.5 py-0.5 text-xs font-semibold">
+          Público adulto
+        </span>
+      )}
+    </div>
+    <p>{data.resumo}</p>
+    <dl class="grid gap-x-6 gap-y-3 text-sm sm:grid-cols-2">
+      {linhas.map(({ rotulo, valor }) => (
+        <div>
+          <dt class="text-mar-950 font-semibold">{rotulo}</dt>
+          <dd class="text-tinta-suave">{valor}</dd>
+        </div>
+      ))}
+    </dl>
+  </div>
+</article>

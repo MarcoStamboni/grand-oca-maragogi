@@ -1,0 +1,84 @@
+---
+/**
+ * Outros resorts all inclusive da rede (só no perfil agência): listagem com filtros e cartões
+ * horizontais no formato da página "Melhores hotéis" do hoteisnoguaruja (ListaOutrosResorts);
+ * "Ver detalhes" leva ao portal do resort.
+ * Lista: coleção `outrosResorts` (o resort do próprio site sai sozinho).
+ */
+import ListaOutrosResorts from '@/components/sections/ListaOutrosResorts.astro';
+import Botao from '@/components/ui/Botao.astro';
+import ListaCheck from '@/components/ui/ListaCheck.astro';
+import Secao from '@/components/ui/Secao.astro';
+import { rotas } from '@/data/rotas';
+import PaginaLayout from '@/layouts/PaginaLayout.astro';
+import { acaoWhatsApp } from '@/lib/acoes';
+import { DATA_CONTEUDO } from '@/lib/datas';
+import { obterImagem } from '@/lib/imagens';
+import { rotaDisponivel } from '@/lib/navegacao';
+import { outrosResorts } from '@/lib/outros-resorts';
+import { operador, resort } from '@/site.config';
+
+// Rota dinâmica só para não gerar a página quando ela não existe (outro operador ou recurso
+// desligado em `recursos.outrosResorts`).
+export function getStaticPaths() {
+  return rotaDisponivel('outrosResorts') ? [{ params: { raiz: undefined } }] : [];
+}
+
+const [topo, lista] = await Promise.all([
+  obterImagem('grand-oca/resort/praia-coqueiral.jpg'),
+  outrosResorts(),
+]);
+const comparar = acaoWhatsApp(
+  `Olá! Quero comparar o ${resort.nomeCurto} com outros resorts all inclusive.`,
+  'Comparar resorts pelo WhatsApp',
+);
+---
+
+<PaginaLayout rota="outrosResorts" imagem={topo} atualizadoEm={DATA_CONTEUDO}>
+  <Fragment slot="acoes">
+    <Botao
+      href={comparar.href}
+      evento={comparar.evento}
+      icone="whatsapp"
+      variante="whatsapp"
+      tamanho="lg"
+      externo
+    >
+      {comparar.rotulo}
+    </Botao>
+  </Fragment>
+
+  <Secao
+    titulo="Quais outros resorts all inclusive a agência vende?"
+    sobretitulo="Todas as opções"
+    introducao="Filtre por estado ou busque pelo nome, compare os resorts da rede Resort All Inclusive e veja os detalhes de cada um no próprio portal, com reservas pelo mesmo atendimento."
+  >
+    <ListaOutrosResorts resorts={lista} />
+  </Secao>
+
+  <Secao
+    foto="grand-oca/resort/praia-coqueiral.jpg"
+    introducao={`Com um único atendimento, você compara resorts all inclusive de diferentes destinos e escolhe o que combina com a sua viagem.`}
+    titulo={`Por que comparar com ${operador.artigo} ${operador.nome}?`}
+    sobretitulo="Atendimento"
+    fundo="areia"
+  >
+    <div class="grid items-center gap-10 lg:grid-cols-2">
+      <ListaCheck
+        itens={[
+          'Um único atendimento para comparar acomodações, regras de crianças e tarifas',
+          'Hospedagem ou pacote com aéreo para o resort escolhido',
+          `Atendimento por WhatsApp e telefone${operador.desde ? `, desde ${operador.desde}` : ''}`,
+        ]}
+      />
+      <p class="flex flex-wrap gap-3">
+        <Botao variante="verde" href={rotas.reservas.caminho} iconeFim="seta-direita">
+          Como reservar
+        </Botao>
+        <Botao href={rotas.quemSomos.caminho} variante="contorno">
+          Quem somos
+        </Botao>
+      </p>
+    </div>
+  </Secao>
+</PaginaLayout>

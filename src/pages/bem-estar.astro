@@ -1,0 +1,98 @@
+---
+/**
+ * Spa e bem-estar: o Grand Oca Spa, o Espaço Beleza e a academia do resort.
+ * Coleção `atividades`, categoria `bem-estar`.
+ */
+import CartaoAtividade from '@/components/sections/CartaoAtividade.astro';
+import Botao from '@/components/ui/Botao.astro';
+import ChipsFatos from '@/components/ui/ChipsFatos.astro';
+import Secao from '@/components/ui/Secao.astro';
+import { rotas } from '@/data/rotas';
+import PaginaLayout from '@/layouts/PaginaLayout.astro';
+import { acaoWhatsApp } from '@/lib/acoes';
+import { atividadesPublicadas } from '@/lib/atividades';
+import { DATA_CONTEUDO } from '@/lib/datas';
+import { obterImagem } from '@/lib/imagens';
+import { resort } from '@/site.config';
+
+const atividades = await atividadesPublicadas();
+const bemEstar = atividades.filter(({ data }) => data.categoria === 'bem-estar');
+// Foto de cada espaço de bem-estar.
+const fotoBemEstar: Record<string, string> = {
+  'grand-oca-spa': 'grand-oca/resort/nascer-do-sol-mar.jpg',
+  'espaco-beleza': 'grand-oca/resort/praia-areia-ampla.jpg',
+};
+const fotosBemEstar = new Map(
+  await Promise.all(
+    bemEstar.map(
+      async ({ id }) =>
+        [id, fotoBemEstar[id] ? await obterImagem(fotoBemEstar[id]) : undefined] as const,
+    ),
+  ),
+);
+// Capa em alta resolução, em tela cheia.
+const topo = await obterImagem('grand-oca/resort/nascer-do-sol-mar.jpg');
+const agendar = acaoWhatsApp(
+  `Olá! Gostaria de informações sobre o spa do ${resort.nomeCurto}.`,
+  'Perguntar sobre o spa',
+);
+---
+
+<PaginaLayout rota="bemEstar" imagem={topo} atualizadoEm={DATA_CONTEUDO}>
+  <Fragment slot="acoes">
+    <Botao
+      href={agendar.href}
+      evento={agendar.evento}
+      icone="whatsapp"
+      variante="whatsapp"
+      tamanho="lg"
+      externo
+    >
+      {agendar.rotulo}
+    </Botao>
+  </Fragment>
+  <ChipsFatos
+    slot="fatos"
+    itens={[
+      { rotulo: 'Spa', valor: 'Grand Oca Spa', icone: 'flor' },
+      { rotulo: 'Salão', valor: 'Espaço Beleza, todos os dias', icone: 'relogio' },
+      { rotulo: 'Academia', valor: 'Aulas programadas', icone: 'academia' },
+    ]}
+  />
+
+  <Secao
+    introducao={`O bem-estar no ${resort.nome} combina o Grand Oca Spa, o salão de beleza, a academia com aulas e o descanso à beira-mar, em frente à Praia de Ponta de Mangue.`}
+    foto="grand-oca/resort/nascer-do-sol-mar.jpg"
+    titulo={`O que o ${resort.nome} oferece para o bem-estar?`}
+    sobretitulo="Spa e bem-estar"
+  >
+    <div class="conteudo mb-10 max-w-3xl">
+      <p>
+        O Grand Oca Spa é o espaço de cuidado com o corpo do {resort.nomeCurto}, e o Espaço Beleza,
+        um salão que abre todos os dias, oferece serviços de manicure e cabeleireiro. O resort não
+        publica o menu de tratamentos, os horários nem os valores: consulte as condições antes da
+        viagem ou na chegada.
+      </p>
+      <p>
+        Quem prefere se exercitar encontra a academia do resort, com aulas programadas, como Cardio
+        HIT, GAP, funcional, Pilates com bola e alongamento, além de hidro fitness na piscina. A
+        caminhada pela Praia de Ponta de Mangue e o descanso à beira das piscinas completam a pausa.
+      </p>
+    </div>
+    <ul class="grid gap-5 md:grid-cols-2">
+      {bemEstar.map((atividade) => (
+        <li>
+          <CartaoAtividade
+            atividade={atividade}
+            ilustracao={{ foto: fotosBemEstar.get(atividade.id), icone: 'folha' }}
+          />
+        </li>
+      ))}
+    </ul>
+    <p class="mt-8">
+      <Botao href={rotas.esportes.caminho} variante="texto" iconeFim="seta-direita">
+        Ver a academia e os esportes
+      </Botao>
+    </p>
+  </Secao>
+</PaginaLayout>

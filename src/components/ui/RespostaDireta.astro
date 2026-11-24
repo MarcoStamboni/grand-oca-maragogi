@@ -1,0 +1,39 @@
+---
+/**
+ * Resposta direta no início da página (AEO/GEO): 40 a 60 palavras que respondem
+ * à intenção principal da página e podem ser citadas isoladamente.
+ * `data-resposta-direta` permite à auditoria do build e ao llms-full.txt localizarem o texto.
+ * Fica dentro do cartão do topo da página (Hero), por isso não tem caixa própria.
+ */
+import Icone from '@/components/ui/Icone.astro';
+
+interface Props {
+  /** Rótulo visual curto. `false` = sem rótulo (ex.: quando o título da seção já faz o papel). */
+  rotulo?: string | false;
+  /** Texto claro, para fundos escuros. */
+  escuro?: boolean;
+  class?: string;
+}
+
+const { rotulo = false, escuro = false, class: classe } = Astro.props;
+---
+
+<div class:list={['max-w-3xl space-y-3', classe]}>
+  {rotulo !== false && (
+    <p
+      class:list={[
+        'inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-bold tracking-widest uppercase',
+        escuro ? 'bg-white/15 text-white' : 'bg-mar-50 text-mar-700',
+      ]}
+    >
+      <Icone nome="sol" class="size-4" />
+      {rotulo}
+    </p>
+  )}
+  <p
+    class:list={['text-base leading-relaxed sm:text-lg', escuro ? 'text-white' : 'text-tinta']}
+    data-resposta-direta
+  >
+    <slot />
+  </p>
+</div>

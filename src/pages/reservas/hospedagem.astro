@@ -1,0 +1,125 @@
+---
+/**
+ * Reserva de hospedagem (só no perfil agência): motor de reservas embutido (MotorReservas; no
+ * modo modelo, um espaço reservado mostra onde ele entra), canais de atendimento, formulário
+ * (com PUBLIC_FORM_ENDPOINT), o que ter em mãos e o que conferir antes de pagar.
+ * Sem preços nem disponibilidade inventados.
+ */
+import CanaisAtendimento from '@/components/sections/CanaisAtendimento.astro';
+import FormularioCotacao from '@/components/sections/FormularioCotacao.astro';
+import MotorReservas from '@/components/sections/MotorReservas.astro';
+import Botao from '@/components/ui/Botao.astro';
+import ListaCheck from '@/components/ui/ListaCheck.astro';
+import Nota from '@/components/ui/Nota.astro';
+import Passos from '@/components/ui/Passos.astro';
+import Secao from '@/components/ui/Secao.astro';
+import { conferirAntesDeReservar } from '@/data/reservas';
+import { rotas } from '@/data/rotas';
+import PaginaLayout from '@/layouts/PaginaLayout.astro';
+import { enderecoFormulario } from '@/lib/ambiente';
+import { DATA_CONTEUDO } from '@/lib/datas';
+import { formatarHora } from '@/lib/formatar';
+import { obterImagem } from '@/lib/imagens';
+import { rotaDisponivel } from '@/lib/navegacao';
+import { operador, resort } from '@/site.config';
+
+// Página exclusiva da agência: com outro operador, leva ao hub de reservas.
+if (!rotaDisponivel('reservasHospedagem')) return Astro.redirect(rotas.reservas.caminho);
+
+const topo = await obterImagem('grand-oca/acomodacoes/suite-deluxe-quarto.jpg');
+const { hospedagemUrl } = operador.reservas;
+const { criancas, horarios } = resort;
+---
+
+<PaginaLayout rota="reservasHospedagem" imagem={topo} atualizadoEm={DATA_CONTEUDO}>
+  <Secao
+    introducao={`Escolha as datas, os quartos e os viajantes no motor de reservas para ver as tarifas da hospedagem all inclusive no ${resort.nomeCurto}.`}
+    titulo={`Quais datas e tarifas do ${resort.nomeCurto} estão disponíveis?`}
+    sobretitulo="Motor de reservas"
+  >
+    <MotorReservas />
+  </Secao>
+
+  <Secao
+    introducao={`Se preferir, a nossa equipe faz a cotação e a reserva por telefone ou WhatsApp.`}
+    foto="grand-oca/piscinas/piscina-solario.jpg"
+    titulo="Prefere falar com a equipe?"
+    sobretitulo="Atendimento"
+    fundo="areia"
+  >
+    <CanaisAtendimento
+      mensagem={`Olá! Quero reservar hospedagem no ${resort.nome}. Datas: ___. Adultos: ___. Crianças e idades: ___.`}
+    />
+    {enderecoFormulario && (
+      <div class="mt-10 max-w-3xl space-y-4">
+        <h3 class="">Prefere enviar os dados pelo site?</h3>
+        <FormularioCotacao tipo="hospedagem" />
+      </div>
+    )}
+    {hospedagemUrl && (
+      <p class="mt-6">
+        <Botao href={hospedagemUrl} externo icone="calendario">
+          Abrir o motor de reservas em tela cheia
+        </Botao>
+      </p>
+    )}
+  </Secao>
+
+  <Secao
+    introducao={`Com estas informações em mãos, a reserva fica mais rápida e a tarifa, mais precisa.`}
+    foto="grand-oca/piscinas/piscina-borda-infinita.jpg"
+    titulo={`Quais informações ter em mãos para reservar o ${resort.nomeCurto}?`}
+    sobretitulo="Passo a passo"
+  >
+    <Passos
+      itens={[
+        {
+          titulo: 'Datas',
+          texto: `Dia de entrada e de saída. O check-in é a partir das ${formatarHora(horarios.checkIn)} e o check-out, até as ${formatarHora(horarios.checkOut)}.`,
+        },
+        {
+          titulo: 'Hóspedes',
+          texto: 'Número de adultos e idade de cada criança na data da viagem, que muda a tarifa.',
+        },
+        {
+          titulo: 'Categoria',
+          texto: 'Compare metragem, capacidade e vista de cada acomodação antes de escolher.',
+        },
+      ]}
+    />
+    <p class="mt-6">
+      <Botao href={rotas.comparativo.caminho} variante="contorno" iconeFim="seta-direita">
+        Comparar as acomodações
+      </Botao>
+    </p>
+  </Secao>
+
+  <Secao
+    foto="grand-oca/acomodacoes/bangalo-triplo-fachada.jpg"
+    introducao={`Antes de pagar, confira os pontos que mais geram dúvidas no check-in.`}
+    titulo={`O que conferir antes de finalizar a reserva no ${resort.nomeCurto}?`}
+    sobretitulo="Antes de pagar"
+    fundo="areia"
+  >
+    <div class="grid items-start gap-10 lg:grid-cols-2">
+      <ListaCheck
+        itens={conferirAntesDeReservar.map(({ titulo, texto }) => `${titulo}: ${texto}`)}
+      />
+      <div class="space-y-5">
+        <Nota titulo="Condições sujeitas ao período">{criancas.ressalva}</Nota>
+        <p class="flex flex-wrap gap-3">
+          <Botao href={rotas.allInclusive.caminho} variante="contorno" iconeFim="seta-direita">
+            O que está incluso
+          </Botao>
+          <Botao
+            href={rotas.politicaHospedagem.caminho}
+            variante="contorno"
+            iconeFim="seta-direita"
+          >
+            Política de hospedagem
+          </Botao>
+        </p>
+      </div>
+    </div>
+  </Secao>
+</PaginaLayout>

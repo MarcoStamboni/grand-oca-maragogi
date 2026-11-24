@@ -1,0 +1,106 @@
+---
+/**
+ * "Confiança para reservar" (modelo do site do Grand Oca Maragogi da agência): mosaico de fotos
+ * à esquerda (miniaturas que trocam a foto grande, src/scripts/mosaico.ts) e, à direita, a
+ * chamada com as duas formas de reserva: só hospedagem ou hotel + aéreo.
+ * Sem JavaScript, aparece só a primeira foto, sem as miniaturas.
+ * Fotos sem rostos de pessoas (imagens.yaml, `rosto`).
+ */
+import Botao from '@/components/ui/Botao.astro';
+import Imagem from '@/components/ui/Imagem.astro';
+import { acoes, pacoteComAereo, reservarHospedagem } from '@/lib/acoes';
+import { obterImagens } from '@/lib/imagens';
+import { resort } from '@/site.config';
+
+interface Props {
+  class?: string;
+}
+
+const { class: classe } = Astro.props;
+
+const fotos = await obterImagens([
+  'grand-oca/piscinas/piscina-borda-infinita.jpg',
+  'grand-oca/resort/nascer-do-sol-mar.jpg',
+  'grand-oca/resort/praia-coqueiral.jpg',
+  'grand-oca/acomodacoes/bangalo-fachada.jpg',
+]);
+const segunda = pacoteComAereo
+  ? { ...pacoteComAereo, rotulo: 'Hotel + Aéreo e serviços' }
+  : acoes.whatsapp;
+---
+
+<section
+  class:list={['relative py-16 sm:py-24', classe]}
+  aria-labelledby="confianca-reservar-titulo"
+  data-mosaico
+>
+  <div class="container-site grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
+    <div class="flex gap-3 sm:gap-4" data-revelar="esquerda">
+      <ul class="sem-js:hidden flex w-20 shrink-0 flex-col gap-3 sm:w-28 sm:gap-4">
+        {fotos.map((foto, indice) => (
+          <li>
+            <button
+              type="button"
+              class="ease-suave aria-pressed:ring-coral-700 block w-full overflow-hidden rounded-xl opacity-60 ring-3 ring-transparent transition duration-300 hover:opacity-100 aria-pressed:opacity-100"
+              aria-pressed={indice === 0 ? 'true' : 'false'}
+              data-mosaico-miniatura={indice}
+            >
+              <Imagem src={foto.src} alt="" sizes="7rem" largura={240} class="aspect-4/3" />
+              <span class="sr-only">Mostrar a foto: {foto.alt}</span>
+            </button>
+          </li>
+        ))}
+      </ul>
+      <div class="relative aspect-4/5 flex-1 overflow-hidden rounded-grande shadow-flutuante">
+        {fotos.map((foto, indice) => (
+          <div
+            class="ease-suave absolute inset-0 transition-opacity duration-700 data-[inativa]:opacity-0"
+            data-mosaico-foto={indice}
+            data-inativa={indice === 0 ? undefined : ''}
+            hidden={indice !== 0}
+          >
+            <Imagem src={foto.src} alt={foto.alt} sizes="(min-width: 1024px) 34vw, 75vw" />
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <div class="space-y-6" data-revelar="direita">
+      <p class="sobretitulo">Confiança para reservar</p>
+      <h2 id="confianca-reservar-titulo" class="titulo-secao">
+        Pronto para fazer a sua reserva para o {resort.nomeCurto}?
+      </h2>
+      <p class="text-tinta-suave text-lg">
+        Garanta as suas férias all inclusive {resort.destino.em} {resort.destino.nome}: reserve só a
+        hospedagem ou o pacote com hotel e aéreo no {resort.nome}, com confirmação imediata, voucher
+        na hora e pagamento em até 10x sem juros no cartão ou 5% de desconto no Pix.
+      </p>
+      <div class="flex flex-wrap gap-3 pt-2">
+        <Botao
+          variante="verde"
+          href={reservarHospedagem.href}
+          evento={reservarHospedagem.evento}
+          externo={reservarHospedagem.externo}
+          icone="cama"
+          tamanho="lg"
+        >
+          Só hospedagem
+        </Botao>
+        <Botao
+          href={segunda.href}
+          evento={segunda.evento}
+          externo={segunda.externo}
+          icone={segunda.icone}
+          variante={pacoteComAereo ? 'contorno' : 'whatsapp'}
+          tamanho="lg"
+        >
+          {segunda.rotulo}
+        </Botao>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  import '@/scripts/mosaico';
+</script>

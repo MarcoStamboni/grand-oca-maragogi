@@ -1,0 +1,36 @@
+---
+/**
+ * Ficha rápida do topo das páginas internas: uma linha discreta de fatos (rótulo pequeno e
+ * valor), centralizada e separada por traços finos, sem ícones nem cápsulas. O Hero a coloca
+ * logo abaixo do topo. Lista de definição, legível por leitores de tela e mecanismos de resposta.
+ */
+import type { NomeIcone } from '@/lib/icones';
+
+export interface Fato {
+  rotulo: string;
+  valor: string;
+  /** Mantido por compatibilidade; a ficha não mostra ícones. */
+  icone?: NomeIcone;
+}
+
+interface Props {
+  itens: readonly Fato[];
+  class?: string;
+}
+
+const { itens, class: classe } = Astro.props;
+---
+
+<dl
+  class:list={[
+    'divide-areia-300 flex flex-wrap items-center justify-center gap-y-3 sm:divide-x',
+    classe,
+  ]}
+>
+  {itens.map((item) => (
+    <div class="flex min-w-0 items-baseline gap-2 px-5 sm:px-7">
+      <dt class="text-tinta-suave text-[0.6875rem] tracking-[0.12em] uppercase">{item.rotulo}</dt>
+      <dd class="text-mar-900 text-sm font-semibold">{item.valor}</dd>
+    </div>
+  ))}
+</dl>

@@ -1,0 +1,108 @@
+---
+/**
+ * FAQ central: todas as perguntas da coleção `faq`, agrupadas por tema, com índice e busca
+ * (src/scripts/busca-faq.ts). É a única página marcada como FAQPage (JSON-LD), com as mesmas
+ * perguntas exibidas: o Google pede que cada pergunta repetida no site seja marcada uma vez só.
+ */
+import CanaisAtendimento from '@/components/sections/CanaisAtendimento.astro';
+import Faq from '@/components/ui/Faq.astro';
+import Icone from '@/components/ui/Icone.astro';
+import Secao from '@/components/ui/Secao.astro';
+import PaginaLayout from '@/layouts/PaginaLayout.astro';
+import { DATA_CONTEUDO } from '@/lib/datas';
+import { faqPorTema } from '@/lib/faq';
+import { fotosPerguntas } from '@/data/fotos';
+import { obterImagem } from '@/lib/imagens';
+import { resort } from '@/site.config';
+
+const [grupos, topo] = await Promise.all([
+  faqPorTema(),
+  obterImagem('grand-oca/resort/vista-aerea-resort.jpg'),
+]);
+const total = grupos.reduce((soma, grupo) => soma + grupo.itens.length, 0);
+---
+
+<PaginaLayout
+  rota="perguntasFrequentes"
+  respostaNaSecao={false}
+  subtitulo={`${total} respostas diretas, organizadas por tema.`}
+  imagem={topo}
+  atualizadoEm={DATA_CONTEUDO}
+  chaveFaq={false}
+  dadosEstruturados={{ perguntas: grupos.flatMap((grupo) => grupo.itens) }}
+>
+  <div class="container-site grid gap-10 py-12 sm:py-16 lg:grid-cols-[16rem_minmax(0,1fr)] lg:gap-14">
+    <aside class="space-y-5 lg:sticky lg:top-[calc(7rem+var(--bf-h,0px))] lg:self-start">
+      <div class="sem-js:hidden" data-busca-faq>
+        <label for="busca-faq" class="text-mar-950 text-sm font-semibold">
+          Buscar uma pergunta
+        </label>
+        <div class="relative mt-1">
+          <Icone
+            nome="lupa"
+            class="text-tinta-suave pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2"
+          />
+          <input
+            id="busca-faq"
+            type="search"
+            autocomplete="off"
+            placeholder="Ex.: crianças, check-in"
+            class="border-areia-300 text-tinta focus-visible:ring-mar-700 block min-h-11 w-full rounded-xl border bg-white pr-3 pl-9 focus-visible:ring-3 focus-visible:outline-none"
+          />
+        </div>
+        <p class="sr-only" aria-live="polite" data-busca-anuncio></p>
+      </div>
+      <nav
+        aria-labelledby="temas-titulo"
+        class="ring-areia-200 rounded-cartao bg-white p-5 shadow-cartao ring-1"
+      >
+        <p id="temas-titulo" class="text-mar-950 mb-3 text-sm font-bold tracking-wider uppercase">
+          Temas
+        </p>
+        <ul class="flex flex-wrap gap-x-5 gap-y-2 lg:flex-col">
+          {grupos.map((grupo) => (
+            <li>
+              <a
+                href={`#tema-${grupo.tema}`}
+                class="text-mar-800 hover:text-coral-700 underline-offset-4 hover:underline"
+              >
+                {grupo.titulo} <span class="text-tinta-suave text-sm">({grupo.itens.length})</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </nav>
+    </aside>
+
+    <div class="min-w-0 space-y-14">
+      {grupos.map((grupo, indice) => (
+        <div data-tema-faq>
+          <Faq
+            itens={grupo.itens}
+            titulo={grupo.titulo}
+            introducao={grupo.introducao}
+            id={`tema-${grupo.tema}`}
+            foto={fotosPerguntas[indice % fotosPerguntas.length]}
+          />
+        </div>
+      ))}
+      <p class="bg-areia-100 rounded-cartao p-6 text-lg" hidden data-busca-vazio>
+        Nenhuma pergunta encontrada. Tente outra palavra ou fale com a nossa equipe.
+      </p>
+    </div>
+  </div>
+
+  <Secao
+    foto="grand-oca/piscinas/piscina-solario.jpg"
+    introducao={`A equipe de reservas responde por telefone e WhatsApp às dúvidas sobre o ${resort.nomeCurto}.`}
+    titulo={`Não achou a resposta sobre o ${resort.nomeCurto}?`}
+    sobretitulo="Atendimento"
+    fundo="areia"
+  >
+    <CanaisAtendimento mensagem={`Olá! Tenho uma dúvida sobre o ${resort.nome}.`} />
+  </Secao>
+</PaginaLayout>
+
+<script>
+  import '@/scripts/busca-faq';
+</script>

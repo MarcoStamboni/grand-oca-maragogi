@@ -1,0 +1,48 @@
+---
+/**
+ * Ilustração para quando não há foto real (decisão 3: imagens geradas por IA não representam
+ * acomodações nem instalações; e fotos com rostos de pessoas não são usadas). Degradê de mar e
+ * sol com um ícone do tema, ondas e um sol girando. Decorativo: não afirma nada.
+ * `data-sem-foto` permite listar essas ocorrências no checklist final.
+ */
+import Icone from '@/components/ui/Icone.astro';
+import type { NomeIcone } from '@/lib/icones';
+
+interface Props {
+  /** Identifica a página/seção no checklist (não aparece na tela). */
+  referencia: string;
+  /** Ícone do tema (padrão: ondas). */
+  icone?: NomeIcone;
+  class?: string;
+}
+
+const { referencia, icone = 'ondas', class: classe } = Astro.props;
+---
+
+<div
+  class:list={[
+    'from-mar-400 via-mar-200 to-sol-100 relative flex h-full w-full items-center justify-center overflow-hidden bg-linear-to-br',
+    classe,
+  ]}
+  aria-hidden="true"
+  data-sem-foto={referencia}
+>
+  <span class="text-sol-400 absolute -top-6 -right-6">
+    <Icone nome="sol" class="animate-girar-lento size-28" />
+  </span>
+  <svg
+    viewBox="0 0 400 60"
+    preserveAspectRatio="none"
+    class="text-areia-50/70 absolute inset-x-0 bottom-0 h-1/4 w-full"
+    focusable="false"
+  >
+    <path
+      fill="currentColor"
+      d="M-40 30c60-20 130-20 190 0s100 20 150 0 100-15 140-8v38H-40z"
+      class="[animation:onda-vai-e-vem_6s_ease-in-out_infinite_alternate]"
+    ></path>
+  </svg>
+  <span class="animate-flutuar text-mar-900 relative flex size-20 items-center justify-center rounded-3xl bg-white/80 shadow-flutuante backdrop-blur">
+    <Icone nome={icone} class="size-10" />
+  </span>
+</div>

@@ -1,0 +1,100 @@
+---
+/**
+ * Política de hospedagem: horários, documentos, menores de idade, cancelamento e outras regras.
+ * Textos: src/data/paginas.ts (politicaHospedagem); regras: src/data/reservas.ts (EXEMPLO no
+ * site-modelo; no site real, as regras publicadas pelo resort).
+ */
+import ListaCheck from '@/components/ui/ListaCheck.astro';
+import Nota from '@/components/ui/Nota.astro';
+import Secao from '@/components/ui/Secao.astro';
+import TabelaFatos from '@/components/ui/TabelaFatos.astro';
+import {
+  documentosCheckIn,
+  outrasRegrasHospedagem,
+  regrasCancelamento,
+  regrasMenores,
+} from '@/data/reservas';
+import PaginaLayout from '@/layouts/PaginaLayout.astro';
+import { DATA_CONTEUDO } from '@/lib/datas';
+import { formatarHora } from '@/lib/formatar';
+import { obterImagem } from '@/lib/imagens';
+import { resort } from '@/site.config';
+
+const { horarios } = resort;
+const topo = await obterImagem('grand-oca/resort/jardim-cabanas-coqueiral.jpg');
+---
+
+<PaginaLayout rota="politicaHospedagem" imagem={topo} atualizadoEm={DATA_CONTEUDO}>
+  <Secao
+    introducao={`Os horários de entrada e saída valem para todas as reservas do ${resort.nomeCurto}.`}
+    foto="grand-oca/piscinas/piscina-solario.jpg"
+    titulo={`Quais são os horários de check-in e check-out do ${resort.nomeCurto}?`}
+    sobretitulo="Horários"
+  >
+    <TabelaFatos
+      legenda="Horários de entrada e saída"
+      linhas={[
+        { rotulo: 'Check-in', valor: `A partir das ${formatarHora(horarios.checkIn)}` },
+        { rotulo: 'Check-out', valor: `Até as ${formatarHora(horarios.checkOut)}` },
+        ...(horarios.earlyLate
+          ? [{ rotulo: 'Early check-in e late check-out', valor: horarios.earlyLate }]
+          : []),
+      ]}
+      class="max-w-3xl"
+    />
+  </Secao>
+
+  <Secao
+    introducao={`Na chegada, a recepção pede os dados de todos os hóspedes, inclusive das crianças.`}
+    titulo={`Quais documentos apresentar no check-in do ${resort.nomeCurto}?`}
+    sobretitulo="Documentos"
+    fundo="areia"
+  >
+    <div class="conteudo space-y-5">
+      <p>
+        Na chegada, o resort preenche a Ficha Nacional de Registro de Hóspedes, exigida por lei, com
+        os dados de cada hóspede:
+      </p>
+      <ListaCheck itens={documentosCheckIn} colunas={2} />
+    </div>
+  </Secao>
+
+  <Secao
+    introducao={`A hospedagem de crianças e adolescentes segue o Estatuto da Criança e do Adolescente.`}
+    titulo={`Menores de 18 anos podem se hospedar no ${resort.nomeCurto}?`}
+    sobretitulo="Menores de idade"
+  >
+    <div class="conteudo space-y-5">
+      <ListaCheck itens={regrasMenores} />
+      <p class="text-tinta-suave text-sm">
+        Regra prevista no Estatuto da Criança e do Adolescente (Lei nº 8.069/1990).
+      </p>
+    </div>
+  </Secao>
+
+  <Secao
+    introducao={`As regras de cancelamento e de não comparecimento dependem da tarifa escolhida na reserva.`}
+    titulo="Como funcionam o cancelamento e o no-show?"
+    sobretitulo="Cancelamento"
+    fundo="areia"
+  >
+    <TabelaFatos
+      legenda="Regras de cancelamento e não comparecimento"
+      linhas={regrasCancelamento}
+    />
+  </Secao>
+
+  <Secao
+    introducao={`Outras regras de convivência que valem durante toda a estadia no resort.`}
+    titulo={`Quais outras regras valem para a estadia no ${resort.nomeCurto}?`}
+    sobretitulo="Outras regras"
+  >
+    <div class="grid items-start gap-8 lg:grid-cols-2">
+      <ListaCheck itens={outrasRegrasHospedagem} />
+      <Nota titulo="Confirme na reserva">
+        As condições da sua reserva, como a regra de cancelamento da tarifa, aparecem antes do
+        pagamento. {resort.criancas.ressalva}
+      </Nota>
+    </div>
+  </Secao>
+</PaginaLayout>

@@ -1,0 +1,180 @@
+---
+/**
+ * Hub dos restaurantes: cartões, refeições do dia, "qual escolher?" por tipo e noites temáticas.
+ * Restaurantes: coleção `restaurantes`; refeições do dia: src/data/all-inclusive.ts.
+ */
+import GrupoCartao from '@/components/sections/GrupoCartao.astro';
+import Botao from '@/components/ui/Botao.astro';
+import Card from '@/components/ui/Card.astro';
+import CartaoDestaque from '@/components/ui/CartaoDestaque.astro';
+import ChipsFatos from '@/components/ui/ChipsFatos.astro';
+import Icone from '@/components/ui/Icone.astro';
+import Secao from '@/components/ui/Secao.astro';
+import TabelaFatos from '@/components/ui/TabelaFatos.astro';
+import { refeicoesDoDia } from '@/data/all-inclusive';
+import { caminhoRestaurante, rotas } from '@/data/rotas';
+import PaginaLayout from '@/layouts/PaginaLayout.astro';
+import { DATA_CONTEUDO } from '@/lib/datas';
+import { formatarDias, formatarListaFrase, maiusculaInicial } from '@/lib/formatar';
+import {
+  type Restaurante,
+  restaurantesOrdenados,
+  textoServico,
+  textoTipo,
+} from '@/lib/gastronomia';
+import { obterImagem } from '@/lib/imagens';
+import { resort } from '@/site.config';
+
+const [topo, restaurantes] = await Promise.all([
+  obterImagem('grand-oca/gastronomia/restaurante-corais-buffet.jpg'),
+  restaurantesOrdenados(),
+]);
+const comFoto = await Promise.all(
+  restaurantes.map(async (item) => ({
+    item,
+    foto: item.data.fotos[0] ? await obterImagem(item.data.fotos[0]) : undefined,
+    // Cartões de "qual escolher": a segunda foto, para não repetir a da lista de cima.
+    fotoPerfil: await (async () => {
+      const chave = item.data.fotos[1] ?? item.data.fotos[0];
+      return chave ? obterImagem(chave) : undefined;
+    })(),
+  })),
+);
+const restComFoto = comFoto.filter(({ foto }) => foto);
+const restSemFoto = comFoto.filter(({ foto }) => !foto);
+const fotoGrupoRest = await obterImagem('grand-oca/gastronomia/restaurante-salao-mesas.jpg');
+const comNoites = restaurantes.filter(({ data }) => data.noitesTematicas.length > 0);
+
+const paraQuem: Record<Restaurante['data']['tipo'], string> = {
+  principal: 'Para todas as refeições',
+  'a-la-carte': 'Para um jantar especial',
+  piscina: 'Para não sair da piscina',
+  infantil: 'Para as crianças',
+  casual: 'Para petiscar entre as refeições',
+};
+---
+
+<PaginaLayout rota="restaurantes" imagem={topo} atualizadoEm={DATA_CONTEUDO}>
+  <Fragment slot="acoes">
+    <Botao
+      href={rotas.allInclusive.caminho}
+      variante="contorno"
+      tamanho="lg"
+      iconeFim="seta-direita"
+    >
+      O que o all inclusive inclui
+    </Botao>
+  </Fragment>
+  <ChipsFatos
+    slot="fatos"
+    itens={[
+      { rotulo: 'Restaurantes', valor: String(restaurantes.length), icone: 'talheres' },
+      {
+        rotulo: 'Cozinhas',
+        valor: formatarListaFrase([...new Set(restaurantes.flatMap(({ data }) => data.cozinhas))]),
+        icone: 'cafe',
+      },
+    ]}
+  />
+
+  <Secao
+    introducao={`Os restaurantes do ${resort.nome} fazem parte do all inclusive: o Corais concentra o café da manhã, o almoço e o jantar em buffet, e o Ix’U, o Il Giardino e o La Brasa pedem reserva prévia no Guest Service. A praça de alimentação reúne os petiscos.`}
+    titulo={`Quais são os restaurantes do ${resort.nome}?`}
+    sobretitulo="Restaurantes"
+  >
+    <ul class="grid gap-6 sm:grid-cols-2">
+      {restComFoto.map(({ item, foto }) => (
+        <li>
+          <Card
+            titulo={item.data.nome}
+            href={caminhoRestaurante(item.id)}
+            sobretitulo={textoTipo(item)}
+            descricao={item.data.resumo}
+            fatos={[textoServico(item)]}
+            imagem={foto}
+            iconeSemFoto="talheres"
+          />
+        </li>
+      ))}
+      {restSemFoto.length > 0 && (
+        <li>
+          <GrupoCartao
+            titulo="Ix’U e praça de alimentação"
+            resumo="O restaurante de cozinha fusion à beira da praia e os pontos de petiscos da rua de compras."
+            icone="talheres"
+            foto={fotoGrupoRest}
+            rotulo="restaurantes"
+            itens={restSemFoto.map(({ item }) => ({
+              nome: item.data.nome,
+              resumo: item.data.resumo,
+              href: caminhoRestaurante(item.id),
+            }))}
+          />
+        </li>
+      )}
+    </ul>
+  </Secao>
+
+  <Secao
+    introducao={`Café da manhã, almoço, chá da tarde e jantar têm horários definidos no ${resort.nomeCurto}, com snacks entre as refeições. Os horários podem mudar sem aviso e são confirmados no local.`}
+    foto="grand-oca/gastronomia/restaurante-corais-noite.jpg"
+    titulo={`Quais são as refeições do dia no ${resort.nomeCurto}?`}
+    sobretitulo="Refeições"
+    fundo="areia"
+  >
+    <div class="space-y-5">
+      <TabelaFatos legenda="Refeições do dia" legendaOculta linhas={[...refeicoesDoDia]} />
+      <p class="text-tinta-suave text-sm">Horários sujeitos a alteração sem aviso prévio.</p>
+    </div>
+  </Secao>
+
+  <Secao
+    introducao={`Cada restaurante tem um estilo. Veja qual combina com o seu momento: o buffet regional do Corais, a cozinha fusion do Ix’U, a italiana do Il Giardino, o churrasco do La Brasa ou a praça de alimentação.`}
+    foto="grand-oca/resort/vista-aerea-edificios-novos.jpg"
+    titulo={`Qual restaurante do ${resort.nomeCurto} escolher?`}
+    sobretitulo="Qual escolher"
+  >
+    <ul class="grid gap-5 sm:grid-cols-2">
+      {comFoto
+        .filter(({ fotoPerfil }) => fotoPerfil)
+        .map(({ item, fotoPerfil }) => (
+          <li>
+            <CartaoDestaque
+              sobretitulo={paraQuem[item.data.tipo]}
+              foto={fotoPerfil}
+              titulo={item.data.nome}
+              href={caminhoRestaurante(item.id)}
+            >
+              <p>{formatarListaFrase(item.data.destaques.slice(0, 2))}.</p>
+            </CartaoDestaque>
+          </li>
+        ))}
+    </ul>
+  </Secao>
+
+  {comNoites.map((item) => (
+    <Secao
+      foto="grand-oca/gastronomia/restaurante-corais-buffet.jpg"
+      introducao={`Durante a semana, o ${item.data.nome} monta ilhas temáticas no jantar, com cozinhas de diferentes países, para variar o cardápio ao longo da estada.`}
+      titulo={`Quais são as noites temáticas do ${item.data.nome}?`}
+      sobretitulo="Noites temáticas"
+      fundo="areia"
+      conteudoAoLado
+    >
+      {/* Noites temáticas na coluna do título, ao lado da foto: dia em destaque e o tema. */}
+      <ul class="divide-areia-200 divide-y" data-curto>
+        {item.data.noitesTematicas.map(({ dias, tema }) => (
+          <li class="flex items-start gap-3 py-3 first:pt-0 last:pb-0">
+            <Icone nome="calendario" class="text-mar-700 mt-0.5 size-5 shrink-0" />
+            <div>
+              <p class="text-coral-700 text-xs font-bold tracking-wider uppercase">
+                {maiusculaInicial(formatarDias(dias) ?? '')}
+              </p>
+              <p class="text-mar-950 font-semibold">{tema}</p>
+            </div>
+          </li>
+        ))}
+      </ul>
+    </Secao>
+  ))}
+</PaginaLayout>

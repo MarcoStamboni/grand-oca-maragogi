@@ -1,0 +1,121 @@
+---
+/**
+ * Experiências contratadas à parte (src/data/experiencias.ts), pacotes exclusivos das
+ * acomodações (`experienciasPagas`) e serviços pagos (src/data/comodidades.ts).
+ */
+import { getCollection } from 'astro:content';
+
+import Botao from '@/components/ui/Botao.astro';
+import CartaoDestaque from '@/components/ui/CartaoDestaque.astro';
+import ListaCheck from '@/components/ui/ListaCheck.astro';
+import Secao from '@/components/ui/Secao.astro';
+import { servicosResort } from '@/data/comodidades';
+import { experiencias } from '@/data/experiencias';
+import { caminhoAcomodacao } from '@/data/rotas';
+import PaginaLayout from '@/layouts/PaginaLayout.astro';
+import { acaoWhatsApp } from '@/lib/acoes';
+import { DATA_CONTEUDO } from '@/lib/datas';
+import { obterImagem } from '@/lib/imagens';
+import { resort } from '@/site.config';
+
+const [topo, acomodacoes] = await Promise.all([
+  obterImagem('grand-oca/resort/praia-areia-ampla.jpg'),
+  getCollection('acomodacoes', ({ data }) => data.experienciasPagas.length > 0),
+]);
+const pagos = servicosResort.filter(({ pago }) => pago);
+const contratar = acaoWhatsApp(
+  `Olá! Quero contratar uma experiência no ${resort.nomeCurto}.`,
+  'Falar sobre experiências',
+);
+/** Foto de cada experiência (fotos do resort ligadas a ela). */
+const fotoDaExperiencia: Record<string, string> = {
+  'mergulho-padi': 'grand-oca/regiao/piscinas-naturais-aereo.jpg',
+  'passeios-e-traslados': 'grand-oca/resort/praia-coqueiral.jpg',
+  'grand-oca-spa': 'grand-oca/resort/nascer-do-sol-mar.jpg',
+  'vip-premium': 'grand-oca/resort/praia-espreguicadeiras-aerea.jpg',
+};
+const capas = new Map(
+  await Promise.all(
+    acomodacoes
+      .filter(({ data }) => data.fotos[0])
+      .map(async ({ id, data }) => [id, await obterImagem(data.fotos[0] as string)] as const),
+  ),
+);
+const fotos = new Map(
+  await Promise.all(
+    Object.entries(fotoDaExperiencia).map(
+      async ([id, chave]) => [id, await obterImagem(chave)] as const,
+    ),
+  ),
+);
+---
+
+<PaginaLayout rota="experiencias" imagem={topo} atualizadoEm={DATA_CONTEUDO}>
+  <Fragment slot="acoes">
+    <Botao
+      href={contratar.href}
+      evento={contratar.evento}
+      icone="whatsapp"
+      variante="whatsapp"
+      tamanho="lg"
+      externo
+    >
+      {contratar.rotulo}
+    </Botao>
+  </Fragment>
+
+  <Secao
+    introducao={`Além do all inclusive, o ${resort.nome} reúne experiências contratadas à parte, do mergulho nas piscinas naturais da Costa dos Corais aos passeios e traslados, ao spa e à experiência VIP Premium na praia.`}
+    foto="grand-oca/resort/nascer-do-sol-mar.jpg"
+    titulo={`Quais experiências o ${resort.nome} oferece?`}
+    sobretitulo="Experiências"
+  >
+    <ul class="grid gap-5 md:grid-cols-2 lg:grid-cols-4">
+      {experiencias.map((experiencia) => (
+        <li id={experiencia.id}>
+          <CartaoDestaque titulo={experiencia.nome} foto={fotos.get(experiencia.id)}>
+            <p>{experiencia.descricao}</p>
+            {experiencia.comoContratar && <p class="text-sm">{experiencia.comoContratar}</p>}
+          </CartaoDestaque>
+        </li>
+      ))}
+    </ul>
+  </Secao>
+
+  {acomodacoes.length > 0 && (
+    <Secao
+      introducao={`Algumas acomodações do ${resort.nomeCurto} permitem consultar pacotes especiais, contratados à parte.`}
+      foto="grand-oca/acomodacoes/bangalo-triplo-fachada.jpg"
+      titulo={`Quais acomodações do ${resort.nomeCurto} têm pacotes exclusivos?`}
+      sobretitulo="Acomodações"
+      fundo="areia"
+    >
+      <ul class="grid gap-4 md:grid-cols-2">
+        {acomodacoes.map(({ id, data }) => (
+          <li>
+            <CartaoDestaque
+              titulo={data.nome}
+              sobretitulo="Exclusivo da categoria"
+              foto={capas.get(id)}
+              href={caminhoAcomodacao(id)}
+            >
+              <ListaCheck itens={data.experienciasPagas} />
+            </CartaoDestaque>
+          </li>
+        ))}
+      </ul>
+    </Secao>
+  )}
+
+  <Secao
+    introducao={`Alguns serviços de conveniência do ${resort.nomeCurto} não entram na diária all inclusive e são cobrados à parte.`}
+    foto="grand-oca/resort/cabana-gramado.jpg"
+    titulo={`Que outros serviços do ${resort.nomeCurto} são pagos à parte?`}
+    sobretitulo="Serviços"
+  >
+    <ListaCheck
+      itens={pagos.map(({ nome, descricao }) => `${nome}: ${descricao}`)}
+      class="max-w-3xl"
+    />
+  </Secao>
+</PaginaLayout>

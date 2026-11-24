@@ -1,0 +1,206 @@
+---
+/**
+ * "Como fazer a sua reserva?": linha do tempo vertical, como uma compra online (datas, acomodação,
+ * carrinho, confirmação). A trilha entre as etapas se preenche ao entrar na tela (global.css,
+ * .trilha-reserva) e, ao lado, a foto da acomodação traz o resumo do "carrinho" da reserva.
+ */
+import Botao from '@/components/ui/Botao.astro';
+import Icone from '@/components/ui/Icone.astro';
+import Imagem from '@/components/ui/Imagem.astro';
+import Secao from '@/components/ui/Secao.astro';
+import { rotas } from '@/data/rotas';
+import { acaoWhatsApp, reservarHospedagem } from '@/lib/acoes';
+import type { NomeIcone } from '@/lib/icones';
+import { obterImagem } from '@/lib/imagens';
+import { operador, resort } from '@/site.config';
+
+const temMotor = operador.reservas.hospedagemUrl !== null;
+const foto = await obterImagem('grand-oca/acomodacoes/duplo-deluxe-varanda.jpg');
+
+const etapas: { icone: NomeIcone; titulo: string; texto: string }[] = [
+  {
+    icone: 'calendario',
+    titulo: 'Defina datas e hóspedes',
+    texto:
+      'Tenha em mãos as datas, o número de adultos e a idade de cada criança: a tarifa depende da idade.',
+  },
+  {
+    icone: 'cama',
+    titulo: 'Escolha a acomodação',
+    texto:
+      'Compare metragem, capacidade e vista das categorias e separe a que combina com a viagem.',
+  },
+  {
+    icone: 'carrinho',
+    titulo: temMotor ? 'Revise o carrinho' : 'Receba a cotação',
+    texto: temMotor
+      ? 'Confira datas, hóspedes, tarifa e regras de cancelamento antes de seguir para o pagamento.'
+      : 'A equipe consulta a disponibilidade e envia a tarifa pelo WhatsApp ou telefone, com as regras da reserva.',
+  },
+  {
+    icone: 'selo',
+    titulo: 'Reserva confirmada',
+    texto: temMotor
+      ? 'Com o pagamento aprovado no motor online, a reserva fica garantida e o voucher é enviado imediatamente.'
+      : 'Com o pagamento acertado com a equipe, a reserva fica garantida e o voucher é enviado imediatamente.',
+  },
+];
+
+const resumo = [
+  'Datas e número de hóspedes',
+  'Acomodação escolhida',
+  'Refeições, snacks e bebidas all inclusive',
+  'Atendimento da equipe do começo ao fim',
+];
+const whatsapp = acaoWhatsApp(
+  `Olá! Quero montar a minha reserva no ${resort.nome}.`,
+  'Montar a reserva no WhatsApp',
+);
+---
+
+<Secao
+  titulo={`Como fazer a sua reserva no ${resort.nomeCurto}?`}
+  sobretitulo="Passo a passo"
+  introducao={`Reservar o ${resort.nomeCurto} funciona como uma compra online: quatro etapas, da escolha das datas à reserva confirmada.`}
+>
+  <div class="grid gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)] lg:items-center lg:gap-16">
+    {/* Foto com o "carrinho" da reserva sobreposto. */}
+    <div class="relative pb-32 sm:pb-24" data-revelar="esquerda">
+      <div class="group aspect-4/3 overflow-hidden rounded-grande shadow-flutuante">
+        <Imagem
+          src={foto.src}
+          alt={foto.alt}
+          sizes="(min-width: 1024px) 40vw, 100vw"
+          class="ease-suave transition-transform duration-[1.2s] group-hover:scale-105"
+        />
+      </div>
+      <div class="ring-areia-200 absolute inset-x-4 bottom-0 rounded-grande bg-white p-5 shadow-flutuante ring-1 sm:inset-x-auto sm:right-6 sm:w-80 lg:-right-6">
+        <p class="text-mar-950 flex items-center gap-2 font-semibold">
+          <Icone nome="carrinho" class="text-coral-700 size-5" />
+          Sua reserva no {resort.nomeCurto}
+        </p>
+        <ul class="mt-3 space-y-2 text-sm">
+          {resumo.map((item) => (
+            <li class="text-tinta flex items-start gap-2">
+              <Icone nome="check" class="text-verde-700 mt-0.5 size-4 shrink-0" />
+              {item}
+            </li>
+          ))}
+        </ul>
+        <p class="text-tinta-suave mt-2 text-xs">Condições confirmadas no momento da reserva.</p>
+      </div>
+    </div>
+
+    <div>
+      <ol class="trilha-reserva" data-revelar>
+        {etapas.map((etapa, indice) => {
+          const primeira = indice === 0;
+          const ultima = indice === etapas.length - 1;
+          return (
+            <li class="group flex gap-5" style={`--atraso-trilha: ${indice * 450}ms`}>
+              {/*
+               * Coluna da trilha: trecho de cima, ícone e trecho de baixo dividem a altura do
+               * cartão (o ícone fica no meio dele); o último trecho atravessa o espaço até a
+               * próxima etapa. Os trechos se preenchem em sequência ao entrar na tela.
+               */}
+              <div class="flex w-9 shrink-0 flex-col items-center" aria-hidden="true">
+                <span
+                  class:list={[
+                    'w-0.5 flex-1 overflow-hidden rounded-full',
+                    !primeira && 'bg-areia-200',
+                  ]}
+                >
+                  {!primeira && (
+                    <span
+                      class:list={[
+                        'trilha-reserva-trecho block size-full origin-top',
+                        ultima ? 'bg-verde-500' : 'bg-coral-500',
+                      ]}
+                    ></span>
+                  )}
+                </span>
+                <span
+                  class:list={[
+                    'ease-suave my-2 flex size-9 items-center justify-center transition duration-300 group-hover:scale-110',
+                    ultima ? 'text-verde-700' : 'text-coral-700',
+                  ]}
+                >
+                  <Icone nome={etapa.icone} class="size-7" />
+                </span>
+                <span
+                  class:list={[
+                    'flex w-0.5 flex-1 flex-col overflow-hidden rounded-full',
+                    !ultima && 'bg-areia-200',
+                  ]}
+                >
+                  {!ultima && (
+                    <span class="trilha-reserva-trecho bg-coral-500 block flex-1 origin-top"></span>
+                  )}
+                </span>
+                {!ultima && (
+                  <span class="bg-areia-200 h-8 w-0.5 overflow-hidden">
+                    <span class="trilha-reserva-trecho bg-coral-500 block size-full origin-top"></span>
+                  </span>
+                )}
+              </div>
+              <div class:list={['min-w-0 flex-1', !ultima && 'pb-8']}>
+                <div
+                  class:list={[
+                    'ease-suave rounded-cartao p-5 transition duration-500 group-hover:-translate-y-1 group-hover:shadow-flutuante',
+                    ultima
+                      ? 'superficie-escura bg-verde-700 text-white shadow-cartao'
+                      : 'ring-areia-200 bg-white shadow-cartao ring-1',
+                  ]}
+                >
+                  <p
+                    class:list={[
+                      'text-xs font-bold tracking-[0.14em] uppercase',
+                      ultima ? 'text-white/85' : 'text-coral-700',
+                    ]}
+                  >
+                    Etapa {indice + 1}
+                  </p>
+                  <h3 class:list={['mt-1', ultima && 'text-white']}>{etapa.titulo}</h3>
+                  <p
+                    class:list={[
+                      'mt-1 text-sm leading-relaxed',
+                      ultima ? 'text-white/90' : 'text-tinta-suave',
+                    ]}
+                  >
+                    {etapa.texto}
+                  </p>
+                </div>
+              </div>
+            </li>
+          );
+        })}
+      </ol>
+
+      <div class="mt-8 flex flex-wrap gap-3 pl-14">
+        <Botao
+          href={reservarHospedagem.href}
+          icone={reservarHospedagem.icone}
+          evento={reservarHospedagem.evento}
+          externo={reservarHospedagem.externo}
+          variante="verde"
+        >
+          Consultar tarifas de hospedagem
+        </Botao>
+        <Botao href={rotas.comparativo.caminho} variante="contorno" iconeFim="seta-direita">
+          Comparar as acomodações
+        </Botao>
+      </div>
+      <p class="mt-3 pl-14">
+        <Botao
+          href={whatsapp.href}
+          icone="whatsapp"
+          evento={whatsapp.evento}
+          variante="texto"
+          externo
+        >
+          {whatsapp.rotulo}
+        </Botao>
+      </p>
+    </div>
+  </div>
+</Secao>

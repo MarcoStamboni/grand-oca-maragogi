@@ -1,0 +1,189 @@
+---
+/**
+ * Motor do pacote hotel + aéreo, no mesmo desenho do MotorReservas (hospedagem): à esquerda, o
+ * passo a passo do pacote, o destaque da confirmação imediata, o calendário com os melhores
+ * horários e preços em verde (ilustração de como o motor mostra as datas) e o que vem no pacote;
+ * à direita, o motor embutido (`operador.reservas.pacoteComAereoUrl` + `pacoteIncorporavel`).
+ * Sem o endereço do motor, o lugar dele vira a cotação com a equipe pelo WhatsApp e telefone.
+ */
+import Botao from '@/components/ui/Botao.astro';
+import CartaoMotor from '@/components/ui/CartaoMotor.astro';
+import Icone from '@/components/ui/Icone.astro';
+import ListaCheck from '@/components/ui/ListaCheck.astro';
+import SeloPagamento from '@/components/ui/SeloPagamento.astro';
+import { allInclusive } from '@/data/all-inclusive';
+import { acaoWhatsApp, acoes } from '@/lib/acoes';
+import { formatarHora } from '@/lib/formatar';
+import { operador, resort } from '@/site.config';
+
+interface Props {
+  class?: string;
+}
+
+const { class: classe } = Astro.props;
+const { pacoteComAereoUrl, pacoteIncorporavel } = operador.reservas;
+const temMotor = pacoteComAereoUrl !== null && pacoteIncorporavel;
+const { horarios } = resort;
+
+const passos = [
+  {
+    titulo: 'Origem e datas',
+    texto: 'Cidade de onde você sai e as datas de ida e volta.',
+  },
+  {
+    titulo: 'Quartos e viajantes',
+    texto: 'Adultos e a idade de cada criança, para a hospedagem e as passagens.',
+  },
+  {
+    titulo: 'Compare voos e reserve',
+    texto: `Escolha os horários dos voos e a categoria no ${resort.nomeCurto} e confirme o pacote.`,
+  },
+];
+
+const noPacote = [
+  'Passagens aéreas de ida e volta e hospedagem no mesmo pacote',
+  ...allInclusive.incluso.slice(0, 2),
+  'Recreação para crianças a partir de 4 anos e adolescentes',
+];
+
+/*
+ * Calendário ilustrativo: mostra como o motor destaca em verde as datas com os melhores
+ * horários de voo e preços. Não representa disponibilidade nem preços reais.
+ */
+const semana = ['dom.', 'seg.', 'ter.', 'qua.', 'qui.', 'sex.', 'sáb.'];
+const destaques = new Set([12, 13, 15, 19, 21, 22]);
+const dias: (number | null)[] = [null, ...Array.from({ length: 30 }, (_, i) => i + 1)];
+
+const whatsapp = acaoWhatsApp(
+  `Olá! Quero cotar um pacote com aéreo para o ${resort.nome}. Cidade de origem: ___. Datas: ___. Adultos: ___. Crianças e idades: ___.`,
+  'Cotar pelo WhatsApp',
+);
+---
+
+<div class:list={['grid items-start gap-10 lg:grid-cols-[minmax(0,1fr)_25rem] lg:gap-16', classe]}>
+  <div class="space-y-10 max-lg:order-2" data-revelar="esquerda">
+    <ol class="grid gap-6 sm:grid-cols-3 lg:grid-cols-1">
+      {passos.map((passo, indice) => (
+        <li class="flex gap-4">
+          <span
+            class="text-coral-700 text-2xl leading-none font-bold tabular-nums"
+            aria-hidden="true"
+          >
+            {String(indice + 1).padStart(2, '0')}
+          </span>
+          <div>
+            <p class="text-mar-800 font-semibold">{passo.titulo}</p>
+            <p class="text-tinta-suave mt-1 text-sm">{passo.texto}</p>
+          </div>
+        </li>
+      ))}
+    </ol>
+
+    <SeloPagamento nota="Inclusive no pacote com aéreo: voos e hospedagem no mesmo parcelamento." />
+
+    {/* Destaque: confirmação imediata. */}
+    <div class="superficie-escura bg-verde-700 flex items-start gap-4 rounded-grande p-5 text-white shadow-cartao sm:p-6">
+      <Icone nome="selo" class="mt-0.5 size-8 shrink-0" />
+      <div>
+        <p class="text-lg font-bold">Confirmação imediata</p>
+        <p class="mt-1 text-sm text-white/90">
+          Pagamento aprovado, voos e hospedagem garantidos na hora, com o voucher enviado
+          imediatamente.
+        </p>
+      </div>
+    </div>
+
+    {/* Calendário com os melhores horários e preços em destaque. */}
+    <div class="ring-areia-200 grid items-center gap-6 rounded-grande bg-white p-5 shadow-cartao ring-1 sm:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)] sm:p-6">
+      <div class="space-y-2">
+        <p class="text-mar-800 flex items-center gap-2 font-semibold">
+          <Icone nome="calendario" class="text-coral-700 size-5" />
+          Melhores horários e preços em destaque
+        </p>
+        <p class="text-tinta-suave text-sm">
+          No calendário do motor, as datas em verde reúnem os melhores horários de voo e os melhores
+          preços do pacote. É só tocar no dia para ver as opções.
+        </p>
+        <p class="text-tinta-suave flex items-center gap-2 text-xs">
+          <span class="bg-verde-500 size-3 rounded-sm" aria-hidden="true"></span>
+          Datas em destaque (ilustração)
+        </p>
+      </div>
+      <div aria-hidden="true">
+        <div class="text-tinta-suave grid grid-cols-7 gap-1 text-center text-[0.6875rem]">
+          {semana.map((dia) => (
+            <span class="py-1">{dia}</span>
+          ))}
+        </div>
+        <div class="mt-1 grid grid-cols-7 gap-1 text-center text-sm tabular-nums">
+          {dias.map((dia) =>
+            dia === null ? (
+              <span></span>
+            ) : (
+              <span
+                class:list={[
+                  'flex aspect-square items-center justify-center rounded-md',
+                  destaques.has(dia)
+                    ? 'bg-verde-500 font-semibold text-white shadow-cartao'
+                    : 'text-tinta',
+                ]}
+              >
+                {dia}
+              </span>
+            ),
+          )}
+        </div>
+      </div>
+    </div>
+
+    <div class="border-areia-200 border-t pt-8">
+      <p class="text-mar-800 mb-4 font-semibold">No pacote para o {resort.nomeCurto}</p>
+      <ListaCheck itens={noPacote} />
+      <p class="text-tinta-suave mt-4 text-xs">
+        Check-in no resort a partir das {formatarHora(horarios.checkIn)}: confira o horário de
+        chegada do voo ao escolher o pacote.
+      </p>
+    </div>
+  </div>
+
+  <div
+    class="relative z-30 w-full max-lg:order-1 lg:sticky lg:top-[calc(7rem+var(--bf-h,0px))] lg:flex lg:justify-end"
+    data-revelar="direita"
+  >
+    {temMotor ? (
+      <CartaoMotor url={pacoteComAereoUrl} rotulo="Pacote hotel + aéreo" />
+    ) : (
+      <div class="fundo-mar-vivo superficie-escura mx-auto w-full max-w-md space-y-5 rounded-grande p-8 text-white shadow-flutuante">
+        <p class="flex items-center gap-2 text-2xl font-bold">
+          <Icone nome="aviao" class="size-7" />
+          Monte o seu pacote
+        </p>
+        <p class="text-white/90">
+          Informe a cidade de origem, as datas e os viajantes: a equipe cota juntos os voos e a
+          hospedagem all inclusive no {resort.nomeCurto}.
+        </p>
+        <div class="grid gap-3">
+          <Botao
+            href={whatsapp.href}
+            evento={whatsapp.evento}
+            icone="whatsapp"
+            variante="verde"
+            externo
+            larguraTotal
+          >
+            {whatsapp.rotulo}
+          </Botao>
+          <Botao
+            href={acoes.ligar.href}
+            evento={acoes.ligar.evento}
+            icone="telefone"
+            variante="claro"
+            larguraTotal
+          >
+            {acoes.ligar.rotulo}
+          </Botao>
+        </div>
+      </div>
+    )}
+  </div>
+</div>

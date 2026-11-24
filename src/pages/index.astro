@@ -1,0 +1,403 @@
+---
+/**
+ * Home: topo com foto em tela cheia (sem véu azul), ficha rápida e reservas → "Como é o resort?"
+ * com foto → busca de tarifas → mosaico de experiências → acomodações → um dia no all inclusive →
+ * crianças por idade → datas especiais → mosaico de fotos → como chegar → antes de viajar →
+ * avaliações (só com dados reais) → informações antes da reserva → confiança para reservar → FAQ.
+ * Textos que dependem do resort: src/data/home.ts; fatos: site.config.ts e coleções.
+ */
+import AvaliacoesHospedes from '@/components/sections/AvaliacoesHospedes.astro';
+import BuscaTarifas from '@/components/sections/BuscaTarifas.astro';
+import CartoesDatasEspeciais from '@/components/sections/CartoesDatasEspeciais.astro';
+import ConfiancaReservar from '@/components/sections/ConfiancaReservar.astro';
+import CriancasPorIdade from '@/components/sections/CriancasPorIdade.astro';
+import HeroHome, { type ItemFicha } from '@/components/sections/HeroHome.astro';
+import InformacoesReserva from '@/components/sections/InformacoesReserva.astro';
+import MosaicoExperiencias from '@/components/sections/MosaicoExperiencias.astro';
+import MosaicoGaleria from '@/components/sections/MosaicoGaleria.astro';
+import UmDiaAllInclusive from '@/components/sections/UmDiaAllInclusive.astro';
+import Botao from '@/components/ui/Botao.astro';
+import Card from '@/components/ui/Card.astro';
+import CarrosselOutrosResorts from '@/components/sections/CarrosselOutrosResorts.astro';
+import CartaoDestaque from '@/components/ui/CartaoDestaque.astro';
+import Faq from '@/components/ui/Faq.astro';
+import Icone from '@/components/ui/Icone.astro';
+import Imagem from '@/components/ui/Imagem.astro';
+import RespostaDireta from '@/components/ui/RespostaDireta.astro';
+import Secao from '@/components/ui/Secao.astro';
+import { textosHome } from '@/data/home';
+import { caminhoAcomodacao, rotas } from '@/data/rotas';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { pacoteComAereo, reservarHospedagem } from '@/lib/acoes';
+import { acomodacoesComCapa, fatosCurtos } from '@/lib/acomodacoes';
+import { DATA_CONTEUDO } from '@/lib/datas';
+import { faqDaPagina } from '@/lib/faq';
+import { formatarHora } from '@/lib/formatar';
+import { obterImagem } from '@/lib/imagens';
+import { rotaDisponivel } from '@/lib/navegacao';
+import { outrosResorts } from '@/lib/outros-resorts';
+import { linkTelefone, operador, resort } from '@/site.config';
+
+const [topo, chegada, vistaResort, vistaPiscinas] = await Promise.all([
+  obterImagem(resort.imagemPadrao),
+  obterImagem('grand-oca/resort/praia-coqueiral.jpg'),
+  obterImagem('grand-oca/piscinas/piscina-solario.jpg'),
+  obterImagem('grand-oca/piscinas/piscina-borda-infinita.jpg'),
+]);
+const acomodacoes = await acomodacoesComCapa();
+const faq = await faqDaPagina('home');
+const outros = rotaDisponivel('outrosResorts') ? await outrosResorts() : [];
+
+const { aeroporto, aeroportosAlternativos, endereco, horarios } = resort;
+const [central] = operador.telefones;
+
+const ficha: ItemFicha[] = [
+  { rotulo: 'Localização', valor: `${resort.praia}, ${resort.destino.nome}`, icone: 'local' },
+  { rotulo: 'Regime', valor: `${resort.regime} · refeições e bebidas incluídas`, icone: 'taca' },
+  {
+    rotulo: 'Praia',
+    valor: 'Pé na areia, de frente para o mar',
+    icone: 'ondas',
+  },
+  {
+    rotulo: 'Acomodações',
+    valor: `${resort.categoriasAcomodacao} categorias, de apartamentos a suítes`,
+    icone: 'cama',
+  },
+  {
+    rotulo: 'Crianças',
+    valor: 'Kids Club de 4 a 12 anos',
+    icone: 'pessoas',
+  },
+  {
+    rotulo: 'Central de reservas',
+    valor: central.exibicao,
+    icone: 'telefone',
+    href: linkTelefone(central),
+  },
+];
+
+const [fotoEntrada, fotoSaida, fotoDica] = await Promise.all([
+  obterImagem('grand-oca/piscinas/piscina-solario.jpg'),
+  obterImagem('grand-oca/acomodacoes/suite-deluxe-varanda.jpg'),
+  obterImagem('grand-oca/piscinas/piscina-solario.jpg'),
+]);
+
+const aeroportos = [aeroporto, ...aeroportosAlternativos];
+const tituloChegada =
+  aeroportosAlternativos.length > 0
+    ? `É melhor chegar por ${aeroportos.map((item) => item.cidade).join(' ou ')}?`
+    : `Como chegar ao ${resort.nomeCurto}?`;
+const segundaAcao = pacoteComAereo ?? {
+  rotulo: 'Falar com a equipe',
+  href: rotas.contato.caminho,
+  evento: 'clique_reservar' as const,
+  icone: 'pessoas' as const,
+  externo: false,
+};
+---
+
+<BaseLayout
+  titulo={resort.nome}
+  descricao="Grand Oca Maragogi Resort: all inclusive pé na areia em Maragogi, com piscinas, Kids Club e nove categorias de acomodação."
+  imagemSocial={topo}
+  atualizadoEm={DATA_CONTEUDO}
+  rota="home"
+  dadosEstruturados={{ perguntas: faq }}
+>
+  <HeroHome
+    titulo={resort.nome}
+    trilhaGeografica={[endereco.estado, endereco.cidade, resort.praia]}
+    subtitulo={resort.slogan}
+    imagem={topo}
+    ficha={ficha}
+  >
+    <Fragment slot="acoes">
+      <Botao
+        variante="verde"
+        href={reservarHospedagem.href}
+        icone={reservarHospedagem.icone}
+        evento={reservarHospedagem.evento}
+        externo={reservarHospedagem.externo}
+        tamanho="lg"
+      >
+        Tarifas apenas hospedagem
+      </Botao>
+      <Botao
+        href={segundaAcao.href}
+        icone={segundaAcao.icone}
+        evento={segundaAcao.evento}
+        variante="branco"
+        tamanho="lg"
+      >
+        {pacoteComAereo ? 'Pacote hotel + aéreo' : segundaAcao.rotulo}
+      </Botao>
+    </Fragment>
+  </HeroHome>
+
+  {/* Como é o resort? Bloco claro com foto real (sem véu azul) e o resumo em ícones. */}
+  <section class="container-site pt-14 sm:pt-16" aria-labelledby="como-e-titulo">
+    <div class="grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
+      <div class="relative" data-revelar="esquerda">
+        <div class="group aspect-4/3 overflow-hidden rounded-grande shadow-flutuante">
+          <Imagem
+            src={vistaResort.src}
+            alt={vistaResort.alt}
+            sizes="(min-width: 1024px) 50vw, 100vw"
+            class="ease-suave transition-transform duration-[1.4s] group-hover:scale-105"
+          />
+        </div>
+        <div class="ring-areia-200 absolute -bottom-6 left-4 hidden w-56 overflow-hidden rounded-xl bg-white p-0.5 shadow-flutuante ring-1 sm:block lg:-left-6">
+          <div class="aspect-4/3 overflow-hidden rounded-xl">
+            <Imagem src={vistaPiscinas.src} alt={vistaPiscinas.alt} sizes="14rem" largura={480} />
+          </div>
+        </div>
+      </div>
+      <div class="space-y-6" data-revelar="direita">
+        <p class="sobretitulo">
+          {endereco.cidade} › {endereco.estado} › {resort.praia}
+        </p>
+        <h2 id="como-e-titulo" class="titulo-secao">
+          Como é o {resort.nome}?
+        </h2>
+        <RespostaDireta>{textosHome.respostaDireta}</RespostaDireta>
+        {textosHome.apresentacao.map((paragrafo) => (
+          <p class="text-tinta-suave text-lg">{paragrafo}</p>
+        ))}
+        <ul class="grid gap-3 sm:grid-cols-2">
+          {textosHome.emResumo.map((item) => (
+            <li class="ease-suave ring-areia-200 hover:ring-mar-200 flex items-center gap-3 rounded-cartao bg-white px-4 py-3 ring-1 transition duration-300 hover:-translate-y-0.5 hover:shadow-cartao">
+              <Icone nome={item.icone} class="text-mar-700 size-6 shrink-0" />
+              <span class="text-mar-950 text-sm font-medium">{item.texto}</span>
+            </li>
+          ))}
+        </ul>
+        <p>
+          <Botao href={rotas.resort.caminho} variante="contorno" iconeFim="seta-direita">
+            Conheça o resort
+          </Botao>
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <BuscaTarifas class="mt-20" />
+
+  <MosaicoExperiencias />
+
+  <Secao
+    titulo={`Quais são as acomodações do ${resort.nome}?`}
+    sobretitulo={`${resort.categoriasAcomodacao} categorias · de apartamentos a suítes`}
+    introducao={`Dos apartamentos Standard e dos bangalôs, entre jardins e piscinas, aos quartos Deluxe da nova área D’Água e à Suíte Deluxe de 72 m², as acomodações do ${resort.nomeCurto} recebem de casais a grupos de até seis pessoas.`}
+    fundo="areia"
+  >
+    <ul class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      {acomodacoes.map(({ entrada, capa }, indice) => (
+        <li style={`--atraso: ${(indice % 3) * 90}ms`}>
+          <Card
+            titulo={entrada.data.nome}
+            href={caminhoAcomodacao(entrada.id)}
+            iconeSemFoto="cama"
+            iconeTitulo="cama"
+            descricao={entrada.data.resumo}
+            fatos={fatosCurtos(entrada)}
+            imagem={capa}
+            chamada="Ver acomodação"
+            {...(entrada.data.premium ? { selo: 'Premium' } : {})}
+          />
+        </li>
+      ))}
+      <li>
+        <div
+          class="group ring-areia-200 flex h-full flex-col justify-center gap-4 rounded-cartao bg-white p-6 shadow-cartao ring-1 sm:p-8"
+          data-revelar
+        >
+          <Icone nome="cama" class="text-coral-700 size-9" />
+          <h3 class="">Qual acomodação escolher?</h3>
+          <p class="text-tinta-suave">
+            A melhor categoria depende da quantidade de hóspedes, da idade das crianças, da vista e
+            da privacidade que você quer.
+          </p>
+          <p>
+            <Botao href={rotas.comparativo.caminho} variante="primario" iconeFim="seta-direita">
+              Comparar lado a lado
+            </Botao>
+          </p>
+        </div>
+      </li>
+    </ul>
+  </Secao>
+
+  <UmDiaAllInclusive />
+
+  <CriancasPorIdade />
+
+  <Secao
+    titulo={`Quais datas especiais aproveitar no ${resort.nomeCurto}?`}
+    sobretitulo="Planeje sua próxima viagem"
+    introducao={`Réveillon, Carnaval, Páscoa, Natal e as emendas de feriado concentram a procura pelo ${resort.nomeCurto}, e o resort divulga programações próprias nas festas de fim de ano. As tarifas e a disponibilidade variam conforme a data, a ocupação e a antecedência da reserva.`}
+  >
+    <CartoesDatasEspeciais limite={6} />
+    <p class="mt-10 flex flex-wrap gap-3">
+      <Botao href={rotas.datasEspeciais.caminho} variante="contorno" iconeFim="seta-direita">
+        Ver todas as datas
+      </Botao>
+    </p>
+  </Secao>
+
+  <MosaicoGaleria />
+
+  <Secao
+    introducao={`Veja o aeroporto mais próximo do ${resort.nomeCurto}, a distância até o resort e as outras formas de chegar, de carro, de transfer ou de táxi.`}
+    titulo={tituloChegada}
+    sobretitulo="Como chegar"
+    fundo="areia"
+  >
+    <div class="grid items-start gap-8 lg:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)] lg:gap-10">
+      <div class="space-y-6" data-revelar="esquerda">
+        <p class="text-tinta-suave text-lg">
+          O {resort.nomeCurto} fica às margens do {resort.praia}, {resort.destino.em}{' '}
+          {resort.destino.nome}.
+          {aeroportosAlternativos.length > 0
+            ? ` Para quem chega de avião, há ${aeroportos.length} aeroportos possíveis.`
+            : ` O aeroporto mais próximo é o ${aeroporto.nome}.`}
+        </p>
+        <div class="overflow-x-auto rounded-cartao bg-white shadow-cartao ring-1 ring-black/8">
+          <table class="w-full min-w-[30rem] border-collapse text-left text-sm sm:text-base">
+            <caption class="sr-only">Distância e tempo de cada aeroporto até o resort</caption>
+            <thead>
+              <tr class="border-areia-200 border-b">
+                <th scope="col" class="text-mar-800 px-5 py-4 font-bold">
+                  Opção
+                </th>
+                <th scope="col" class="text-mar-800 px-5 py-4 font-bold">
+                  Distância e tempo até o resort
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {aeroportos.map((item) => (
+                <tr class="border-areia-200 border-b">
+                  <th scope="row" class="text-tinta px-5 py-4 font-semibold">
+                    Via {item.cidade} ({item.iata})
+                  </th>
+                  <td class="text-tinta-suave px-5 py-4">
+                    {item.tempoEstimado
+                      ? `Cerca de ${item.distanciaKm} km, ${item.tempoEstimado} de carro, dependendo do trânsito.`
+                      : `Cerca de ${item.distanciaKm} km. Confira o tempo de estrada no mapa antes de sair.`}
+                  </td>
+                </tr>
+              ))}
+              <tr>
+                <th scope="row" class="text-tinta px-5 py-4 font-semibold">
+                  Melhor escolha?
+                </th>
+                <td class="text-tinta-suave px-5 py-4">
+                  O {aeroporto.nome} ({aeroporto.iata}) é o mais usado para chegar ao{' '}
+                  {resort.nomeCurto}.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div
+        class="space-y-4 rounded-cartao bg-white p-6 shadow-cartao ring-1 ring-black/8 sm:p-8"
+        data-revelar="direita"
+      >
+        <h3 class="">Opções para chegar ao {resort.nomeCurto}</h3>
+        <p class="text-tinta-suave">
+          O transfer a partir de Recife ou de Maceió depende de disponibilidade e das condições do
+          serviço. Antes de fechar a viagem, vale comparar o pacote completo, com passagem aérea e
+          hospedagem.
+        </p>
+        <div class="grid gap-3">
+          {aeroportos.map((item) => (
+            <Botao
+              href={`${rotas.comoChegar.caminho}#via-${item.iata.toLowerCase()}`}
+              variante="contorno"
+              larguraTotal
+            >
+              Como chegar via {item.cidade}
+            </Botao>
+          ))}
+        </div>
+        <div class="aspect-video overflow-hidden rounded-xl">
+          <Imagem src={chegada.src} alt={chegada.alt} sizes="(min-width: 1024px) 28vw, 100vw" />
+        </div>
+      </div>
+    </div>
+  </Secao>
+
+  <Secao
+    foto="grand-oca/resort/vista-aerea-resort.jpg"
+    introducao={`Informações práticas para a estadia no ${resort.nomeCurto}: horários de check-in e check-out, crianças, documentos e o que levar.`}
+    titulo={`O que saber antes de viajar ao ${resort.nomeCurto}?`}
+    sobretitulo="Antes de viajar"
+  >
+    <ul class="grid gap-5 md:grid-cols-3">
+      <li>
+        <CartaoDestaque
+          sobretitulo="Entrada"
+          foto={fotoEntrada}
+          titulo={`Check-in a partir das ${formatarHora(horarios.checkIn)}`}
+        >
+          <p>Organize o horário de chegada considerando o início oficial do check-in.</p>
+        </CartaoDestaque>
+      </li>
+      <li>
+        <CartaoDestaque
+          sobretitulo="Saída"
+          foto={fotoSaida}
+          titulo={`Check-out até as ${formatarHora(horarios.checkOut)}`}
+        >
+          <p>A acomodação deve ser liberada até esse horário no dia da saída.</p>
+        </CartaoDestaque>
+      </li>
+      <li>
+        <CartaoDestaque
+          sobretitulo="Dica de viagem"
+          foto={fotoDica}
+          titulo="Early check-in e late check-out"
+          href={rotas.politicaHospedagem.caminho}
+        >
+          <p>
+            {horarios.earlyLate ??
+              'Consulte as regras de entrada e saída na política de hospedagem.'}
+          </p>
+        </CartaoDestaque>
+      </li>
+    </ul>
+  </Secao>
+
+  <AvaliacoesHospedes />
+
+  {outros.length > 0 && (
+    <Secao
+      titulo="Quais são outros Resorts All Inclusive que posso conhecer?"
+      sobretitulo="Rede Resort All Inclusive"
+      introducao={`A rede Resort All Inclusive reúne dezenas de resorts com tudo incluído pelo Brasil, das praias do Nordeste às serras de Minas Gerais e ao Sul, com a mesma qualidade em seu atendimento. Veja a prévia de outras opções de resorts all inclusive pelo país.`}
+      fundo="areia"
+    >
+      {/* Na home, só os destaques (os primeiros pela ordem); a lista completa fica em /outros-resorts/. */}
+      <CarrosselOutrosResorts resorts={outros.slice(0, 10)} />
+      <p class="mt-10">
+        <Botao href={rotas.outrosResorts.caminho} variante="contorno" iconeFim="seta-direita">
+          Ver todos os resorts
+        </Botao>
+      </p>
+    </Secao>
+  )}
+
+  <InformacoesReserva />
+
+  <ConfiancaReservar />
+
+  <div class="container-site pb-16 sm:pb-24" data-revelar>
+    <Faq
+      itens={faq}
+      titulo={`Dúvidas sobre o ${resort.nomeCurto}`}
+      foto="grand-oca/resort/praia-coqueiral.jpg"
+    />
+  </div>
+</BaseLayout>

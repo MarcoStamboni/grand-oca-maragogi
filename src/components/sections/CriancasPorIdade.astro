@@ -1,0 +1,98 @@
+---
+/**
+ * Seção das crianças da home: abas por faixa etária (padrão WAI-ARIA, src/scripts/abas.ts) com o
+ * que cada idade encontra, e um mosaico de fotos ao lado. Sem JavaScript, a primeira aba fica
+ * visível. Dados: src/data/home.ts (`faixasDetalhe`).
+ */
+import Botao from '@/components/ui/Botao.astro';
+import Imagem from '@/components/ui/Imagem.astro';
+import { textosHome } from '@/data/home';
+import { rotas } from '@/data/rotas';
+import { obterImagens } from '@/lib/imagens';
+import { resort } from '@/site.config';
+
+const faixas = textosHome.faixasDetalhe;
+const [summy, palco, volei] = await obterImagens([
+  'grand-oca/criancas/parque-aquatico-escorregadores.jpg',
+  'grand-oca/resort/nascer-do-sol-mar.jpg',
+  'grand-oca/criancas/parque-aquatico-torre.jpg',
+]);
+const fotos = [
+  { imagem: summy, classe: 'col-span-2' },
+  { imagem: palco, classe: '' },
+  { imagem: volei, classe: '' },
+];
+---
+
+<section class="bg-areia-100 py-16 sm:py-24" aria-labelledby="criancas-titulo">
+  <div class="container-site grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
+    <div class="space-y-6" data-revelar="esquerda">
+      <p class="sobretitulo">Família</p>
+      <h2 id="criancas-titulo" class="titulo-secao">
+        {resort.nome} para crianças
+      </h2>
+      <p class="text-tinta-suave text-lg">{textosHome.criancas}</p>
+      <div class="space-y-4" data-abas>
+        <div class="flex flex-wrap gap-2" role="tablist" aria-label="Faixas etárias">
+          {faixas.map((faixa, indice) => (
+            <button
+              type="button"
+              role="tab"
+              id={`aba-idade-${faixa.id}`}
+              aria-controls={`painel-idade-${faixa.id}`}
+              aria-selected={indice === 0 ? 'true' : 'false'}
+              tabindex={indice === 0 ? 0 : -1}
+              data-aba
+              class="ease-suave ring-areia-300 text-mar-900 hover:ring-mar-700 aria-selected:bg-mar-900 aria-selected:ring-mar-900 min-h-11 cursor-pointer rounded-full bg-white px-4 text-sm font-semibold ring-1 transition duration-300 hover:-translate-y-0.5 aria-selected:text-white"
+            >
+              {faixa.rotulo}
+            </button>
+          ))}
+        </div>
+        {faixas.map((faixa, indice) => (
+          <div
+            role="tabpanel"
+            id={`painel-idade-${faixa.id}`}
+            aria-labelledby={`aba-idade-${faixa.id}`}
+            tabindex="0"
+            data-painel
+            data-ativo={indice === 0 ? '' : undefined}
+            class="ring-areia-200 hidden rounded-grande bg-white p-6 shadow-cartao ring-1 data-ativo:block"
+          >
+            <p class="text-mar-950 text-lg font-semibold">{faixa.titulo}</p>
+            <p class="text-tinta-suave mt-1">{faixa.texto}</p>
+          </div>
+        ))}
+      </div>
+      <div class="flex flex-wrap gap-3">
+        <Botao href={rotas.criancas.caminho} iconeFim="seta-direita">
+          Recreação por idade
+        </Botao>
+        <Botao href={rotas.piscinas.caminho} variante="contorno">
+          Piscinas e brinquedos aquáticos
+        </Botao>
+      </div>
+    </div>
+    <div
+      class="grid auto-rows-[12rem] grid-cols-2 gap-3 sm:auto-rows-[14rem] sm:gap-4"
+      data-revelar="direita"
+    >
+      {fotos.map(({ imagem, classe }) =>
+        imagem ? (
+          <div class:list={['group overflow-hidden rounded-grande shadow-cartao', classe]}>
+            <Imagem
+              src={imagem.src}
+              alt={imagem.alt}
+              sizes="(min-width: 1024px) 25vw, 50vw"
+              class="ease-suave transition-transform duration-[1.2s] group-hover:scale-110"
+            />
+          </div>
+        ) : null,
+      )}
+    </div>
+  </div>
+</section>
+
+<script>
+  import '@/scripts/abas';
+</script>

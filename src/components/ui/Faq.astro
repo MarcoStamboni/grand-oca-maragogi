@@ -1,0 +1,96 @@
+---
+/**
+ * Perguntas frequentes em acordeão nativo (<details>/<summary>): funciona sem JavaScript,
+ * teclado e leitores de tela. As respostas ficam no HTML mesmo fechadas (indexáveis).
+ * Estrutura de títulos: H2 da seção ("Perguntas frequentes" ou o tema) → H3 em cada pergunta
+ * (dentro do <summary>, o que o HTML permite) → parágrafo com a resposta.
+ * O FAQPage (JSON-LD) fica só em /perguntas-frequentes/, com os mesmos itens exibidos lá.
+ */
+import Icone from '@/components/ui/Icone.astro';
+import Imagem from '@/components/ui/Imagem.astro';
+import { paraAncora } from '@/lib/formatar';
+import { obterImagem } from '@/lib/imagens';
+import { resort } from '@/site.config';
+
+export interface ItemFaq {
+  id?: string;
+  pergunta: string;
+  resposta: string;
+}
+
+interface Props {
+  itens: readonly ItemFaq[];
+  titulo?: string;
+  /** Parágrafo sob o título. Padrão: texto geral sobre as dúvidas de quem planeja a viagem. */
+  introducao?: string;
+  id?: string;
+  /** Foto ilustrativa ao lado das perguntas (chave do imagens.yaml), fixa ao rolar no desktop. */
+  foto?: string | undefined;
+  /** Primeira pergunta aberta. */
+  abrirPrimeira?: boolean;
+  class?: string;
+}
+
+const {
+  itens,
+  titulo = 'Perguntas frequentes',
+  introducao = `As dúvidas mais comuns de quem planeja a viagem ao ${resort.nomeCurto}, com respostas diretas. Se faltar alguma, fale com a nossa equipe.`,
+  id = 'perguntas-frequentes',
+  abrirPrimeira = false,
+  foto: chaveFoto,
+  class: classe,
+} = Astro.props;
+const foto = chaveFoto ? await obterImagem(chaveFoto) : undefined;
+/** Com muitas perguntas, a foto fica fixa ao rolar; com poucas, centralizada ao lado. */
+const muitas = itens.length >= 4;
+---
+
+{itens.length > 0 && (
+  <section
+    id={id}
+    aria-labelledby={`${id}-titulo`}
+    class:list={[
+      foto && 'grid gap-10 lg:grid-cols-[minmax(0,2fr)_minmax(0,3fr)] lg:gap-14',
+      foto && (muitas ? 'items-start' : 'items-center'),
+      classe,
+    ]}
+  >
+    {foto && (
+      <div
+        class:list={[
+          'aspect-4/3 overflow-hidden rounded-grande shadow-flutuante',
+          muitas && 'lg:sticky lg:top-[calc(7rem+var(--bf-h,0px))]',
+        ]}
+      >
+        <Imagem src={foto.src} alt={foto.alt} sizes="(min-width: 1024px) 30vw, 100vw" />
+      </div>
+    )}
+    <div class="min-w-0 space-y-8">
+      <header class="max-w-3xl space-y-3">
+        <h2 id={`${id}-titulo`} class="titulo-secao">
+          {titulo}
+        </h2>
+        <p class="text-tinta-suave text-lg">{introducao}</p>
+      </header>
+      <div class="space-y-3">
+        {itens.map((item, indice) => (
+          <details
+            id={`pergunta-${item.id ?? paraAncora(item.pergunta)}`}
+            class="group ring-areia-200 open:ring-mar-200 open:shadow-cartao ease-suave rounded-cartao bg-white px-5 ring-1 transition-shadow duration-300 sm:px-6"
+            open={abrirPrimeira && indice === 0}
+          >
+            <summary class="text-mar-950 flex min-h-14 cursor-pointer list-none items-center justify-between gap-4 py-4 font-semibold [&::-webkit-details-marker]:hidden">
+              <h3 class="text-mar-950 leading-snug font-semibold tracking-normal">
+                {item.pergunta}
+              </h3>
+              <span class="text-mar-700 group-open:text-coral-700 ease-suave flex shrink-0 transition duration-300 group-open:rotate-180">
+                <Icone nome="seta-baixo" class="size-6" />
+              </span>
+            </summary>
+            <p class="text-tinta-suave pb-5 leading-relaxed">{item.resposta}</p>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+)}

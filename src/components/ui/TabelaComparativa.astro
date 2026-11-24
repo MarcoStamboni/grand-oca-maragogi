@@ -1,0 +1,115 @@
+---
+/**
+ * Tabela comparativa (ex.: acomodações × atributos). A primeira coluna é cabeçalho de linha.
+ * No celular vira uma lista de cartões (um por linha, "coluna: valor"); a partir do tablet, a
+ * tabela, que rola na horizontal dentro de uma região focável se faltar espaço (WCAG 2.1.1).
+ * Informações centralizadas nas células (a primeira coluna, o nome da linha, fica à esquerda).
+ * Células "Sim" e "Não" viram ícones de validado (verde) e não validado (cinza), com o texto
+ * mantido para leitores de tela.
+ */
+import Icone from '@/components/ui/Icone.astro';
+import { paraAncora } from '@/lib/formatar';
+
+export interface LinhaComparativa {
+  cabecalho: string;
+  celulas: readonly string[];
+}
+
+interface Props {
+  legenda: string;
+  /** Cabeçalhos das colunas, incluindo o da primeira (ex.: "Categoria"). */
+  colunas: readonly string[];
+  linhas: readonly LinhaComparativa[];
+  nota?: string;
+  class?: string;
+}
+
+const { legenda, colunas, linhas, nota, class: classe } = Astro.props;
+const idLegenda = `tabela-${paraAncora(legenda)}`;
+---
+
+<figure class:list={['space-y-2', classe]}>
+  {/* Celular: um cartão por linha, com cada coluna numa linha "rótulo: valor". */}
+  <div class="space-y-3 md:hidden">
+    <p class="text-mar-950 text-lg font-semibold" aria-hidden="true">
+      {legenda}
+    </p>
+    <ul class="space-y-3" aria-label={legenda}>
+      {linhas.map((linha) => (
+        <li class="ring-areia-200 rounded-cartao bg-white p-4 shadow-cartao ring-1">
+          <p class="text-mar-800 font-semibold">{linha.cabecalho}</p>
+          <dl class="divide-areia-100 mt-3 divide-y text-sm">
+            {linha.celulas.map((celula, indice) => (
+              <div class="flex items-start justify-between gap-4 py-2 first:pt-0 last:pb-0">
+                <dt class="text-tinta-suave shrink-0">{colunas[indice + 1]}</dt>
+                <dd class="text-mar-950 text-right font-medium">
+                  {celula === 'Sim' ? (
+                    <>
+                      <Icone nome="validado" class="text-verde-700 ml-auto size-5" />
+                      <span class="sr-only">Sim</span>
+                    </>
+                  ) : celula === 'Não' ? (
+                    <>
+                      <Icone nome="nao-validado" class="ml-auto size-5 text-[#9aa5b1]" />
+                      <span class="sr-only">Não</span>
+                    </>
+                  ) : (
+                    celula
+                  )}
+                </dd>
+              </div>
+            ))}
+          </dl>
+        </li>
+      ))}
+    </ul>
+  </div>
+  <div
+    class="ring-areia-200 hidden overflow-x-auto rounded-cartao bg-white shadow-cartao ring-1 md:block"
+    role="region"
+    aria-labelledby={idLegenda}
+    tabindex="0"
+  >
+    <table class="w-full min-w-[40rem] border-collapse text-left text-sm">
+      <caption id={idLegenda} class="text-mar-950 px-5 py-4 text-left text-lg font-semibold">
+        {legenda}
+      </caption>
+      <thead>
+        <tr class="bg-mar-900 text-white">
+          {colunas.map((coluna) => (
+            <th scope="col" class="px-5 py-3.5 text-center font-semibold first:text-left">
+              {coluna}
+            </th>
+          ))}
+        </tr>
+      </thead>
+      <tbody>
+        {linhas.map((linha) => (
+          <tr class="border-areia-100 even:bg-areia-50 hover:bg-mar-50 border-t transition-colors">
+            <th scope="row" class="text-mar-950 px-5 py-3.5 align-middle font-semibold">
+              {linha.cabecalho}
+            </th>
+            {linha.celulas.map((celula) => (
+              <td class="text-tinta px-5 py-3.5 text-center align-middle [&_svg]:mx-auto">
+                {celula === 'Sim' ? (
+                  <>
+                    <Icone nome="validado" class="text-verde-700 size-6" />
+                    <span class="sr-only">Sim</span>
+                  </>
+                ) : celula === 'Não' ? (
+                  <>
+                    <Icone nome="nao-validado" class="size-6 text-[#9aa5b1]" />
+                    <span class="sr-only">Não</span>
+                  </>
+                ) : (
+                  celula
+                )}
+              </td>
+            ))}
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+  {nota && <figcaption class="text-tinta-suave text-sm">{nota}</figcaption>}
+</figure>

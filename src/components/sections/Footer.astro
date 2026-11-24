@@ -1,0 +1,231 @@
+---
+/**
+ * Rodapé global no padrão do Grand Oca (fundo grafite): marca e endereço do resort (NAP), mapa do
+ * site em três colunas, atendimento do operador (central em destaque, WhatsApp, horário e
+ * endereço da agência), logo da agência, nota do Tripadvisor (quando configurada), redes,
+ * links legais e aviso do operador. Com o analytics ativo, "Preferências de cookies" reabre o aviso.
+ */
+import Icone from '@/components/ui/Icone.astro';
+import NotaTripadvisor from '@/components/ui/NotaTripadvisor.astro';
+import { acoes } from '@/lib/acoes';
+import { analytics } from '@/lib/ambiente';
+import { gruposRodape, linkRota, linksInstitucionais } from '@/lib/navegacao';
+import { linkMapa, linkTelefone, modelo, operador, resort } from '@/site.config';
+
+const grupos = gruposRodape();
+const institucional = linksInstitucionais();
+
+const linha = (partes: readonly (string | null)[]) => partes.filter(Boolean).join(', ');
+const { endereco } = resort;
+const enderecoResort = linha([
+  endereco.logradouro,
+  endereco.bairro,
+  `${endereco.cidade} - ${endereco.uf}`,
+  endereco.cep,
+]);
+const enderecoOperador = operador.endereco
+  ? linha([
+      operador.endereco.logradouro,
+      operador.endereco.bairro,
+      `${operador.endereco.cidade} - ${operador.endereco.uf}`,
+      operador.endereco.cep ? `CEP ${operador.endereco.cep}` : null,
+    ])
+  : null;
+
+const redes = [
+  { nome: 'Instagram', url: resort.redes.instagram, icone: 'instagram' },
+  { nome: 'YouTube', url: resort.redes.youtube, icone: 'youtube' },
+  { nome: 'Facebook', url: resort.redes.facebook, icone: 'facebook' },
+] as const;
+const redesConfirmadas = redes.filter(
+  (rede): rede is (typeof redes)[number] & { url: string } => rede.url !== null,
+);
+
+const [central, ...outrosTelefones] = operador.telefones;
+const ano = new Date().getFullYear();
+---
+
+<footer class="bg-mar-950 superficie-escura mt-auto text-white/80">
+  <div class="container-site grid gap-12 py-16 lg:grid-cols-12 lg:gap-10">
+    <div class="space-y-5 lg:col-span-3">
+      <address class="space-y-2 not-italic">
+        <p class="font-semibold text-white">{resort.nome}</p>
+        <p class="flex gap-2">
+          <Icone nome="local" class="text-coral-400 mt-0.5 size-4 shrink-0" />
+          <span>{enderecoResort}</span>
+        </p>
+        <p>
+          <a
+            href={linkMapa}
+            class="text-mar-200 underline hover:text-white"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Ver no mapa<span class="sr-only"> (abre em nova aba)</span>
+          </a>
+          <span aria-hidden="true"> · </span>
+          <a href={linkRota('comoChegar').href} class="text-mar-200 underline hover:text-white">
+            Como chegar
+          </a>
+        </p>
+      </address>
+      <NotaTripadvisor escuro />
+      {redesConfirmadas.length > 0 && (
+        <ul class="flex gap-2" aria-label="Redes oficiais do resort">
+          {redesConfirmadas.map((rede) => (
+            <li>
+              <a
+                href={rede.url}
+                class="ease-suave inline-flex size-11 items-center justify-center rounded-full text-white transition duration-300 hover:-translate-y-0.5 hover:bg-white/10"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Icone nome={rede.icone} class="size-5" />
+                <span class="sr-only">{rede.nome} (abre em nova aba)</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+
+    <nav
+      id="mapa-do-site"
+      aria-label="Mapa do site"
+      class="grid gap-8 sm:grid-cols-2 lg:col-span-6"
+    >
+      {grupos.map((grupo) => (
+        <div class="space-y-4">
+          <h2 class="font-sans text-sm font-semibold text-white">{grupo.titulo}</h2>
+          <ul class="space-y-2 text-[0.8125rem]">
+            {grupo.links.map((link) => (
+              <li>
+                <a href={link.href} class="sublinhado-animado text-white/75 hover:text-white">
+                  {link.rotulo}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
+      <div class="space-y-4">
+        <h2 class="font-sans text-sm font-semibold text-white">Institucional</h2>
+        <ul class="space-y-2 text-[0.8125rem]">
+          {institucional.map((link) => (
+            <li>
+              <a href={link.href} class="sublinhado-animado text-white/75 hover:text-white">
+                {link.rotulo}
+              </a>
+            </li>
+          ))}
+          {analytics.ativo && (
+            <li class="sem-js:hidden">
+              <button
+                type="button"
+                class="sublinhado-animado text-white/75 hover:text-white"
+                data-preferencias-cookies
+              >
+                Preferências de cookies
+              </button>
+            </li>
+          )}
+        </ul>
+      </div>
+    </nav>
+
+    <div class="space-y-4 lg:col-span-3">
+      <h2 class="font-sans text-sm font-semibold text-white">Central de reservas</h2>
+      <p>
+        <a
+          href={linkTelefone(central)}
+          class="text-xl font-bold text-white tracking-tight no-underline hover:underline"
+          data-evento="clique_telefone"
+        >
+          <span class="sr-only">{central.rotulo}: </span>
+          {central.exibicao}
+        </a>
+      </p>
+      <ul class="space-y-2 text-[0.8125rem]">
+        {outrosTelefones.map((telefone) => (
+          <li>
+            <a
+              href={linkTelefone(telefone)}
+              class="inline-flex text-white/80 hover:text-white items-center gap-2 no-underline hover:underline"
+              data-evento="clique_telefone"
+            >
+              <Icone nome="telefone" class="text-coral-400 size-4" />
+              {telefone.rotulo}: {telefone.exibicao}
+            </a>
+          </li>
+        ))}
+        <li>
+          <a
+            href={acoes.whatsapp.href}
+            class="inline-flex text-white/80 hover:text-white items-center gap-2 no-underline hover:underline"
+            target="_blank"
+            rel="noopener noreferrer"
+            data-evento={acoes.whatsapp.evento}
+          >
+            <Icone nome="whatsapp" class="text-coral-400 size-4" />
+            <span>
+              Falar no {operador.whatsapp.rotulo}
+              <span class="sr-only"> (abre em nova aba)</span>
+            </span>
+          </a>
+        </li>
+        {operador.email && (
+          <li>
+            <a
+              href={`mailto:${operador.email}`}
+              class="inline-flex text-white/80 hover:text-white items-center gap-2 no-underline hover:underline"
+            >
+              <Icone nome="email" class="text-coral-400 size-4" />
+              {operador.email}
+            </a>
+          </li>
+        )}
+        {operador.horarioAtendimento && (
+          <li class="flex gap-2">
+            <Icone nome="relogio" class="text-coral-400 mt-0.5 size-4 shrink-0" />
+            <span>{operador.horarioAtendimento}</span>
+          </li>
+        )}
+        {enderecoOperador && (
+          <li class="flex gap-2">
+            <Icone nome="local" class="text-coral-400 mt-0.5 size-4 shrink-0" />
+            <span>
+              {operador.nome}: {enderecoOperador}
+            </span>
+          </li>
+        )}
+      </ul>
+      {operador.logo && (
+        <p class="pt-2">
+          <img
+            src={`${operador.logo.caminho}-claro.webp`}
+            alt={operador.logo.alt}
+            width={operador.logo.largura}
+            height={operador.logo.altura}
+            loading="lazy"
+            class="h-12 w-auto"
+          />
+        </p>
+      )}
+    </div>
+  </div>
+
+  <div class="border-t border-white/10">
+    <div class="container-site space-y-2.5 py-6 text-center text-[0.6875rem] sm:text-xs">
+      {modelo.ativo && <p class="text-coral-400 font-semibold">{modelo.aviso}</p>}
+      {operador.aviso && <p class="text-white">{operador.aviso}</p>}
+      <p>Condições, horários e programação podem mudar; confirme no momento da reserva.</p>
+      <div class="flex flex-col items-center gap-3">
+        <p>
+          © {ano} {operador.razaoSocial ?? operador.nome}.
+          {operador.submarca && ` ${operador.submarca} é uma marca da ${operador.nome}.`} Todos os
+          direitos reservados.
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>

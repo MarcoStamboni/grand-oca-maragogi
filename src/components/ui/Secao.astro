@@ -1,0 +1,155 @@
+---
+/**
+ * Seção de página com espaçamento, fundo e título padronizados (visual do Grand Oca: sobretítulo
+ * laranja em caixa alta, título azul em negrito, introdução em cinza).
+ * - Toda seção com título tem um parágrafo de introdução (`introducao`, obrigatório no tipo):
+ *   explica o tema com as palavras-chave da página antes dos cartões e listas.
+ * - `foto` (chave do imagens.yaml): foto ilustrativa ao lado do título e da introdução, para a
+ *   pessoa se imaginar no ambiente. `fotoLado` alterna o lado (padrão: alterna sozinho na ordem da página).
+ * Títulos em forma de pergunta (AEO) são passados em `titulo`; o id da âncora é gerado dele.
+ * Fundos: `padrao` (branco), `areia` (azul bem claro) e `mar` (azul, texto branco).
+ * O cabeçalho da seção entra ao rolar.
+ */
+import Imagem from '@/components/ui/Imagem.astro';
+import RespostaDireta from '@/components/ui/RespostaDireta.astro';
+import { paraAncora } from '@/lib/formatar';
+import { obterImagem } from '@/lib/imagens';
+
+interface Base {
+  /** Texto curto acima do título (contexto, ex.: "ACOMODAÇÕES"). */
+  sobretitulo?: string;
+  id?: string;
+  fundo?: 'padrao' | 'areia' | 'mar';
+  nivelTitulo?: 2 | 3;
+  /** Largura do conteúdo: `estreito` para texto corrido. */
+  largura?: 'normal' | 'estreito';
+  /** Cabeçalho da seção centralizado (ignorado quando há foto). */
+  centralizado?: boolean;
+  /** Foto ilustrativa ao lado do cabeçalho (chave do imagens.yaml). */
+  foto?: string | undefined;
+  fotoLado?: 'direita' | 'esquerda';
+  /**
+   * Força o conteúdo na mesma coluna do título, ao lado da foto. Conteúdo curto (parágrafos,
+   * links e botões) já vai para lá sozinho; este prop serve para casos que a regra não pega.
+   */
+  conteudoAoLado?: boolean;
+  class?: string;
+}
+
+type Props = Base &
+  ({ titulo: string; introducao: string } | { titulo?: undefined; introducao?: string });
+
+const {
+  titulo,
+  sobretitulo,
+  introducao,
+  id = titulo ? paraAncora(titulo) : undefined,
+  fundo = 'padrao',
+  nivelTitulo = 2,
+  largura = 'normal',
+  centralizado = false,
+  foto: chaveFoto,
+  fotoLado: ladoInformado,
+  conteudoAoLado = false,
+  class: classe,
+} = Astro.props;
+
+// Primeira seção com título da página: mostra a resposta direta do PaginaLayout abaixo da
+// introdução. A reserva acontece antes de qualquer await, na ordem do documento.
+const pendente = Astro.locals.respostaPendente;
+const resposta =
+  titulo && nivelTitulo === 2 && pendente && !pendente.usada
+    ? ((pendente.usada = true), pendente.texto)
+    : undefined;
+
+// Seções com foto alternam o lado sozinhas (direita, esquerda, direita...) na ordem da página,
+// a menos que `fotoLado` venha informado. A contagem acontece antes de qualquer await.
+const ordemFoto = chaveFoto
+  ? (Astro.locals.secoesComFoto = (Astro.locals.secoesComFoto ?? 0) + 1)
+  : 0;
+const fotoLado = ladoInformado ?? (ordemFoto % 2 === 0 ? 'esquerda' : 'direita');
+const foto = chaveFoto ? await obterImagem(chaveFoto) : undefined;
+const conteudo = Astro.slots.has('default') ? (await Astro.slots.render('default')).trim() : '';
+// Conteúdo curto (parágrafos, links e botões, sem listas, tabelas, imagens ou formulários) vai
+// para a coluna do título, ao lado da foto: assim não sobra um vão branco embaixo da foto.
+// Listas marcadas com data-curto (ex.: canais de atendimento) contam como curtas.
+const conteudoCurto =
+  conteudo !== '' &&
+  // O tamanho conta sem os ícones (SVG inline) nem os endereços dos links.
+  conteudo.replace(/<svg[\s\S]*?<\/svg>/g, '').replace(/href="[^"]*"/g, '').length < 3000 &&
+  !/<(ul|ol|table|img|picture|iframe|dl|figure|form|details|section|article)\b(?![^>]*data-curto)/i.test(
+    conteudo,
+  );
+const aoLado = Boolean(foto && (conteudoAoLado || conteudoCurto));
+const Titulo = `h${nivelTitulo}` as const;
+const idTitulo = id ? `${id}-titulo` : undefined;
+const fundos = {
+  padrao: '',
+  areia: 'bg-areia-100',
+  mar: 'fundo-mar-vivo text-white superficie-escura',
+};
+---
+
+<section
+  id={id}
+  aria-labelledby={titulo ? idTitulo : undefined}
+  class:list={['relative isolate py-16 sm:py-20', fundos[fundo], classe]}
+>
+  <div class:list={['container-site relative', largura === 'estreito' && 'max-w-4xl']}>
+    {(titulo || sobretitulo || introducao) && (
+      <div
+        class:list={[
+          !aoLado && 'mb-10 sm:mb-12',
+          foto && 'grid items-center gap-8 lg:gap-14',
+          foto &&
+            (fotoLado === 'esquerda'
+              ? 'lg:grid-cols-[minmax(0,1fr)_minmax(0,1.5fr)]'
+              : 'lg:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)]'),
+        ]}
+      >
+        <header
+          class:list={[
+            'max-w-3xl space-y-3',
+            centralizado && !foto && 'mx-auto text-center',
+            foto && fotoLado === 'esquerda' && 'lg:order-2',
+          ]}
+          data-revelar
+        >
+          {sobretitulo && <p class="sobretitulo">{sobretitulo}</p>}
+          {titulo && (
+            <Titulo
+              id={idTitulo}
+              class:list={[nivelTitulo === 2 && 'titulo-secao', fundo === 'mar' && 'text-white']}
+            >
+              {titulo}
+            </Titulo>
+          )}
+          {introducao && (
+            <p class:list={['text-lg', fundo === 'mar' ? 'text-white/90' : 'text-tinta-suave']}>
+              {introducao}
+            </p>
+          )}
+          {resposta && <RespostaDireta class="pt-2">{resposta}</RespostaDireta>}
+          {aoLado && <div class="pt-3" set:html={conteudo} />}
+        </header>
+        {foto && (
+          <div
+            class:list={[
+              'group aspect-3/2 w-full max-w-md overflow-hidden rounded-grande shadow-flutuante lg:max-w-none',
+              fotoLado === 'esquerda' ? 'lg:justify-self-start' : 'lg:justify-self-end',
+            ]}
+            data-revelar={fotoLado === 'esquerda' ? 'esquerda' : 'direita'}
+          >
+            <Imagem
+              src={foto.src}
+              alt={foto.alt}
+              sizes="(min-width: 1024px) 32vw, 28rem"
+              class="ease-suave transition-transform duration-[1.2s] group-hover:scale-105"
+            />
+          </div>
+        )}
+      </div>
+    )}
+    {!aoLado && <Fragment set:html={conteudo} />}
+  </div>
+</section>

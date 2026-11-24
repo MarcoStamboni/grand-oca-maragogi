@@ -1,0 +1,102 @@
+---
+/**
+ * "Avaliações do <resort>" (home): cartão azul com o que os hóspedes costumam avaliar, a nota do
+ * Tripadvisor (quando configurada) e o link para a FAQ; ao lado, os depoimentos em cartões.
+ * Avaliações em src/data/avaliacoes.ts. Nada vai para o JSON-LD (sem Review/AggregateRating).
+ * No modo modelo, os depoimentos de exemplo aparecem marcados como ilustrativos; com o modo
+ * desligado, o build recusa depoimentos de exemplo.
+ */
+import Botao from '@/components/ui/Botao.astro';
+import Icone from '@/components/ui/Icone.astro';
+import NotaTripadvisor from '@/components/ui/NotaTripadvisor.astro';
+import { aspectosAvaliados, avaliacoes } from '@/data/avaliacoes';
+import { rotas } from '@/data/rotas';
+import { modelo, resort } from '@/site.config';
+
+const temExemplo = avaliacoes.some((avaliacao) => avaliacao.exemplo);
+if (temExemplo && !modelo.ativo) {
+  throw new Error(
+    'src/data/avaliacoes.ts tem depoimentos de exemplo: troque por avaliações reais antes de publicar.',
+  );
+}
+const estrelas = (nota: number) => Array.from({ length: 5 }, (_, indice) => indice < nota);
+---
+
+{avaliacoes.length > 0 && (
+  <section class="py-16 sm:py-20" aria-labelledby="avaliacoes-titulo">
+    <div class="container-site">
+      <header class="mb-10 max-w-3xl space-y-3 sm:mb-12" data-revelar>
+        <p class="sobretitulo">Experiência dos hóspedes</p>
+        <h2 id="avaliacoes-titulo" class="titulo-secao">
+          Avaliações do {resort.nomeCurto}
+        </h2>
+        <p class="text-tinta-suave text-lg">
+          Veja o que os hóspedes mais comentam sobre o {resort.nomeCurto}: localização, piscinas,
+          natureza, gastronomia all inclusive, atendimento e a experiência em família.
+        </p>
+      </header>
+
+      <div class="grid gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(0,2fr)]">
+        <div
+          class="fundo-mar-vivo superficie-escura flex flex-col gap-5 rounded-grande p-6 text-white shadow-flutuante sm:p-8"
+          data-revelar="esquerda"
+        >
+          <p class="text-xs font-bold tracking-[0.14em] text-white/80 uppercase">
+            O que mais pesa na escolha
+          </p>
+          <h3 class="text-white">O que os hóspedes costumam avaliar?</h3>
+          <p class="text-coral-400 flex gap-1" aria-hidden="true">
+            {estrelas(5).map(() => (
+              <Icone nome="estrela" class="size-5 fill-current" />
+            ))}
+          </p>
+          <p class="text-white/90">{aspectosAvaliados}</p>
+          {resort.tripadvisor && <NotaTripadvisor escuro />}
+          <p class="mt-auto pt-2">
+            <Botao
+              href={rotas.perguntasFrequentes.caminho}
+              variante="branco"
+              iconeFim="seta-direita"
+            >
+              Ver dúvidas antes de reservar
+            </Botao>
+          </p>
+        </div>
+
+        <ul class="grid gap-5 sm:grid-cols-2">
+          {avaliacoes.map((avaliacao) => (
+            <li data-revelar>
+              <figure class="ring-areia-200 flex h-full flex-col gap-5 rounded-grande bg-white p-6 shadow-cartao ring-1">
+                <blockquote class="text-tinta-suave">
+                  <p>“{avaliacao.texto}”</p>
+                </blockquote>
+                <figcaption class="mt-auto flex flex-wrap items-center gap-x-3 gap-y-1">
+                  <span class="text-mar-800 font-semibold">{avaliacao.autor}</span>
+                  <span
+                    class="text-coral-700 flex gap-0.5"
+                    role="img"
+                    aria-label={`Nota ${avaliacao.nota} de 5`}
+                  >
+                    {estrelas(avaliacao.nota).map((cheia) => (
+                      <Icone nome="estrela" class:list={['size-4', cheia && 'fill-current']} />
+                    ))}
+                  </span>
+                  {avaliacao.fonte && (
+                    <span class="text-tinta-suave w-full text-xs">{avaliacao.fonte}</span>
+                  )}
+                </figcaption>
+              </figure>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      {temExemplo && (
+        <p class="text-tinta-suave mt-6 text-xs">
+          Depoimentos ilustrativos do site-modelo. No site do resort, entram avaliações reais de
+          hóspedes, com a fonte.
+        </p>
+      )}
+    </div>
+  </section>
+)}

@@ -1,0 +1,174 @@
+---
+/**
+ * Horários das refeições por restaurante, em abas (café da manhã, almoço e jantar), montados da
+ * coleção `restaurantes`. Cada aba lista só os restaurantes que servem a refeição, em cartões com
+ * o horário em destaque. A aba aberta é a da refeição do momento no horário do resort
+ * Sem JavaScript, as três listas aparecem uma embaixo da outra.
+ * Usada em /all-inclusive/ e /all-inclusive/restaurantes/.
+ */
+import Icone from '@/components/ui/Icone.astro';
+import { caminhoRestaurante } from '@/data/rotas';
+import { formatarFaixaHorario, formatarLista, maiusculaInicial } from '@/lib/formatar';
+import {
+  refeicoes,
+  restaurantesOrdenados,
+  rotuloRefeicao,
+  textoHorariosReserva,
+} from '@/lib/gastronomia';
+import type { NomeIcone } from '@/lib/icones';
+
+interface Props {
+  class?: string;
+}
+
+const { class: classe } = Astro.props;
+const restaurantes = await restaurantesOrdenados();
+const comReserva = restaurantes.filter(({ data }) => data.reserva?.obrigatoria);
+const tolerancias = [
+  ...new Set(comReserva.flatMap(({ data }) => data.reserva?.toleranciaMinutos ?? [])),
+];
+
+const icones: Record<string, NomeIcone> = { 'cafe-da-manha': 'cafe', almoco: 'sol', jantar: 'lua' };
+
+/** Para cada refeição: os restaurantes que a servem, com horário e observação. */
+const abas = refeicoes.map(({ id, rotulo }) => ({
+  id,
+  rotulo,
+  icone: icones[id] ?? ('relogio' as NomeIcone),
+  itens: restaurantes.flatMap((restaurante) => {
+    const entradas = textoHorariosReserva(restaurante);
+    return restaurante.data.horarios
+      .filter((horario) => horario.refeicao === id)
+      .map((horario) => {
+        const comReservaNoJantar = !horario.fecha && Boolean(entradas);
+        const rotuloProprio =
+          horario.rotulo && horario.rotulo !== rotuloRefeicao(horario.refeicao)
+            ? horario.rotulo
+            : null;
+        return {
+          id: restaurante.id,
+          nome: restaurante.data.nome,
+          horario: comReservaNoJantar
+            ? (entradas ?? '')
+            : maiusculaInicial(formatarFaixaHorario(horario)),
+          detalhe: [rotuloProprio, comReservaNoJantar ? 'Com reserva' : horario.observacao]
+            .filter(Boolean)
+            .join(' · '),
+          reserva: comReservaNoJantar,
+        };
+      });
+  }),
+}));
+
+const nota = [
+  comReserva.length > 0 &&
+    `${formatarLista(comReserva.map(({ data }) => data.nome))}: jantar com reserva prévia, conforme o número de noites${tolerancias.length === 1 ? `, com tolerância de ${tolerancias[0]} minutos` : ''}.`,
+  'Horários sujeitos a alteração sem aviso prévio: confirme a programação diária na recepção do resort.',
+]
+  .filter(Boolean)
+  .join(' ');
+---
+
+<div class:list={['space-y-6', classe]} data-refeicoes>
+  {/* Abas (só com JavaScript; sem ele, as listas ficam todas visíveis). */}
+  <div
+    class="bg-areia-100 hidden w-full max-w-xl gap-1 rounded-full p-1 js:flex"
+    role="tablist"
+    aria-label="Refeição"
+  >
+    {abas.map((aba) => (
+      <button
+        type="button"
+        role="tab"
+        id={`aba-${aba.id}`}
+        aria-controls={`painel-${aba.id}`}
+        aria-selected="false"
+        class="text-tinta aria-selected:text-mar-800 aria-selected:shadow-cartao flex flex-1 items-center justify-center gap-2 rounded-full px-3 py-2.5 text-sm font-semibold transition-colors aria-selected:bg-white"
+        data-aba={aba.id}
+      >
+        <Icone nome={aba.icone} class="size-4 shrink-0" />
+        {aba.rotulo}
+      </button>
+    ))}
+  </div>
+
+  {abas.map((aba) => (
+    <div
+      id={`painel-${aba.id}`}
+      role="tabpanel"
+      aria-labelledby={`aba-${aba.id}`}
+      class="space-y-3"
+      data-painel={aba.id}
+    >
+      <h3 class="flex items-center gap-2 js:sr-only">
+        <Icone nome={aba.icone} class="text-mar-700 size-5" />
+        {aba.rotulo}
+      </h3>
+      <ul class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {aba.itens.map((item) => (
+          <li class="ring-areia-200 relative flex h-full flex-col gap-2 rounded-cartao bg-white p-5 shadow-cartao ring-1">
+            <a
+              href={caminhoRestaurante(item.id)}
+              class="text-mar-700 link-esticado font-semibold no-underline hover:underline"
+            >
+              {item.nome}
+            </a>
+            <p class="text-mar-950 text-2xl leading-tight font-semibold">{item.horario}</p>
+            {item.detalhe && (
+              <p class="text-tinta-suave flex items-center gap-1.5 text-sm">
+                {item.reserva && <Icone nome="calendario" class="text-coral-700 size-4 shrink-0" />}
+                {maiusculaInicial(item.detalhe)}
+              </p>
+            )}
+          </li>
+        ))}
+      </ul>
+    </div>
+  ))}
+
+  <p class="text-tinta-suave flex gap-2 text-sm">
+    <Icone nome="info" class="mt-0.5 size-4 shrink-0" />
+    {nota}
+  </p>
+</div>
+
+<script>
+  /** Abas das refeições: abre a da refeição do momento no horário do resort (Recife). */
+  const horaNoResort = () =>
+    Number(
+      new Intl.DateTimeFormat('pt-BR', {
+        hour: 'numeric',
+        hourCycle: 'h23',
+        timeZone: 'America/Recife',
+      }).format(new Date()),
+    );
+
+  for (const bloco of document.querySelectorAll<HTMLElement>('[data-refeicoes]')) {
+    const botoes = [...bloco.querySelectorAll<HTMLButtonElement>('[data-aba]')];
+    const paineis = [...bloco.querySelectorAll<HTMLElement>('[data-painel]')];
+    const abrir = (id: string) => {
+      botoes.forEach((botao) => {
+        const ativo = botao.dataset.aba === id;
+        botao.setAttribute('aria-selected', String(ativo));
+        botao.tabIndex = ativo ? 0 : -1;
+      });
+      paineis.forEach((painel) => (painel.hidden = painel.dataset.painel !== id));
+    };
+    const hora = horaNoResort();
+    const agora = hora < 11 ? 'cafe-da-manha' : hora < 16 ? 'almoco' : 'jantar';
+    const atual = botoes.find((botao) => botao.dataset.aba === agora) ?? botoes[0];
+    abrir(atual?.dataset.aba ?? '');
+
+    botoes.forEach((botao, indice) => {
+      botao.addEventListener('click', () => abrir(botao.dataset.aba ?? ''));
+      // Setas do teclado trocam de aba (padrão de abas acessíveis).
+      botao.addEventListener('keydown', (evento) => {
+        const passo = evento.key === 'ArrowRight' ? 1 : evento.key === 'ArrowLeft' ? -1 : 0;
+        if (!passo) return;
+        const proximo = botoes[(indice + passo + botoes.length) % botoes.length];
+        proximo?.focus();
+        abrir(proximo?.dataset.aba ?? '');
+      });
+    });
+  }
+</script>

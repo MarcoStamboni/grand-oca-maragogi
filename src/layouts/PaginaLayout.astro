@@ -1,0 +1,151 @@
+---
+/**
+ * Página interna padrão: topo (foto, trilha, H1 e cartão com a resposta direta, ações e ficha)
+ * → conteúdo → FAQ da página (coleção `faq`) → CTA final.
+ * Páginas fixas: título, descrição, H1, sobretítulo, subtítulo e resposta direta vêm de
+ * src/data/paginas.ts pela `rota` (cada prop substitui o texto padrão). Páginas de detalhe
+ * (acomodação, restaurante...) passam os próprios textos.
+ * Rota e trilha também alimentam o JSON-LD (WebPage e BreadcrumbList). A FAQ da página não
+ * vira FAQPage: cada pergunta é marcada uma vez só, em /perguntas-frequentes/.
+ */
+import Cta from '@/components/sections/Cta.astro';
+import Hero from '@/components/sections/Hero.astro';
+import Faq from '@/components/ui/Faq.astro';
+import RespostaDireta from '@/components/ui/RespostaDireta.astro';
+import { fotoDasPerguntas } from '@/data/fotos';
+import { paginas, type RotaComTexto } from '@/data/paginas';
+import { paginasRelacionadas } from '@/data/relacionadas';
+import { type RotaChave, rotas } from '@/data/rotas';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { faqDaPagina } from '@/lib/faq';
+import type { ImagemResolvida } from '@/lib/imagens';
+import { type Link, trilha } from '@/lib/navegacao';
+import type { OpcoesDadosEstruturados } from '@/lib/schema';
+
+interface Props {
+  /** Rota fixa da página (textos, breadcrumbs e FAQ). */
+  rota: RotaChave;
+  titulo?: string;
+  descricao?: string;
+  h1?: string;
+  sobretitulo?: string;
+  subtitulo?: string;
+  /** Resposta direta (AEO). Padrão: a da rota em src/data/paginas.ts. */
+  respostaDireta?: string;
+  /** Itens adicionais da trilha para páginas de detalhe. */
+  trilhaExtra?: readonly Link[];
+  /** Foto do hero (também usada no compartilhamento). 'indisponivel' = sem foto real. */
+  imagem?: ImagemResolvida | 'indisponivel';
+  atualizadoEm: Date;
+  /** Chave das FAQs (padrão: a rota). `false` desliga o bloco. */
+  chaveFaq?: string | false;
+  tituloFaq?: string;
+  semCta?: boolean;
+  semIndice?: boolean;
+  tipoOg?: 'website' | 'article';
+  /** Entidade principal e perguntas do JSON-LD (ex.: HotelRoom, Restaurant). */
+  dadosEstruturados?: OpcoesDadosEstruturados;
+  /**
+   * `true` (padrão): a resposta direta entra na primeira Secao da página, abaixo da introdução.
+   * `false`: fica no topo, abaixo da faixa (páginas cujo conteúdo não começa por uma Secao,
+   * como o artigo do blog e as perguntas frequentes).
+   */
+  respostaNaSecao?: boolean;
+}
+
+const {
+  rota,
+  trilhaExtra = [],
+  imagem,
+  atualizadoEm,
+  chaveFaq = rota,
+  tituloFaq,
+  semCta = false,
+  semIndice = false,
+  tipoOg,
+  dadosEstruturados,
+  respostaNaSecao = true,
+} = Astro.props;
+
+const padrao = rota in paginas ? paginas[rota as RotaComTexto] : undefined;
+// O <title> é sempre o H1 da página (+ " | Reservas 0800 737 6787", no BaseLayout).
+const titulo = Astro.props.h1 ?? padrao?.h1;
+const descricao = Astro.props.descricao ?? padrao?.descricao;
+const h1 = Astro.props.h1 ?? padrao?.h1;
+const sobretitulo = Astro.props.sobretitulo ?? padrao?.sobretitulo;
+const subtitulo = Astro.props.subtitulo ?? padrao?.subtitulo;
+const resposta = Astro.props.respostaDireta ?? padrao?.respostaDireta;
+if (!titulo || !descricao || !h1) {
+  throw new Error(
+    `Página sem título, descrição ou H1 (rota ${rota}): preencha src/data/paginas.ts.`,
+  );
+}
+
+// A resposta direta não fica solta embaixo do topo: a primeira Secao com título a mostra abaixo
+// da própria introdução (como na home). Páginas com slot `resumo` próprio seguem no topo.
+const resumoProprio = Astro.slots.has('resumo');
+const respostaNoTopo = !resumoProprio && !respostaNaSecao ? resposta : undefined;
+if (!resumoProprio && respostaNaSecao && resposta) {
+  Astro.locals.respostaPendente = { texto: resposta, usada: false };
+}
+
+const itensTrilha = trilha(rota, trilhaExtra);
+// Links contextuais para páginas relacionadas (sem apontar para a própria página).
+const relacionadas = (paginasRelacionadas[rota] ?? [])
+  .map(([chave, ancora]) => ({ href: rotas[chave].caminho, ancora }))
+  .filter(({ href }) => href !== Astro.url.pathname);
+const faq = chaveFaq === false ? [] : await faqDaPagina(chaveFaq);
+---
+
+<BaseLayout
+  titulo={titulo}
+  descricao={descricao}
+  semIndice={semIndice}
+  imagemSocial={typeof imagem === 'object' ? imagem : undefined}
+  tipoOg={tipoOg}
+  atualizadoEm={atualizadoEm}
+  rota={rota}
+  trilha={itensTrilha}
+  dadosEstruturados={faq.length > 0 ? { ...dadosEstruturados, perguntas: faq } : dadosEstruturados}
+>
+  <slot name="head" slot="head" />
+  <Hero
+    titulo={h1}
+    sobretitulo={sobretitulo}
+    subtitulo={subtitulo}
+    imagem={imagem}
+    trilha={itensTrilha}
+  >
+    {resumoProprio && <slot name="resumo" />}
+    {respostaNoTopo && <RespostaDireta>{respostaNoTopo}</RespostaDireta>}
+    <slot name="acoes" slot="acoes" />
+    <slot name="fatos" slot="fatos" />
+  </Hero>
+
+  <slot />
+
+  {relacionadas.length > 0 && (
+    <nav class="container-site pt-10" aria-label="Páginas relacionadas">
+      <p class="text-tinta-suave max-w-3xl text-lg">
+        Continue o planejamento: veja{' '}
+        {relacionadas.map(({ href, ancora }, indice) => (
+          <>
+            {indice > 0 && (indice === relacionadas.length - 1 ? ' e ' : ', ')}
+            <a href={href} class="text-mar-700 font-semibold">
+              {ancora}
+            </a>
+          </>
+        ))}
+        .
+      </p>
+    </nav>
+  )}
+
+  {faq.length > 0 && (
+    <div class="container-site py-14 sm:py-20" data-revelar>
+      <Faq itens={faq} titulo={tituloFaq} foto={fotoDasPerguntas(Astro.url.pathname)} />
+    </div>
+  )}
+
+  {!semCta && <Cta />}
+</BaseLayout>

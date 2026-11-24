@@ -1,0 +1,58 @@
+---
+/**
+ * Trilha de navegação. O último item é a página atual (aria-current, sem link).
+ * O JSON-LD BreadcrumbList é gerado a partir da mesma trilha.
+ * `claro`: texto claro, para ficar sobre a foto do topo.
+ */
+import Icone from '@/components/ui/Icone.astro';
+import type { Link } from '@/lib/navegacao';
+
+interface Props {
+  itens: readonly Link[];
+  claro?: boolean;
+  class?: string;
+}
+
+const { itens, claro = false, class: classe } = Astro.props;
+---
+
+{itens.length > 1 && (
+  <nav
+    aria-label="Trilha de navegação"
+    class:list={['text-xs sm:text-sm', claro ? 'text-white/75' : 'text-tinta-suave', classe]}
+  >
+    <ol class="flex flex-wrap items-center gap-x-1.5 gap-y-1">
+      {itens.map((item, indice) => {
+        const atual = indice === itens.length - 1;
+        return (
+          <li class="flex items-center gap-1.5">
+            {indice > 0 && (
+              <Icone
+                nome="seta-baixo"
+                class:list={['size-3 -rotate-90', claro ? 'text-white/60' : 'text-mar-500']}
+              />
+            )}
+            {atual ? (
+              <span
+                aria-current="page"
+                class:list={['font-medium', claro ? 'text-white' : 'text-tinta']}
+              >
+                {item.rotulo}
+              </span>
+            ) : (
+              <a
+                href={item.href}
+                class:list={[
+                  'underline decoration-1 underline-offset-4',
+                  claro ? 'text-white/75 hover:text-white' : 'text-tinta-suave hover:text-mar-700',
+                ]}
+              >
+                {item.rotulo}
+              </a>
+            )}
+          </li>
+        );
+      })}
+    </ol>
+  </nav>
+)}

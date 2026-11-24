@@ -1,0 +1,37 @@
+---
+/** Passo a passo numerado (como chegar, como reservar). */
+export interface Passo {
+  titulo: string;
+  texto: string;
+}
+
+interface Props {
+  itens: readonly Passo[];
+  class?: string;
+}
+
+const { itens, class: classe } = Astro.props;
+---
+
+<ol class:list={['grid gap-4 sm:grid-cols-2 lg:grid-cols-3', classe]}>
+  {itens.map((passo, indice) => (
+    <li
+      class="ring-areia-200 flex gap-4 rounded-cartao bg-white p-6 shadow-cartao ring-1"
+      data-revelar
+    >
+      <span
+        class="from-coral-700 to-coral-800 flex size-11 shrink-0 items-center justify-center rounded-2xl bg-linear-to-br text-lg font-semibold text-white shadow-cartao"
+        aria-hidden="true"
+      >
+        {indice + 1}
+      </span>
+      <div class="space-y-1">
+        <h3 class="">
+          <span class="sr-only">Passo {indice + 1}: </span>
+          {passo.titulo}
+        </h3>
+        <p class="text-tinta-suave">{passo.texto}</p>
+      </div>
+    </li>
+  ))}
+</ol>

@@ -1,0 +1,167 @@
+---
+/**
+ * Bares: carrossel com todos os bares (detalhes em janela), horários em cartões, o que abre de
+ * madrugada, o que é pago à parte e fotos. Tudo sai da coleção `bares`.
+ */
+import GrupoCartao from '@/components/sections/GrupoCartao.astro';
+import ChipsFatos from '@/components/ui/ChipsFatos.astro';
+import ListaCheck from '@/components/ui/ListaCheck.astro';
+import Secao from '@/components/ui/Secao.astro';
+import Icone from '@/components/ui/Icone.astro';
+import PaginaLayout from '@/layouts/PaginaLayout.astro';
+import { DATA_CONTEUDO } from '@/lib/datas';
+import { formatarFaixaHorario, formatarListaFrase } from '@/lib/formatar';
+import { baresDeMadrugada, baresOrdenados, dadosSchemaBar, textoHorario } from '@/lib/gastronomia';
+import { imagensSchema, obterImagem } from '@/lib/imagens';
+import { noBar } from '@/lib/schema';
+import { alternarFundos } from '@/lib/secoes';
+import { resort } from '@/site.config';
+
+const [capa, bares] = await Promise.all([
+  obterImagem('grand-oca/gastronomia/bar-piscina-noite.jpg'),
+  baresOrdenados(),
+]);
+const fichas = await Promise.all(
+  bares.map(async (bar) => ({
+    bar,
+    foto: bar.data.fotos[0] ? await obterImagem(bar.data.fotos[0]) : undefined,
+  })),
+);
+const baresSchema = await Promise.all(
+  fichas.map(async ({ bar, foto }) => noBar(dadosSchemaBar(bar, await imagensSchema([foto])))),
+);
+const madrugada = baresDeMadrugada(bares).flatMap(({ bar, horarios }) =>
+  horarios.map((horario) => ({
+    nome: bar.data.nome,
+    detalhe: [horario.rotulo, bar.data.publico === 'adulto' ? 'Público adulto' : null]
+      .filter(Boolean)
+      .join(' · '),
+    horario: formatarFaixaHorario(horario),
+  })),
+);
+const servicosPagos = bares.flatMap(({ data }) =>
+  data.servicosPagos.length > 0 ? [`${formatarListaFrase(data.servicosPagos)} (${data.nome})`] : [],
+);
+const proximoFundo = alternarFundos('areia');
+---
+
+<PaginaLayout
+  rota="bares"
+  imagem={capa}
+  atualizadoEm={DATA_CONTEUDO}
+  dadosEstruturados={{ entidades: baresSchema }}
+>
+  <ChipsFatos
+    slot="fatos"
+    itens={[
+      { rotulo: 'Bares', valor: 'Sete', icone: 'drink' },
+      { rotulo: 'Bebidas', valor: 'Incluídas no all inclusive', icone: 'taca' },
+    ]}
+  />
+
+  <Secao
+    introducao={`Da piscina à praia, os bares do ${resort.nome} servem as bebidas selecionadas do all inclusive, além de snacks, coquetéis e gelados. Clique em um bar para ver onde fica e o que é servido.`}
+    titulo={`Quais são os bares do ${resort.nome}?`}
+    sobretitulo="Bares"
+  >
+    <ul class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      <li class="sm:col-span-2 lg:col-span-1">
+        <GrupoCartao
+          titulo="Sete bares, da piscina à praia"
+          resumo="Coqueirais, Galés, Drink Parrot, Ponta de Mangue, Esplanada Tropical, Piscina D’Água e SportBar."
+          icone="drink"
+          foto={capa}
+          rotulo="bares"
+          itens={bares.map((bar) => ({
+            id: bar.id,
+            nome: bar.data.nome,
+            resumo: bar.data.resumo,
+            detalhe: bar.data.local,
+          }))}
+        />
+      </li>
+    </ul>
+  </Secao>
+
+  <Secao
+    introducao={`Do Coqueirais e do Galés ao Drink Parrot, ao Ponta de Mangue, ao Esplanada Tropical, ao bar da Piscina D’Água e ao SportBar, veja o que cada um serve.`}
+    foto="grand-oca/gastronomia/bar-piscina-noite.jpg"
+    titulo={`O que serve cada bar do ${resort.nomeCurto}?`}
+    sobretitulo="Visão geral"
+  >
+    {/* Um cartão por bar: onde fica e os horários, um por linha. */}
+    <div class="space-y-5">
+      <ul class="grid items-start gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {bares.map((bar) => (
+          <li class="ring-areia-200 flex flex-col gap-3 rounded-cartao bg-white p-5 shadow-cartao ring-1">
+            <h3>{bar.data.nome}</h3>
+            {bar.data.local && (
+              <p class="text-tinta-suave flex items-start gap-2 text-sm">
+                <Icone nome="local" class="text-coral-700 mt-0.5 size-4 shrink-0" />
+                {bar.data.local}
+              </p>
+            )}
+            <ul class="border-areia-200 space-y-1.5 border-t pt-3">
+              {[...bar.data.bebidas, ...bar.data.comidas].map((item) => (
+                <li class="text-mar-950 flex items-start gap-2 text-sm font-medium">
+                  <Icone nome="drink" class="text-mar-700 mt-0.5 size-4 shrink-0" />
+                  {item}
+                </li>
+              ))}
+              {bar.data.horarios.map((horario) => (
+                <li class="text-mar-950 flex items-start gap-2 text-sm font-medium">
+                  <Icone nome="relogio" class="text-mar-700 mt-0.5 size-4 shrink-0" />
+                  {textoHorario(horario)}
+                </li>
+              ))}
+            </ul>
+          </li>
+        ))}
+      </ul>
+      <p class="text-tinta-suave flex gap-2 text-sm">
+        <Icone nome="info" class="mt-0.5 size-4 shrink-0" />O resort não publica horários fixos dos
+        bares: o funcionamento pode mudar conforme o clima e a programação. Horários sujeitos a
+        alteração sem aviso prévio; confirme a programação diária no resort.
+      </p>
+    </div>
+  </Secao>
+
+  {madrugada.length > 0 && (
+    <Secao
+      introducao={`Para quem gosta de aproveitar a noite, alguns pontos seguem abertos depois dos shows, com bebidas incluídas na diária.`}
+      foto="grand-oca/gastronomia/bar-piscina-noite.jpg"
+      titulo={`O que fica aberto no ${resort.nomeCurto} depois da meia-noite?`}
+      sobretitulo="À noite"
+      conteudoAoLado
+      fundo={proximoFundo()}
+    >
+      <ul class="divide-areia-200 divide-y" data-curto>
+        {madrugada.map((item) => (
+          <li class="flex items-start gap-3 py-3 first:pt-0 last:pb-0">
+            <Icone nome="lua" class="text-mar-700 mt-0.5 size-5 shrink-0" />
+            <div>
+              <p class="text-mar-950 font-semibold">{item.nome}</p>
+              <p class="text-tinta-suave text-sm">
+                {item.detalhe && `${item.detalhe}: `}
+                {item.horario}
+              </p>
+            </div>
+          </li>
+        ))}
+      </ul>
+    </Secao>
+  )}
+
+  {servicosPagos.length > 0 && (
+    <Secao
+      foto="grand-oca/gastronomia/bar-piscina-noite.jpg"
+      introducao={`A maior parte das bebidas está incluída no all inclusive do ${resort.nomeCurto}. Alguns itens e serviços especiais são cobrados à parte.`}
+      titulo={`O que é pago à parte nos bares do ${resort.nomeCurto}?`}
+      sobretitulo="Pago à parte"
+      conteudoAoLado
+      fundo={proximoFundo()}
+    >
+      <ListaCheck itens={servicosPagos} />
+    </Secao>
+  )}
+</PaginaLayout>

@@ -1,0 +1,61 @@
+---
+/**
+ * Link com aparência de botão (todas as ações do site são navegação).
+ * `externo` abre em nova aba e avisa leitores de tela.
+ * `evento` vira `data-evento`, lido pelo analytics (src/scripts/analytics.ts), que só envia
+ * eventos com o analytics ativo e o consentimento da pessoa.
+ * Classes visuais em src/lib/botoes.ts (as mesmas dos <button> nativos).
+ */
+import type { HTMLAttributes } from 'astro/types';
+
+import Icone from '@/components/ui/Icone.astro';
+import { classesBotao, type TamanhoBotao, type VarianteBotao } from '@/lib/botoes';
+import type { NomeIcone } from '@/lib/icones';
+
+interface Props extends Omit<HTMLAttributes<'a'>, 'href' | 'class'> {
+  href: string;
+  variante?: VarianteBotao;
+  tamanho?: TamanhoBotao;
+  icone?: NomeIcone;
+  iconeFim?: NomeIcone;
+  externo?: boolean;
+  evento?: string;
+  larguraTotal?: boolean;
+  class?: string;
+}
+
+const {
+  href,
+  variante = 'primario',
+  tamanho = 'md',
+  icone,
+  iconeFim,
+  externo = false,
+  evento,
+  larguraTotal = false,
+  class: classe,
+  ...resto
+} = Astro.props;
+
+const atributosExternos = externo ? { target: '_blank', rel: 'noopener noreferrer' } : {};
+---
+
+<a
+  href={href}
+  class:list={[...classesBotao(variante, tamanho), 'group/botao', larguraTotal && 'w-full', classe]}
+  data-evento={evento}
+  {...atributosExternos}
+  {...resto}
+>
+  {icone && <Icone nome={icone} />}
+  <span>
+    <slot />
+  </span>
+  {externo && <span class="sr-only"> (abre em nova aba)</span>}
+  {iconeFim && (
+    <Icone
+      nome={iconeFim}
+      class="ease-suave size-5 transition-transform duration-300 group-hover/botao:translate-x-1"
+    />
+  )}
+</a>

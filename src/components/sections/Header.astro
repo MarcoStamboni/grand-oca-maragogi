@@ -1,0 +1,345 @@
+---
+/**
+ * Cabeçalho global: logo do resort (Grand Oca Maragogi) à esquerda, menu principal (submenus no desktop,
+ * <dialog> no celular), chamada verde "Consultar tarifas" e logo da agência (Resort All Inclusive)
+ * à direita.
+ * Fixo no topo, branco; ganha sombra ao rolar (`data-rolado`, src/scripts/menu.ts) e fica
+ * parado nas transições entre páginas (view-transition-name).
+ */
+import FaixaBlackFriday from '@/components/sections/FaixaBlackFriday.astro';
+import Botao from '@/components/ui/Botao.astro';
+import Icone from '@/components/ui/Icone.astro';
+import { rotas } from '@/data/rotas';
+import { acoes } from '@/lib/acoes';
+import type { NomeIcone } from '@/lib/icones';
+import { menuPrincipal } from '@/lib/menu';
+import { linkRota, linksDisponiveis } from '@/lib/navegacao';
+import { operador, resort } from '@/site.config';
+
+const itens = await menuPrincipal();
+const caminhoAtual = Astro.url.pathname;
+const linksExtrasCelular = linksDisponiveis(['reservas', 'perguntasFrequentes', 'contato']);
+const inicio = linkRota('home');
+
+/** Ícone de cada tópico no menu do celular (pelo endereço da página). */
+const iconesMenu = new Map<string, NomeIcone>([
+  [rotas.resort.caminho, 'guarda-sol'],
+  [rotas.acomodacoes.caminho, 'cama'],
+  [rotas.allInclusive.caminho, 'taca'],
+  [rotas.lazer.caminho, 'piscina'],
+  [rotas.destino.caminho, 'bussola'],
+  [rotas.comoChegar.caminho, 'local'],
+  [rotas.reservas.caminho, 'calendario'],
+  [rotas.perguntasFrequentes.caminho, 'info'],
+  [rotas.contato.caminho, 'telefone'],
+]);
+const iconeMenu = (href: string): NomeIcone => iconesMenu.get(href) ?? 'seta-direita';
+
+const ehAtual = (href: string) => href === caminhoAtual;
+/** Página do submenu aberta: a própria página ou uma página de detalhe abaixo dela. */
+const filhoAtual = (filho: string, pai: string) =>
+  ehAtual(filho) || (filho !== pai && filho !== '/' && caminhoAtual.startsWith(filho));
+/** Tópico do menu marcado: a página está nele ou em uma das páginas do seu submenu. */
+const ehSecaoAtual = (href: string, filhos: readonly { href: string }[] = []) =>
+  (href !== '/' && caminhoAtual.startsWith(href)) ||
+  filhos.some((filho) => filhoAtual(filho.href, href));
+---
+
+<header
+  class="data-rolado:shadow-cartao ease-suave border-areia-200 sticky top-0 z-40 border-b bg-white/95 backdrop-blur-xl transition-shadow duration-300 [view-transition-name:cabecalho]"
+  data-cabecalho
+>
+  {/* Faixa da Black Friday no topo do cabeçalho (some sozinha fora da campanha). */}
+  <FaixaBlackFriday />
+  <div class="container-site flex h-(--altura-cabecalho) items-center justify-between gap-4 xl:gap-10">
+    {/* Logo do resort à esquerda: leva à página inicial. */}
+    <a
+      href={inicio.href}
+      class="group flex shrink-0 items-center leading-none no-underline"
+      aria-current={ehAtual(inicio.href) ? 'page' : undefined}
+    >
+      {resort.logo ? (
+        <img
+          src={`${resort.logo.caminho}.webp`}
+          alt={resort.logo.alt}
+          width={resort.logo.largura}
+          height={resort.logo.altura}
+          data-logo-resort
+          class="ease-suave h-12 w-auto transition-transform duration-500 group-hover:scale-[1.03] sm:h-14"
+        />
+      ) : (
+        <span class="text-mar-800 text-xl font-bold tracking-tight">{resort.nomeCurto}</span>
+      )}
+      <span class="sr-only">, página inicial</span>
+    </a>
+
+    <nav aria-label="Menu principal" class="hidden xl:flex xl:flex-1 xl:justify-center">
+      <ul class="flex items-center gap-0.5 xl:gap-1.5">
+        {itens.map((item, indice) => {
+          const idPainel = `submenu-${indice}`;
+          return (
+            <li class="relative" data-submenu={item.filhos.length > 0 ? '' : undefined}>
+              <div class="flex items-center">
+                <a
+                  href={item.href}
+                  class:list={[
+                    'group/item mx-1.5 inline-flex items-center gap-1.5 py-1 text-sm font-normal whitespace-nowrap no-underline 2xl:mx-2',
+                    ehSecaoAtual(item.href, item.filhos)
+                      ? 'text-coral-700'
+                      : 'text-tinta hover:text-mar-700',
+                  ]}
+                  aria-current={ehAtual(item.href) ? 'page' : undefined}
+                >
+                  <Icone
+                    nome={iconeMenu(item.href)}
+                    class:list={[
+                      'size-4 shrink-0',
+                      ehSecaoAtual(item.href, item.filhos) ? 'text-coral-700' : 'text-coral-500',
+                    ]}
+                  />
+                  <span class="sublinhado-animado">{item.rotulo}</span>
+                </a>
+                {item.filhos.length > 0 && (
+                  <button
+                    type="button"
+                    class="text-tinta-suave hover:text-mar-700 -ml-1 inline-flex size-8 items-center justify-center rounded-md"
+                    aria-expanded="false"
+                    aria-controls={idPainel}
+                    data-submenu-botao
+                    hidden
+                  >
+                    <Icone nome="seta-baixo" class="size-4" />
+                    <span class="sr-only">Mostrar submenu de {item.rotulo}</span>
+                  </button>
+                )}
+              </div>
+              {item.filhos.length > 0 && (
+                <ul
+                  id={idPainel}
+                  class="ring-areia-200 absolute top-full left-0 z-50 mt-1 min-w-64 animate-[entrar_0.35s_var(--ease-suave)_both] rounded-cartao bg-white p-2 shadow-flutuante ring-1"
+                  data-submenu-painel
+                  hidden
+                >
+                  {item.filhos.map((filho) => (
+                    <li>
+                      <a
+                        href={filho.href}
+                        class:list={[
+                          'ease-suave flex items-center justify-between gap-3 rounded-xl px-3 py-2.5 text-sm no-underline transition-colors',
+                          filhoAtual(filho.href, item.href)
+                            ? 'bg-mar-50 text-mar-800 font-semibold'
+                            : 'text-tinta hover:bg-mar-50 hover:text-mar-700',
+                        ]}
+                        aria-current={filhoAtual(filho.href, item.href) ? 'page' : undefined}
+                      >
+                        {filho.rotulo}
+                        {filhoAtual(filho.href, item.href) && (
+                          <span
+                            class="bg-coral-600 size-1.5 shrink-0 rounded-full"
+                            aria-hidden="true"
+                          />
+                        )}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </li>
+          );
+        })}
+      </ul>
+    </nav>
+
+    <div class="flex items-center gap-2">
+      <Botao
+        href={acoes.consultarTarifas.href}
+        variante="verde"
+        evento={acoes.consultarTarifas.evento}
+        class="whitespace-nowrap max-sm:hidden"
+      >
+        {acoes.consultarTarifas.rotulo}
+      </Botao>
+
+      {/* Logo da agência (Rede Resort All Inclusive) à direita. */}
+      {operador.logo && (
+        <>
+          <img
+            src={`${operador.logo.caminho}.webp`}
+            alt={operador.logo.alt}
+            width={operador.logo.largura}
+            height={operador.logo.altura}
+            data-logo-agencia
+            class="h-7 w-auto shrink-0 sm:h-9"
+          />
+          {/* Versão clara, para o cabeçalho preto da Black Friday (some fora da campanha). */}
+          <img
+            src={`${operador.logo.caminho}-claro.webp`}
+            alt={operador.logo.alt}
+            width={operador.logo.largura}
+            height={operador.logo.altura}
+            loading="lazy"
+            data-logo-agencia-claro
+            class="h-7 w-auto shrink-0 sm:h-9"
+          />
+        </>
+      )}
+
+      {/* Com JavaScript: abre o menu em <dialog>. Sem JavaScript: leva ao mapa do site no rodapé. */}
+      <button
+        type="button"
+        class="text-mar-950 ring-areia-200 js:inline-flex hidden min-h-11 items-center gap-2 rounded-full bg-white px-4 text-sm font-semibold ring-1 xl:hidden!"
+        aria-expanded="false"
+        aria-controls="menu-celular"
+        data-menu-abrir
+      >
+        <Icone nome="menu" />
+        Menu
+      </button>
+      <a
+        href="#mapa-do-site"
+        class="text-mar-950 ring-areia-200 sem-js:inline-flex hidden min-h-11 items-center gap-2 rounded-full bg-white px-4 text-sm font-semibold no-underline ring-1 xl:hidden!"
+      >
+        <Icone nome="menu" />
+        Menu
+      </a>
+    </div>
+  </div>
+</header>
+
+<dialog
+  id="menu-celular"
+  class="bg-areia-50 backdrop:bg-mar-950/60 m-0 ml-auto h-dvh max-h-none w-full max-w-md animate-[entrar-lateral_0.45s_var(--ease-suave)_both] p-0 backdrop:backdrop-blur-sm"
+  aria-labelledby="menu-celular-titulo"
+  data-menu-dialogo
+>
+  <div class="flex h-full flex-col">
+    <div class="border-areia-200 flex h-16 items-center justify-between border-b px-4">
+      {/* Não é heading: o menu vem antes do H1 no HTML (o H1 precisa ser o primeiro título). */}
+      <p id="menu-celular-titulo" class="text-mar-950 text-xl font-bold">
+        Menu
+      </p>
+      <button
+        type="button"
+        class="text-mar-950 inline-flex size-11 items-center justify-center rounded-full"
+        data-menu-fechar
+      >
+        <Icone nome="fechar" class="size-6" />
+        <span class="sr-only">Fechar menu</span>
+      </button>
+    </div>
+
+    <nav aria-label="Menu principal" class="flex-1 overflow-y-auto px-4 py-4">
+      <ul class="divide-areia-200 divide-y">
+        {itens.map((item, indice) =>
+          item.filhos.length > 0 ? (
+            <li class="group">
+              {/* O tópico leva à página-mãe; a seta mostra as páginas internas. */}
+              <div class="flex items-center justify-between gap-2">
+                <a
+                  href={item.href}
+                  class:list={[
+                    'flex min-h-12 flex-1 items-center gap-3 py-2 no-underline',
+                    ehSecaoAtual(item.href, item.filhos)
+                      ? 'text-coral-700 font-semibold'
+                      : 'text-mar-950 font-normal',
+                  ]}
+                  aria-current={ehAtual(item.href) ? 'page' : undefined}
+                  data-menu-fechar
+                >
+                  <Icone nome={iconeMenu(item.href)} class="text-mar-700 size-5" />
+                  {item.rotulo}
+                </a>
+                <button
+                  type="button"
+                  class="text-mar-700 inline-flex size-11 items-center justify-center rounded-full"
+                  aria-expanded={ehSecaoAtual(item.href, item.filhos) ? 'true' : 'false'}
+                  aria-controls={`submenu-celular-${indice}`}
+                  data-submenu-celular-botao
+                >
+                  <Icone
+                    nome="seta-baixo"
+                    class="size-5 transition-transform group-has-[[aria-expanded=true]]:rotate-180"
+                  />
+                  <span class="sr-only">Mostrar páginas de {item.rotulo}</span>
+                </button>
+              </div>
+              <div id={`submenu-celular-${indice}`} hidden={!ehSecaoAtual(item.href, item.filhos)}>
+                <ul class="pb-3 pl-3">
+                  {item.filhos.map((filho) => (
+                    <li>
+                      <a
+                        href={filho.href}
+                        class:list={[
+                          'block rounded-lg px-3 py-2 no-underline',
+                          filhoAtual(filho.href, item.href)
+                            ? 'bg-mar-50 text-mar-800 border-coral-600 border-l-2 font-semibold'
+                            : 'text-tinta hover:underline',
+                        ]}
+                        aria-current={filhoAtual(filho.href, item.href) ? 'page' : undefined}
+                        data-menu-fechar
+                      >
+                        {filho.rotulo}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </li>
+          ) : (
+            <li>
+              <a
+                href={item.href}
+                class="text-mar-950 flex min-h-12 items-center gap-3 py-2 font-normal no-underline"
+                aria-current={ehAtual(item.href) ? 'page' : undefined}
+                data-menu-fechar
+              >
+                <Icone nome={iconeMenu(item.href)} class="text-mar-700 size-5" />
+                {item.rotulo}
+              </a>
+            </li>
+          ),
+        )}
+      </ul>
+      <ul class="border-areia-200 mt-2 space-y-1 border-t pt-4 text-sm">
+        {linksExtrasCelular.map((link) => (
+          <li>
+            <a
+              href={link.href}
+              class="text-tinta flex items-center gap-3 py-2 no-underline hover:underline"
+              data-menu-fechar
+            >
+              <Icone nome={iconeMenu(link.href)} class="text-coral-700 size-4" />
+              {link.rotulo}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+
+    <div class="border-areia-200 grid gap-2 border-t p-4">
+      <Botao
+        href={acoes.consultarTarifas.href}
+        variante="verde"
+        evento={acoes.consultarTarifas.evento}
+        icone={acoes.consultarTarifas.icone}
+        larguraTotal
+      >
+        {acoes.consultarTarifas.rotulo}
+      </Botao>
+      <Botao
+        href={acoes.whatsapp.href}
+        evento={acoes.whatsapp.evento}
+        icone={acoes.whatsapp.icone}
+        variante="whatsapp"
+        externo
+        larguraTotal
+      >
+        {acoes.whatsapp.rotulo}
+      </Botao>
+    </div>
+  </div>
+</dialog>
+
+<script>
+  import '@/scripts/menu';
+</script>

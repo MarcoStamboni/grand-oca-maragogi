@@ -1,0 +1,60 @@
+---
+/**
+ * Imagem otimizada: <img> só em WebP (sem <picture>, que repetiria a lista de tamanhos) (abre em todos os navegadores atuais e deixa o site
+ * enxuto: sem cópias em AVIF e JPG), srcset responsivo,
+ * width/height intrínsecos (sem CLS) e carregamento lazy por padrão.
+ * Use `prioridade` só na imagem principal acima da dobra (LCP): carrega sem lazy
+ * e com fetchpriority="high".
+ */
+import type { ImageMetadata } from 'astro';
+import { Image } from 'astro:assets';
+
+interface Props {
+  src: ImageMetadata;
+  /** Obrigatório. Use "" apenas para imagem decorativa. */
+  alt: string;
+  /** Valor do atributo `sizes` (largura exibida). */
+  sizes?: string;
+  layout?: 'constrained' | 'full-width';
+  prioridade?: boolean;
+  /** Largura máxima renderizada (limita o maior arquivo do srcset). */
+  largura?: number;
+  class?: string;
+}
+
+const {
+  src,
+  alt,
+  sizes,
+  layout = 'constrained',
+  prioridade = false,
+  largura,
+  class: classe,
+} = Astro.props;
+
+// Limita a maior largura gerada mantendo a proporção original.
+const dimensoes =
+  largura && largura < src.width
+    ? { width: largura, height: Math.round((src.height * largura) / src.width) }
+    : {};
+// Capas em tela cheia: inclui 1920 px (Full HD) no srcset; os passos padrão do Astro pulam de
+// 1668 para 2048 e, numa foto de 1920 px, a maior versão servida seria 1668 px.
+const larguras =
+  layout === 'full-width'
+    ? [640, 750, 828, 1080, 1280, 1668, 1920].filter((w) => w <= src.width)
+    : undefined;
+---
+
+<Image
+  src={src}
+  alt={alt}
+  format="webp"
+  layout={layout}
+  {...dimensoes}
+  widths={larguras}
+  sizes={sizes}
+  priority={prioridade}
+  quality={prioridade ? 70 : 75}
+  fit="cover"
+  class:list={['h-full w-full object-cover', classe]}
+/>

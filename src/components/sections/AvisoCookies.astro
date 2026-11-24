@@ -1,0 +1,54 @@
+---
+/**
+ * Aviso de cookies (LGPD). Só é renderizado com o analytics ativo (BaseLayout testa
+ * `analytics.ativo`). Começa escondido; o script (src/scripts/analytics.ts) mostra o aviso
+ * quando não há escolha guardada e carrega o Google só depois do "Aceitar".
+ * "Aceitar" e "Recusar" têm o mesmo destaque. Não é modal: não prende o foco nem bloqueia a
+ * leitura. Sem JavaScript, nada é carregado e o aviso não aparece.
+ */
+import { rotas } from '@/data/rotas';
+import type { ProvedorAnalytics } from '@/lib/analytics';
+import { classesBotao } from '@/lib/botoes';
+
+interface Props {
+  provedor: ProvedorAnalytics;
+  id: string;
+}
+
+const { provedor, id } = Astro.props;
+const classeBotao = classesBotao('secundario');
+---
+
+<section
+  hidden
+  aria-labelledby="aviso-cookies-titulo"
+  class="fixed inset-x-0 bottom-[calc(var(--altura-barra-mobile)+env(safe-area-inset-bottom))] z-40 p-3 lg:bottom-0"
+  data-aviso-cookies
+  data-provedor={provedor}
+  data-id={id}
+>
+  <div class="ring-areia-300 container-site flex max-w-4xl flex-col gap-4 rounded-cartao bg-white p-4 shadow-[0_8px_32px_rgb(6_42_49/0.18)] ring-1 sm:flex-row sm:items-center sm:p-5">
+    <div class="space-y-1 text-sm">
+      <p id="aviso-cookies-titulo" class="text-mar-950 font-semibold">
+        Podemos medir a audiência do site?
+      </p>
+      <p class="text-tinta-suave">
+        Com a sua permissão, usamos ferramentas do Google para entender como o site é usado, sem
+        publicidade. Nada é carregado antes da sua escolha, que pode ser mudada em "Preferências de
+        cookies", no rodapé. <a href={rotas.cookies.caminho}>Política de cookies</a>.
+      </p>
+    </div>
+    <div class="flex shrink-0 gap-3">
+      <button type="button" class:list={classeBotao} data-cookies-recusar>
+        Recusar
+      </button>
+      <button type="button" class:list={classeBotao} data-cookies-aceitar>
+        Aceitar
+      </button>
+    </div>
+  </div>
+</section>
+
+<script>
+  import '@/scripts/analytics';
+</script>

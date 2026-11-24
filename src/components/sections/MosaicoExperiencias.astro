@@ -1,0 +1,74 @@
+---
+/**
+ * Mosaico "Experiências que te esperam": atalhos visuais por interesse, com foto em tela cheia no
+ * cartão, zoom e elevação no hover/foco e entrada escalonada ao rolar. Dados: src/data/home.ts.
+ */
+import Icone from '@/components/ui/Icone.astro';
+import Imagem from '@/components/ui/Imagem.astro';
+import { textosHome } from '@/data/home';
+import { rotas } from '@/data/rotas';
+import { obterImagem } from '@/lib/imagens';
+import { resort } from '@/site.config';
+
+const itens = await Promise.all(
+  textosHome.experiencias.map(async (item) => ({ ...item, imagem: await obterImagem(item.foto) })),
+);
+---
+
+<section class="py-16 sm:py-24" aria-labelledby="experiencias-titulo">
+  <div class="container-site">
+    <div class="mb-8 max-w-3xl space-y-3 sm:mb-10" data-revelar>
+      <p class="sobretitulo">Comece por aqui</p>
+      <h2 id="experiencias-titulo" class="titulo-secao">
+        Experiências que te esperam no {resort.nomeCurto} Resort
+      </h2>
+      <p class="text-tinta-suave text-lg">
+        Piscinas por quase 400 metros, bangalôs e quartos Deluxe, restaurantes temáticos, Kids Club
+        e mergulho nas piscinas naturais: escolha a experiência que mais combina com a sua viagem ao{' '}
+        {resort.nome} e veja os detalhes de cada uma.
+      </p>
+    </div>
+    <ul class="grid auto-rows-[15rem] gap-4 sm:grid-cols-2 sm:auto-rows-[16rem] lg:grid-cols-3 lg:gap-5">
+      {itens.map((item, indice) => (
+        <li
+          class:list={[item.destaque && 'sm:row-span-2']}
+          data-revelar="zoom"
+          style={`--atraso: ${indice * 90}ms`}
+        >
+          <a
+            href={rotas[item.rota].caminho}
+            class="group ease-suave relative flex h-full items-end overflow-hidden rounded-grande text-white no-underline shadow-cartao transition duration-500 hover:-translate-y-1 hover:shadow-flutuante focus-visible:-translate-y-1"
+          >
+            <span class="absolute inset-0 [&_img]:h-full [&_img]:w-full">
+              <Imagem
+                src={item.imagem.src}
+                alt=""
+                sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+                class="ease-suave transition-transform duration-[1.2s] group-hover:scale-110 group-focus-visible:scale-110"
+              />
+            </span>
+            <span
+              class="absolute inset-0 bg-linear-to-t from-black/80 via-black/15 to-transparent transition-opacity duration-500 group-hover:opacity-90"
+              aria-hidden="true"
+            ></span>
+            <span class="relative flex w-full items-end justify-between gap-4 p-6">
+              <span class="space-y-1">
+                <strong class="block text-xl font-bold sm:text-2xl">{item.titulo}</strong>
+                <span class="block text-sm text-white/90">{item.texto}</span>
+              </span>
+              <span
+                class="ease-suave flex shrink-0 text-white transition duration-500 group-hover:text-sol-400"
+                aria-hidden="true"
+              >
+                <Icone
+                  nome="seta-direita"
+                  class="ease-suave size-7 transition-transform duration-500 group-hover:translate-x-1.5"
+                />
+              </span>
+            </span>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>

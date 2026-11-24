@@ -1,0 +1,333 @@
+# Resorts all inclusive da rede Resort All Inclusive (página /outros-resorts/ e carrossel da home).
+# Lista do cliente (19/10/2026). O resort do próprio site sai da lista sozinho.
+# Ligado neste site (recursos.outrosResorts = true no site.config.ts).
+# - `url`: portal do resort em *.resortallinclusive.com.br. Sem url, "Ver detalhes" vira a cotação
+#   pelo WhatsApp (PENDENTE: domínios dos resorts novos, a enviar pelo cliente).
+# - `resumo`: só com fatos conferidos. Sem resumo, o site mostra um texto neutro com o destino.
+# - `destino`/`uf`: cidade ou região do resort (conferidas em 19/10/2026).
+# Fotos de outros resorts só com autorização de uso.
+
+# --- Portais já publicados (aparecem primeiro) -------------------------------------------------
+
+grand-oca-maragogi:
+  nome: Grand Oca Maragogi Resort
+  ordem: 1
+  destino: Maragogi
+  uf: AL
+  resumo: Resort pé na areia na Praia de Ponta de Mangue, com piscinas, Kids Club e acomodações para casais e famílias.
+  url: https://grandocamaragogi.resortallinclusive.com.br/
+  foto: rede/grand-oca-maragogi.jpg
+
+enotel-porto-de-galinhas:
+  nome: Enotel Porto de Galinhas
+  ordem: 2
+  destino: Porto de Galinhas
+  uf: PE
+  resumo: Resort à beira-mar com complexo aquático de cerca de 45 mil m², com piscina de ondas e rio lento.
+  url: https://enotel.resortallinclusive.com.br/
+  foto: rede/enotel-porto-de-galinhas.jpg
+
+vila-gale-mares:
+  nome: Vila Galé Marés
+  ordem: 3
+  destino: Guarajuba
+  uf: BA
+  resumo: Resort pé na areia na Praia de Guarajuba, a 60 km de Salvador, com clube infantil e spa.
+  url: https://vilagalemares.resortallinclusive.com.br/
+  foto: rede/vila-gale-mares.jpg
+
+vila-gale-touros:
+  nome: Vila Galé Touros
+  ordem: 4
+  destino: Touros
+  uf: RN
+  resumo: Resort all inclusive à beira-mar no litoral norte do Rio Grande do Norte.
+  url: https://vilagaletouros.resortallinclusive.com.br/
+  foto: rede/vila-gale-touros.jpg
+
+vila-gale-alagoas:
+  nome: Vila Galé Alagoas
+  ordem: 5
+  destino: Litoral de Alagoas
+  uf: AL
+  resumo: Resort all inclusive pé na areia no litoral de Alagoas.
+  url: https://vilagalealagoas.resortallinclusive.com.br/
+  foto: rede/vila-gale-alagoas.jpg
+
+vila-gale-cumbuco:
+  nome: Vila Galé Cumbuco
+  ordem: 6
+  destino: Cumbuco
+  uf: CE
+  resumo: Resort all inclusive entre as dunas e as praias do Cumbuco, no litoral do Ceará.
+  url: https://vilagalecumbuco.resortallinclusive.com.br/
+  foto: rede/vila-gale-cumbuco.jpg
+
+vila-gale-eco-resort-do-cabo:
+  nome: Vila Galé Eco Resort do Cabo
+  ordem: 7
+  destino: Cabo de Santo Agostinho
+  uf: PE
+  resumo: Eco resort all inclusive no Cabo de Santo Agostinho, no litoral sul de Pernambuco.
+  url: https://vilagaleecoresortdocabo.resortallinclusive.com.br/
+  foto: rede/vila-gale-eco-resort-do-cabo.jpg
+
+# --- Demais resorts da rede (ordem alfabética) -------------------------------------------------
+
+al-aram-imira-beach-resort:
+  nome: El Aram Imirá Beach Resort All Inclusive
+  ordem: 10
+  destino: Natal
+  uf: RN
+
+asenza-beach-resort:
+  nome: Asenza Beach Resort All Inclusive
+  ordem: 11
+  destino: Pitimbu
+  uf: PB
+
+cana-brava-resort:
+  nome: Cana Brava Resort All Inclusive
+  ordem: 12
+  destino: Ilhéus
+  uf: BA
+
+cassino-all-inclusive-pocos-de-caldas:
+  nome: Cassino All Inclusive Resort Poços de Caldas
+  ordem: 13
+  destino: Poços de Caldas
+  uf: MG
+
+club-med-lake-paradise:
+  nome: Club Med Lake Paradise All Inclusive
+  ordem: 14
+  destino: Mogi das Cruzes
+  uf: SP
+
+club-med-rio-das-pedras:
+  nome: Club Med Rio das Pedras All Inclusive
+  ordem: 15
+  destino: Mangaratiba
+  uf: RJ
+
+club-med-trancoso:
+  nome: Club Med Trancoso All Inclusive
+  ordem: 16
+  destino: Trancoso
+  uf: BA
+
+coliseum-beach-resort:
+  nome: Coliseum Beach Resort All Inclusive
+  ordem: 17
+  destino: Beberibe
+  uf: CE
+
+costeira-palace-beach-resort:
+  nome: Costeira Palace Beach Resort All Inclusive
+  ordem: 18
+  destino: Natal
+  uf: RN
+
+costao-do-santinho:
+  nome: Costão do Santinho Golf & Spa Resort All Inclusive
+  ordem: 19
+  destino: Florianópolis
+  uf: SC
+
+fazzenda-park-resort:
+  nome: Fazzenda Park Resort
+  ordem: 20
+  destino: Gaspar
+  uf: SC
+
+grand-palladium-imbassai:
+  nome: Grand Palladium Imbassaí All Inclusive
+  ordem: 21
+  destino: Imbassaí
+  uf: BA
+
+hotel-parque-das-fontes:
+  nome: Hotel Parque das Fontes All Inclusive
+  ordem: 22
+  destino: Beberibe
+  uf: CE
+
+iberostar-grand-amazon:
+  nome: Iberostar Grand Amazon All Inclusive
+  ordem: 23
+  destino: Manaus
+  uf: AM
+
+iberostar-selection-praia-do-forte:
+  nome: Iberostar Selection Praia do Forte
+  ordem: 24
+  destino: Praia do Forte
+  uf: BA
+
+iberostar-waves-bahia:
+  nome: Iberostar Waves Bahia All Inclusive
+  ordem: 25
+  destino: Praia do Forte
+  uf: BA
+
+japaratinga-lounge-resort:
+  nome: Japaratinga Lounge Resort All Inclusive
+  ordem: 26
+  destino: Japaratinga
+  uf: AL
+
+la-torre-resort:
+  nome: La Torre Resort All Inclusive
+  ordem: 27
+  destino: Porto Seguro
+  uf: BA
+
+maceio-mar-resort:
+  nome: Maceió Mar Resort All Inclusive
+  ordem: 28
+  destino: Maceió
+  uf: AL
+
+makai-resort-aracaju:
+  nome: Makai Resort All Inclusive Aracaju
+  ordem: 29
+  destino: Aracaju
+  uf: SE
+
+malai-manso-resort:
+  nome: Malai Manso Resort All Inclusive
+  ordem: 30
+  destino: Chapada dos Guimarães
+  uf: MT
+
+marsol-beach-resort:
+  nome: Marsol Beach Resort All Inclusive
+  ordem: 31
+  destino: Natal
+  uf: RN
+
+marupiara-resort:
+  nome: Marupiara Resort All Inclusive
+  ordem: 32
+  destino: Porto de Galinhas
+  uf: PE
+
+mavsa-resort:
+  nome: Mavsa Resort All Inclusive
+  ordem: 33
+  destino: Cesário Lange
+  uf: SP
+
+nauticomar-resort:
+  nome: Nauticomar Resort All Inclusive
+  ordem: 34
+  destino: Porto Seguro
+  uf: BA
+
+ocapora-hotel:
+  nome: Ocaporã Hotel All Inclusive
+  ordem: 35
+  destino: Porto de Galinhas
+  uf: PE
+
+ocean-palace-beach-resort:
+  nome: Ocean Palace Beach Resort All Inclusive
+  ordem: 36
+  destino: Natal
+  uf: RN
+
+porto-seguro-praia-resort:
+  nome: Porto Seguro Praia Resort All Inclusive
+  ordem: 37
+  destino: Porto Seguro
+  uf: BA
+
+pratagy-beach-resort:
+  nome: Pratagy Beach Resort All Inclusive
+  ordem: 38
+  destino: Maceió
+  uf: AL
+
+resort-recanto-do-teixeira:
+  nome: Resort Recanto do Teixeira All Inclusive
+  ordem: 39
+  destino: Nazaré Paulista
+  uf: SP
+
+salinas-maceio-beach-resort:
+  nome: Salinas Maceió Beach Resort All Inclusive
+  ordem: 40
+  destino: Maceió
+  uf: AL
+
+salinas-maragogi-resort:
+  nome: Salinas Maragogi Resort
+  ordem: 41
+  destino: Maragogi
+  uf: AL
+
+sauipe-brisa:
+  nome: Sauipe Brisa Grand Premium All Inclusive
+  ordem: 42
+  destino: Costa do Sauípe
+  uf: BA
+
+sauipe-mar:
+  nome: Sauipe Mar Premium All Inclusive
+  ordem: 43
+  destino: Costa do Sauípe
+  uf: BA
+
+sauipe-sol:
+  nome: Sauipe Sol Grand Premium All Inclusive
+  ordem: 44
+  destino: Costa do Sauípe
+  uf: BA
+
+sauipe-terra:
+  nome: Sauipe Terra Resort All Inclusive
+  ordem: 45
+  destino: Costa do Sauípe
+  uf: BA
+
+serhs-natal-grand-hotel:
+  nome: Serhs Natal Grand Hotel All Inclusive
+  ordem: 46
+  destino: Natal
+  uf: RN
+
+the-westin-porto-de-galinhas:
+  nome: The Westin Porto de Galinhas All Inclusive
+  ordem: 47
+  destino: Porto de Galinhas
+  uf: PE
+
+thermas-resort:
+  nome: Thermas Resort All Inclusive
+  ordem: 48
+  destino: Poços de Caldas
+  uf: MG
+
+transamerica-comandatuba:
+  nome: Transamerica Ilha de Comandatuba All Inclusive
+  ordem: 49
+  destino: Ilha de Comandatuba
+  uf: BA
+
+vila-gale-eco-resort-de-angra:
+  nome: Vila Galé Eco Resort de Angra All Inclusive
+  ordem: 50
+  destino: Angra dos Reis
+  uf: RJ
+
+vilage-inn-all-inclusive:
+  nome: Vilage Inn All Inclusive
+  ordem: 51
+  destino: Poços de Caldas
+  uf: MG
+
+wish-natal-resort:
+  nome: Wish Natal Resort All Inclusive
+  ordem: 52
+  destino: Natal
+  uf: RN

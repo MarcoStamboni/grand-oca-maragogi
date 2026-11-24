@@ -1,0 +1,69 @@
+---
+/**
+ * Mosaico de fotos com link para a galeria completa (home). Cada foto amplia levemente no hover;
+ * a grande ocupa duas colunas e duas linhas a partir do tablet.
+ */
+import Icone from '@/components/ui/Icone.astro';
+import Imagem from '@/components/ui/Imagem.astro';
+import { rotas } from '@/data/rotas';
+import { categoriasDeFotos } from '@/lib/fotos';
+import { obterImagens } from '@/lib/imagens';
+import { resort } from '@/site.config';
+
+const fotos = await obterImagens([
+  'grand-oca/resort/praia-coqueiral.jpg',
+  'grand-oca/piscinas/piscina-borda-infinita.jpg',
+  'grand-oca/acomodacoes/suite-deluxe-quarto.jpg',
+  'grand-oca/acomodacoes/bangalo-fachada.jpg',
+  'grand-oca/resort/praia-espreguicadeiras-aerea.jpg',
+]);
+const total = (await categoriasDeFotos()).reduce((soma, { chaves }) => soma + chaves.length, 0);
+---
+
+<section class="container-site py-16 sm:py-24" aria-labelledby="mosaico-titulo">
+  <div class="mb-8 flex flex-wrap items-end justify-between gap-4" data-revelar>
+    <div class="max-w-3xl space-y-3">
+      <h2 id="mosaico-titulo" class="titulo-secao">
+        Veja as fotos do {resort.nomeCurto}
+      </h2>
+      <p class="text-tinta-suave text-lg">
+        A praia, as piscinas, os apartamentos, os bangalôs e as suítes, a gastronomia e o parque
+        aquático: as imagens mostram como é a estada no {resort.nome}, das acomodações à beira-mar.
+      </p>
+    </div>
+    <a
+      href={rotas.fotos.caminho}
+      class="group text-mar-700 inline-flex items-center gap-2 font-semibold"
+    >
+      Abrir a galeria completa ({total} fotos)
+      <Icone
+        nome="seta-direita"
+        class="ease-suave size-4 transition-transform duration-300 group-hover:translate-x-1"
+      />
+    </a>
+  </div>
+  <ul
+    class="grid auto-rows-[9rem] grid-cols-2 gap-3 sm:auto-rows-[12rem] md:grid-cols-4"
+    data-revelar="aparecer"
+  >
+    {fotos.map((foto, indice) => (
+      <li
+        class:list={[
+          'group overflow-hidden rounded-grande',
+          indice === 0 && 'col-span-2 row-span-2',
+        ]}
+      >
+        <a href={rotas.fotos.caminho} class="block h-full">
+          <Imagem
+            src={foto.src}
+            alt={foto.alt}
+            sizes={
+              indice === 0 ? '(min-width: 768px) 50vw, 100vw' : '(min-width: 768px) 25vw, 50vw'
+            }
+            class="ease-suave transition duration-[1.2s] group-hover:scale-110 group-hover:brightness-105"
+          />
+        </a>
+      </li>
+    ))}
+  </ul>
+</section>

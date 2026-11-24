@@ -1,0 +1,94 @@
+---
+/**
+ * Galeria de fotos por categoria (novidade do modelo, a partir da galeria do Enotel): filtros
+ * com aria-pressed (src/scripts/filtro-fotos.ts) sobre uma única galeria: cada filtro mostra só as
+ * fotos daquela área, e a ampliação navega só entre as fotos visíveis.
+ * Categorias: src/lib/fotos.ts (montadas a partir das coleções).
+ */
+import Botao from '@/components/ui/Botao.astro';
+import Galeria from '@/components/ui/Galeria.astro';
+import Icone from '@/components/ui/Icone.astro';
+import Secao from '@/components/ui/Secao.astro';
+import { rotas } from '@/data/rotas';
+import PaginaLayout from '@/layouts/PaginaLayout.astro';
+import { acoes } from '@/lib/acoes';
+import { DATA_CONTEUDO } from '@/lib/datas';
+import { categoriasDeFotos } from '@/lib/fotos';
+import { obterImagem, obterImagens } from '@/lib/imagens';
+import { resort } from '@/site.config';
+
+const [topo, categorias] = await Promise.all([
+  obterImagem('grand-oca/piscinas/piscina-solario.jpg'),
+  categoriasDeFotos(),
+]);
+const galerias = await Promise.all(
+  categorias.map(async (categoria) => ({
+    ...categoria,
+    imagens: await obterImagens(categoria.chaves),
+  })),
+);
+const todas = galerias.flatMap(({ id, imagens }) =>
+  imagens.map((imagem) => ({ imagem, categoria: id })),
+);
+const total = todas.length;
+const classeFiltro =
+  'ring-areia-300 text-mar-950 hover:bg-mar-50 aria-pressed:bg-mar-700 aria-pressed:text-white aria-pressed:ring-mar-700 focus-visible:ring-mar-700 inline-flex min-h-11 shrink-0 items-center gap-2 rounded-full bg-white px-4 text-sm font-semibold ring-1 transition-colors focus-visible:ring-3 focus-visible:outline-none';
+---
+
+<PaginaLayout rota="fotos" imagem={topo} atualizadoEm={DATA_CONTEUDO}>
+  <Fragment slot="acoes">
+    <Botao
+      variante="verde"
+      href={acoes.consultarTarifas.href}
+      evento={acoes.consultarTarifas.evento}
+      icone="calendario"
+      tamanho="lg"
+    >
+      Consultar tarifas
+    </Botao>
+    <Botao href={rotas.acomodacoes.caminho} variante="contorno" tamanho="lg">
+      Ver acomodações
+    </Botao>
+  </Fragment>
+
+  <div
+    class="bg-white/95 border-areia-200 sticky backdrop-blur-xl top-[calc(var(--altura-cabecalho)+var(--bf-h,0px))] z-20 border-b sem-js:hidden"
+    data-filtro-fotos
+  >
+    <div class="container-site">
+      <div
+        class="-mx-4 flex gap-2 overflow-x-auto px-4 py-3 [scrollbar-width:none] lg:flex-wrap"
+        role="group"
+        aria-label="Filtrar fotos por área"
+      >
+        <button type="button" class={classeFiltro} aria-pressed="true" data-filtro="todas">
+          Todas <span class="font-normal">({total})</span>
+        </button>
+        {galerias.map((galeria) => (
+          <button type="button" class={classeFiltro} aria-pressed="false" data-filtro={galeria.id}>
+            <Icone nome={galeria.icone} class="size-4" />
+            {galeria.titulo} <span class="font-normal">({galeria.imagens.length})</span>
+          </button>
+        ))}
+      </div>
+      <p class="sr-only" aria-live="polite" data-filtro-anuncio></p>
+    </div>
+  </div>
+
+  <Secao
+    titulo={`Como é o ${resort.nomeCurto} em fotos?`}
+    sobretitulo="Galeria"
+    introducao={`Veja as fotos do ${resort.nomeCurto} antes de reservar: a praia e as piscinas, as acomodações para casais e famílias, os restaurantes e bares do all inclusive, o lazer das crianças e o spa. Escolha uma área no filtro acima e clique em uma foto para ampliar.`}
+  >
+    <Galeria
+      imagens={todas.map(({ imagem }) => imagem)}
+      categorias={todas.map(({ categoria }) => categoria)}
+      titulo={`Fotos do ${resort.nomeCurto}`}
+      destaque={false}
+    />
+  </Secao>
+</PaginaLayout>
+
+<script>
+  import '@/scripts/filtro-fotos';
+</script>

@@ -1,0 +1,665 @@
+@import 'tailwindcss';
+
+/*
+ * Design system do site-modelo, com o visual do Grand Oca Maragogi (06/10/2026): Poppins, azul
+ * profundo nos títulos, laranja e verde nos botões, seções em azul bem claro e rodapé grafite. Contraste
+ * conferido para WCAG 2.2 AA: texto principal 13,6:1 · secundário ≥ 6,4:1 · links 5,9:1 · botões
+ * laranja e verde com texto azul-escuro ≥ 5,1:1 · texto branco sobre foto sempre com véu escuro.
+ * Movimento: só com `prefers-reduced-motion: no-preference`; sem JavaScript, nada fica escondido.
+ */
+
+/* `js:` e `sem-js:` aplicam estilos conforme o JavaScript esteja ativo (classe .js no <html>). */
+@custom-variant js (&:where(.js *));
+@custom-variant sem-js (&:where(html:not(.js) *));
+
+@theme {
+  /* Paleta própria (substitui a padrão do Tailwind para manter consistência). */
+  --color-*: initial;
+  --color-white: #ffffff;
+  --color-black: #000000;
+
+  /*
+   * Paleta Grand Oca. Nomes mantidos do projeto-base: `mar` = azul (títulos, links, seções
+   * escuras), `coral` = laranja (sobretítulos e botão principal), `verde` = verde dos botões de
+   * reserva, `areia` = fundo claro das seções (azul clarinho). Os tons 500 do laranja e do verde levam texto azul-escuro
+   * (mar-950); os tons 700+ levam texto branco (≥ 4,9:1).
+   */
+  --color-tinta: #1f2a33;
+  --color-tinta-suave: #4f5b66;
+
+  --color-mar-950: #002f50;
+  --color-mar-900: #003a61;
+  --color-mar-800: #00578f;
+  --color-mar-700: #0068a8;
+  --color-mar-500: #0076c1;
+  --color-mar-400: #3aa0e0;
+  --color-mar-200: #a9d6f3;
+  --color-mar-100: #d6ecfa;
+  --color-mar-50: #eef7fd;
+
+  /*
+   * Fundos claros (nome `areia` mantido do projeto-base): azul bem clarinho no lugar do creme,
+   * para um ar mais moderno (pedido de 07/10/2026). 50 = fundo da página, 100 = seções
+   * alternadas, 200/300 = bordas e divisórias.
+   */
+  --color-areia-50: #fbfdff;
+  --color-areia-100: #f4f9fd;
+  --color-areia-200: #d7e6f3;
+  --color-areia-300: #b8d1e6;
+
+  --color-coral-800: #9a4507;
+  --color-coral-700: #b85309;
+  --color-coral-500: #f3811d;
+  --color-coral-400: #f79a4a;
+  --color-coral-100: #fde6d0;
+
+  --color-sol-500: #ffb21f;
+  --color-sol-400: #ffc93d;
+  --color-sol-100: #fff2c2;
+
+  --color-verde-900: #035e3d;
+  --color-verde-800: #03754b;
+  --color-verde-700: #047d51;
+  --color-verde-500: #04b474;
+  --color-verde-400: #2fc78a;
+  --color-verde-100: #d9f6e8;
+
+  --color-carvao-950: #0d1117;
+  --color-carvao-900: #161b22;
+  --color-carvao-200: #c9d1d9;
+
+  --radius-cartao: 1rem;
+  --radius-grande: 1.5rem;
+  --shadow-cartao: 0 1px 2px rgb(0 47 80 / 0.05), 0 10px 28px -18px rgb(0 47 80 / 0.3);
+  --shadow-flutuante: 0 2px 6px rgb(0 47 80 / 0.06), 0 24px 48px -22px rgb(0 47 80 / 0.38);
+  --shadow-sol: 0 16px 36px -16px rgb(243 129 29 / 0.55);
+
+  --ease-suave: cubic-bezier(0.22, 1, 0.36, 1);
+
+  --animate-zoom-lento: zoom-lento 16s var(--ease-suave) both;
+  --animate-entrar: entrar 0.9s var(--ease-suave) both;
+  /* Entrada da capa: só desliza, sem começar transparente (não atrasa a primeira pintura). */
+  --animate-subir: subir 0.9s var(--ease-suave) both;
+  --animate-dica-rolar: dica-rolar 2.2s ease-in-out infinite;
+  --animate-flutuar: flutuar 7s ease-in-out infinite;
+  --animate-girar-lento: girar 60s linear infinite;
+  --animate-pulsar: pulsar 2.4s ease-in-out infinite;
+
+  @keyframes flutuar {
+    0%,
+    100% {
+      transform: translateY(0) rotate(0deg);
+    }
+    50% {
+      transform: translateY(-0.9rem) rotate(6deg);
+    }
+  }
+
+  @keyframes girar {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  @keyframes pulsar {
+    0%,
+    100% {
+      transform: scale(1);
+      opacity: 0.55;
+    }
+    50% {
+      transform: scale(1.35);
+      opacity: 0;
+    }
+  }
+
+  @keyframes zoom-lento {
+    from {
+      transform: scale(1.12);
+    }
+    to {
+      transform: scale(1);
+    }
+  }
+
+  @keyframes subir {
+    from {
+      transform: translateY(1rem);
+    }
+  }
+
+  @keyframes entrar {
+    from {
+      opacity: 0;
+      transform: translateY(1.75rem);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  @keyframes dica-rolar {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(0.4rem);
+    }
+  }
+
+  /*
+   * Texto corrido mais leve, como no Grand Oca (parágrafos de 14 a 15 px, fonte light): corpo em
+   * 15 px e `text-lg` em 16 px. Títulos usam a escala própria (titulo-secao, titulo-pagina, text-xl+).
+   */
+  --text-base: 0.9375rem;
+  --text-base--line-height: 1.7;
+  --text-lg: 1rem;
+  --text-lg--line-height: 1.65;
+
+  /* Alturas usadas em scroll-padding e no espaço reservado para a barra fixa do mobile. */
+  --altura-cabecalho: 4.5rem;
+  --altura-barra-mobile: 4rem;
+}
+
+@theme inline {
+  --font-sans: var(--font-poppins);
+  --font-display: var(--font-poppins);
+}
+
+@utility container-site {
+  margin-inline: auto;
+  width: 100%;
+  max-width: 80rem;
+  padding-inline: 1rem;
+
+  @variant sm {
+    padding-inline: 1.5rem;
+  }
+
+  @variant lg {
+    padding-inline: 2rem;
+  }
+}
+
+/* Link que cobre o cartão inteiro (o ancestral precisa de `relative`). */
+@utility link-esticado {
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+  }
+}
+
+/* Títulos de seção e de página: escala fluida. */
+@utility titulo-secao {
+  font-size: clamp(1.5rem, 1.05rem + 1.6vw, 2.25rem);
+  line-height: 1.15;
+}
+
+@utility titulo-pagina {
+  font-size: clamp(1.875rem, 1.2rem + 3vw, 3.25rem);
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+}
+
+/* Degradês da paleta (só fundos decorativos ou com texto escuro/branco conferido). */
+@utility fundo-por-do-sol {
+  background-image: linear-gradient(115deg, var(--color-coral-500), var(--color-sol-400));
+}
+
+/* Azul do cartão "Como é o resort?" do Grand Oca (texto branco ≥ 5,9:1 em toda a extensão). */
+@utility fundo-mar-vivo {
+  background-image:
+    radial-gradient(50rem 26rem at 105% -20%, rgb(58 160 224 / 0.32), transparent 60%),
+    linear-gradient(135deg, var(--color-mar-900), var(--color-mar-800) 55%, var(--color-mar-700));
+}
+
+/* Sublinhado que cresce no hover/foco (links de navegação). */
+@utility sublinhado-animado {
+  background-image: linear-gradient(currentColor, currentColor);
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  background-size: 0% 2px;
+  transition: background-size 0.35s var(--ease-suave);
+  text-decoration: none;
+
+  &:hover,
+  &:focus-visible,
+  &[aria-current='page'] {
+    background-size: 100% 2px;
+  }
+}
+
+@layer base {
+  html {
+    color-scheme: light;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+    /*
+     * WCAG 2.4.11: o foco não fica escondido sob o cabeçalho fixo, a barra do mobile ou o aviso
+     * de cookies aberto (--altura-aviso-cookies é medida por src/scripts/analytics.ts).
+     */
+    scroll-padding-top: calc(var(--altura-cabecalho) + var(--bf-h, 0px) + 1rem);
+    scroll-padding-bottom: calc(
+      var(--altura-barra-mobile) + env(safe-area-inset-bottom) + var(--altura-aviso-cookies, 0px) +
+        1rem
+    );
+
+    @media (width >= 64rem) {
+      --altura-cabecalho: 5rem;
+      scroll-padding-bottom: calc(var(--altura-aviso-cookies, 0px) + 1rem);
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+      scroll-behavior: smooth;
+    }
+  }
+
+  body {
+    background-color: var(--color-areia-50);
+    color: var(--color-tinta);
+    font-family: var(--font-sans);
+    font-size: var(--text-base);
+    font-weight: 300;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    color: var(--color-mar-800);
+    line-height: 1.2;
+    letter-spacing: -0.015em;
+    text-wrap: balance;
+    font-weight: 700;
+  }
+
+  h3,
+  h4 {
+    color: var(--color-mar-700);
+    font-weight: 600;
+  }
+
+  /*
+   * Escala única de títulos do site (mesma fonte e tamanho em todas as páginas):
+   * H1 = título da página, H2 = título de seção, H3 = subtítulo de bloco ou cartão (18 px),
+   * H4 = 16 px. As páginas não definem tamanhos avulsos nos títulos; os parágrafos seguem o corpo
+   * (15 px), a introdução das seções (16 px, text-lg) e o texto de apoio dos cartões (14 px).
+   */
+  h1 {
+    font-size: clamp(1.875rem, 1.2rem + 3vw, 3.25rem);
+    line-height: 1.1;
+    letter-spacing: -0.03em;
+  }
+
+  h2 {
+    font-size: clamp(1.5rem, 1.05rem + 1.6vw, 2.25rem);
+    line-height: 1.15;
+  }
+
+  h3 {
+    font-size: 1.125rem;
+    line-height: 1.3;
+  }
+
+  h4 {
+    font-size: 1rem;
+    line-height: 1.35;
+  }
+
+  /* Campos com 16 px: abaixo disso o Safari do iPhone dá zoom ao focar. */
+  input,
+  select,
+  textarea {
+    font-size: 1rem;
+  }
+
+  p,
+  li,
+  dd {
+    text-wrap: pretty;
+  }
+
+  a {
+    color: var(--color-mar-700);
+    text-underline-offset: 0.2em;
+    text-decoration-thickness: 1px;
+  }
+
+  a:hover {
+    text-decoration-thickness: 2px;
+  }
+
+  :focus-visible {
+    outline: 3px solid var(--color-mar-700);
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+
+  /* Superfícies escuras: foco em amarelo (8,5:1 sobre mar-950). */
+  .superficie-escura :focus-visible {
+    outline-color: var(--color-sol-400);
+  }
+
+  ::selection {
+    background-color: var(--color-sol-100);
+    color: var(--color-tinta);
+  }
+
+  /*
+   * Revelar ao rolar (src/scripts/movimento.ts). Só esconde depois que o script inicia
+   * (.movimento-pronto) e só o que está abaixo da primeira tela: a primeira tela já é pintada
+   * visível (performance: FCP, LCP e Speed Index). O <head> põe a classe .movimento no <html> só se
+   * o sistema não pede menos movimento; sem ela (ou sem JavaScript), nada fica escondido.
+   * `--atraso` escalona itens de uma mesma lista.
+   */
+  .movimento-pronto [data-revelar] {
+    opacity: 0;
+    translate: 0 2rem;
+    transition:
+      opacity 0.8s var(--ease-suave),
+      translate 0.9s var(--ease-suave),
+      scale 0.9s var(--ease-suave);
+    transition-delay: var(--atraso, 0ms);
+  }
+
+  .movimento-pronto [data-revelar='aparecer'] {
+    translate: none;
+  }
+
+  .movimento-pronto [data-revelar='zoom'] {
+    translate: none;
+    scale: 0.94;
+  }
+
+  .movimento-pronto [data-revelar='esquerda'] {
+    translate: -2.5rem 0;
+  }
+
+  .movimento-pronto [data-revelar='direita'] {
+    translate: 2.5rem 0;
+  }
+
+  .movimento-pronto [data-revelar].revelado {
+    opacity: 1;
+    translate: none;
+    scale: none;
+  }
+
+  /*
+   * Ações dentro da foto do topo (Hero.astro): o botão de contorno azul vira branco cheio, como o
+   * segundo botão da home, e o botão de texto fica branco, para contrastar com o véu escuro.
+   */
+  .acoes-banner .border-mar-700 {
+    border-color: var(--color-white);
+    background-color: var(--color-white);
+    color: var(--color-mar-800);
+  }
+
+  .acoes-banner .border-mar-700:hover {
+    background-color: var(--color-mar-50);
+    color: var(--color-mar-800);
+  }
+
+  .acoes-banner .text-mar-700 {
+    color: var(--color-white);
+  }
+
+  /*
+   * Trilha da reserva (JornadaReserva.astro): os trechos entre as etapas se preenchem em
+   * sequência quando a lista é revelada. Sem movimento, a trilha já aparece completa.
+   */
+  .movimento.movimento-pronto .trilha-reserva .trilha-reserva-trecho {
+    scale: 1 0;
+    transition: scale 0.6s var(--ease-suave) calc(var(--atraso-trilha, 0ms) + 0.35s);
+  }
+
+  .movimento.movimento-pronto .trilha-reserva.revelado .trilha-reserva-trecho {
+    scale: 1 1;
+  }
+
+  /* Na impressão, nada fica escondido esperando a rolagem. */
+  @media print {
+    .movimento [data-revelar] {
+      opacity: 1;
+      translate: none;
+      scale: none;
+    }
+  }
+
+  /* Perguntas e menus em <details> abrem e fecham com altura animada (navegadores que suportam). */
+  @supports (interpolate-size: allow-keywords) {
+    :root {
+      interpolate-size: allow-keywords;
+    }
+
+    details::details-content {
+      block-size: 0;
+      overflow: clip;
+      transition:
+        block-size 0.4s var(--ease-suave),
+        content-visibility 0.4s allow-discrete;
+    }
+
+    details[open]::details-content {
+      block-size: auto;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+/* Menu do celular entrando pela direita. */
+@keyframes entrar-lateral {
+  from {
+    opacity: 0;
+    transform: translateX(2.5rem);
+  }
+}
+
+@keyframes faixa {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes progresso {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@keyframes onda-vai-e-vem {
+  from {
+    transform: translateX(-3%);
+  }
+  to {
+    transform: translateX(3%);
+  }
+}
+
+@keyframes revelar-sem-script {
+  to {
+    opacity: 1;
+    translate: none;
+    scale: none;
+  }
+}
+
+/* Transição suave entre páginas (navegação comum, sem JavaScript; navegadores que suportam). */
+@media (prefers-reduced-motion: no-preference) {
+  @view-transition {
+    navigation: auto;
+  }
+
+  ::view-transition-old(root) {
+    animation: 0.25s ease-out both sair-pagina;
+  }
+
+  ::view-transition-new(root) {
+    animation: 0.45s var(--ease-suave) both entrar-pagina;
+  }
+}
+
+@keyframes sair-pagina {
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes entrar-pagina {
+  from {
+    opacity: 0;
+    transform: translateY(0.75rem);
+  }
+}
+
+@layer components {
+  /* Sobretítulo (contexto acima dos títulos), em caixa alta como no Grand Oca. */
+  .sobretitulo {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-coral-700);
+  }
+
+  /*
+   * Faixas em movimento contínuo (destaques e fotos): só com JavaScript, que também mostra o
+   * botão de pausar (WCAG 2.2.2). Com "menos movimento", ficam paradas e roláveis.
+   */
+  .faixa-trilho {
+    display: flex;
+    width: max-content;
+  }
+
+  .movimento .faixa-trilho {
+    animation: faixa var(--duracao-faixa, 45s) linear infinite;
+  }
+
+  .faixa[data-sentido='inverso'] .faixa-trilho {
+    animation-direction: reverse;
+  }
+
+  .faixa:hover .faixa-trilho,
+  .faixa:focus-within .faixa-trilho,
+  .faixa.pausada .faixa-trilho {
+    animation-play-state: paused;
+  }
+
+  html:not(.movimento) .faixa-janela {
+    overflow-x: auto;
+  }
+
+  /* Barra de progresso da leitura (animação ligada à rolagem; navegadores que suportam). */
+  .barra-progresso {
+    display: none;
+  }
+
+  @supports (animation-timeline: scroll()) {
+    @media (prefers-reduced-motion: no-preference) {
+      .barra-progresso {
+        display: block;
+        transform-origin: 0 50%;
+        animation: progresso linear both;
+        animation-timeline: scroll(root);
+      }
+    }
+  }
+
+  .superficie-escura .sobretitulo,
+  .sobretitulo-claro {
+    color: var(--color-coral-400);
+  }
+
+  /* Texto corrido vindo de Markdown. */
+  .conteudo {
+    max-width: 70ch;
+
+    & > * + * {
+      margin-top: 1em;
+    }
+
+    & h2 {
+      margin-top: 2em;
+    }
+
+    & h3 {
+      margin-top: 1.5em;
+    }
+
+    & ul {
+      list-style: disc;
+      padding-left: 1.25rem;
+    }
+
+    & ol {
+      list-style: decimal;
+      padding-left: 1.25rem;
+    }
+
+    & li + li {
+      margin-top: 0.35em;
+    }
+
+    & a {
+      text-decoration: underline;
+    }
+
+    & strong {
+      font-weight: 500;
+      color: var(--color-mar-950);
+    }
+  }
+}
+
+/*
+ * Janelas sobrepostas (Popover API, src/components/ui/Janela.astro). Sem suporte a popover, o
+ * navegador ignora o atributo e o conteúdo aparece no fluxo da página.
+ */
+@supports selector(:popover-open) {
+  .janela:popover-open {
+    position: fixed;
+    inset: 0;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .janela:popover-open {
+      animation: entrar 0.35s var(--ease-suave) both;
+    }
+  }
+}
+
+/*
+ * Alvos de toque de pelo menos 44 px no celular (WCAG 2.5.5): links do rodapé e da trilha de
+ * navegação, que ficam pequenos por serem só texto.
+ */
+@media (max-width: 63.99rem) {
+  footer a,
+  nav[aria-label='Trilha de navegação'] a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+  }
+}

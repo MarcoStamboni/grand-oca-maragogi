@@ -1,0 +1,85 @@
+# Bares do Grand Oca Maragogi (página de gastronomia do Grand Oca Maragogi e da agência, 23/11/2026).
+# O resort não publica horários dos bares: eles mudam sem aviso e são informados no local.
+
+coqueirais:
+  nome: Bar Coqueirais
+  ordem: 1
+  area: piscina
+  local: Ao lado da piscina principal
+  resumo: Bar principal do resort, com terraço panorâmico para a Praia de Ponta de Mangue, bebidas e lanches ao lado da piscina principal.
+  bebidas:
+    - Bebidas do all inclusive
+  comidas:
+    - Lanches e snacks
+  fotos: []
+  fontes:
+    - /pt/hoteis/hotel-grand-oca-maragogi-beach-leisure-resort/gastronomia
+gales:
+  nome: Bar Galés
+  ordem: 2
+  area: piscina
+  local: Dentro da piscina principal
+  resumo: Bar instalado dentro da piscina principal, para pedir uma bebida sem sair da água nem da área de lazer.
+  bebidas:
+    - Bebidas do all inclusive
+  fotos: []
+  fontes:
+    - /pt/hoteis/hotel-grand-oca-maragogi-beach-leisure-resort/gastronomia
+drink-parrot:
+  nome: Drink Parrot
+  ordem: 3
+  area: piscina
+  local: Em frente ao Bar Coqueirais
+  resumo: Bar dedicado aos coquetéis, na frente do Bar Coqueirais, para quem quer um drink preparado com mais capricho.
+  bebidas:
+    - Coquetéis
+  fotos: []
+  fontes:
+    - /pt/hoteis/hotel-grand-oca-maragogi-beach-leisure-resort/gastronomia
+ponta-de-mangue:
+  nome: Bar Ponta de Mangue
+  ordem: 4
+  area: praia
+  local: Na área da praia
+  resumo: Bar na área da praia, com serviço de bebidas e vista espetacular para o mar de Ponta de Mangue.
+  bebidas:
+    - Bebidas do all inclusive
+  fotos: []
+  fontes:
+    - /pt/hoteis/hotel-grand-oca-maragogi-beach-leisure-resort/gastronomia
+tropical:
+  nome: Bar Esplanada Tropical
+  ordem: 5
+  area: noite
+  local: Esplanada Tropical
+  resumo: Ponto de convivência em família, onde acontecem os shows da equipe de animação do resort, com serviço de bebidas.
+  bebidas:
+    - Bebidas do all inclusive
+  fotos: []
+  fontes:
+    - /pt/hoteis/hotel-grand-oca-maragogi-beach-leisure-resort/gastronomia
+piscina-d-agua:
+  nome: Bar da Piscina D’Água
+  ordem: 6
+  area: piscina
+  local: Na nova área de piscinas
+  resumo: Bar da nova área de piscinas, com bebidas, área de snacks e gelados, e também o local do chá da tarde.
+  bebidas:
+    - Bebidas do all inclusive
+  comidas:
+    - Snacks e gelados
+    - Chá da tarde
+  fotos: []
+  fontes:
+    - /pt/hoteis/hotel-grand-oca-maragogi-beach-leisure-resort/gastronomia
+sportbar:
+  nome: SportBar
+  ordem: 7
+  area: noite
+  local: Área esportiva
+  resumo: Espaço para assistir a diferentes esportes, em especial jogos de futebol, com uma bebida gelada e boa companhia.
+  bebidas:
+    - Bebidas do all inclusive
+  fotos: []
+  fontes:
+    - /pt/hoteis/hotel-grand-oca-maragogi-beach-leisure-resort/gastronomia

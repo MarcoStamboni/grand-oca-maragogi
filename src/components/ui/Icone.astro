@@ -1,0 +1,35 @@
+---
+/**
+ * Ícone SVG: referência ao símbolo da folha única /icones.svg (src/pages/icones.svg.ts), sem
+ * repetir o desenho no HTML. Decorativo por padrão (aria-hidden).
+ * Passe `rotulo` só quando o ícone for o único conteúdo com significado.
+ */
+import { obterIcone, type NomeIcone } from '@/lib/icones';
+
+interface Props {
+  nome: NomeIcone;
+  rotulo?: string;
+  class?: string;
+}
+
+const { nome, rotulo, class: classe = 'size-5' } = Astro.props;
+const { tipo } = obterIcone(nome);
+const traco = tipo === 'traco';
+---
+
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 24 24"
+  class:list={['shrink-0', classe]}
+  fill={traco ? 'none' : 'currentColor'}
+  stroke={traco ? 'currentColor' : undefined}
+  stroke-width={traco ? 2 : undefined}
+  stroke-linecap={traco ? 'round' : undefined}
+  stroke-linejoin={traco ? 'round' : undefined}
+  role={rotulo ? 'img' : undefined}
+  aria-label={rotulo}
+  aria-hidden={rotulo ? undefined : 'true'}
+  focusable="false"
+>
+  <use href={`/icones.svg#${nome}`} />
+</svg>

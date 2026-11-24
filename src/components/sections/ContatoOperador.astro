@@ -1,0 +1,54 @@
+---
+/**
+ * Fecho das páginas institucionais (privacidade, termos e cookies): a data da última revisão e
+ * como falar com o operador (endereço, e-mail, telefones, WhatsApp e horário), lidos do
+ * site.config.ts.
+ */
+import Secao from '@/components/ui/Secao.astro';
+import TabelaFatos from '@/components/ui/TabelaFatos.astro';
+import { DATA_POLITICAS } from '@/lib/datas';
+import { operador } from '@/site.config';
+
+interface Props {
+  titulo?: string;
+  fundo?: 'padrao' | 'areia';
+}
+
+const { titulo = 'Como tirar dúvidas sobre esta página?', fundo = 'areia' } = Astro.props;
+const revisao = DATA_POLITICAS.toLocaleDateString('pt-BR', {
+  month: 'long',
+  year: 'numeric',
+  timeZone: 'UTC',
+});
+const endereco = operador.endereco
+  ? [
+      operador.endereco.logradouro,
+      operador.endereco.bairro,
+      `${operador.endereco.cidade} - ${operador.endereco.uf}`,
+    ]
+      .filter(Boolean)
+      .join(', ')
+  : null;
+const linhas = [
+  { rotulo: 'Responsável', valor: operador.razaoSocial ?? operador.nome },
+  ...(endereco ? [{ rotulo: 'Endereço', valor: endereco }] : []),
+  ...(operador.email ? [{ rotulo: 'E-mail', valor: operador.email }] : []),
+  {
+    rotulo: 'Central de reservas',
+    valor: operador.telefones.map((telefone) => telefone.exibicao).join(' · '),
+  },
+  ...(operador.horarioAtendimento
+    ? [{ rotulo: 'Atendimento', valor: operador.horarioAtendimento }]
+    : []),
+];
+---
+
+<Secao
+  titulo={titulo}
+  sobretitulo="Contato"
+  introducao={`Fale com ${operador.artigo} ${operador.nome} pelos canais abaixo. Última atualização desta página: ${revisao}.`}
+  fundo={fundo}
+  largura="estreito"
+>
+  <TabelaFatos legenda="Canais de atendimento do responsável pelo site" linhas={linhas} />
+</Secao>

@@ -1,0 +1,7 @@
+dist/
+.astro/
+node_modules/
+.cache/
+reports/
+package-lock.json
+docs/anexos/

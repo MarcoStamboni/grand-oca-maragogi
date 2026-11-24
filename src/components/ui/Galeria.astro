@@ -1,0 +1,129 @@
+---
+/**
+ * Galeria de fotos em grade responsiva.
+ * - Sem JavaScript: cada miniatura é um link para a foto ampliada (WebP até 1600 px).
+ * - Com JavaScript: a foto abre num <dialog> modal com anterior/próxima, setas do teclado,
+ *   Esc para fechar e foco devolvido à miniatura (src/scripts/galeria.ts).
+ * Cada foto ampliada só é baixada quando aberta.
+ */
+import Icone from '@/components/ui/Icone.astro';
+import Imagem from '@/components/ui/Imagem.astro';
+import { fotoAmpliada, type ImagemResolvida } from '@/lib/imagens';
+
+interface Props {
+  imagens: readonly ImagemResolvida[];
+  /** Nome do conjunto (ex.: "Bangalô Exclusive"), usado no rótulo do diálogo. */
+  titulo: string;
+  /** Categoria de cada foto (mesma ordem de `imagens`), usada pelo filtro de /fotos/. */
+  categorias?: readonly string[];
+  /** Primeira foto em destaque (2 x 2). Desligue quando um filtro muda as fotos visíveis. */
+  destaque?: boolean;
+  class?: string;
+}
+
+const { imagens, titulo, categorias, destaque = true, class: classe } = Astro.props;
+const itens = await Promise.all(
+  imagens.map(async (imagem) => {
+    const { src, largura, altura } = await fotoAmpliada(imagem);
+    return { ...imagem, ampliada: src, largura, altura };
+  }),
+);
+const total = itens.length;
+const emDestaque = (indice: number) => destaque && indice === 0 && total > 2;
+---
+
+{total > 0 && (
+  <div class:list={[classe]} data-galeria>
+    <ul class="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:gap-4">
+      {itens.map((item, indice) => (
+        <li
+          class:list={[emDestaque(indice) && 'col-span-2 row-span-2']}
+          data-revelar="zoom"
+          data-categoria={categorias?.[indice]}
+        >
+          <a
+            href={item.ampliada}
+            class:list={[
+              'group ring-areia-200 focus-visible:ring-mar-700 relative block overflow-hidden rounded-cartao shadow-cartao ring-1 focus-visible:ring-3 focus-visible:outline-none',
+              emDestaque(indice) ? 'aspect-4/3 h-full w-full' : 'aspect-4/3',
+            ]}
+            data-galeria-item
+            data-largura={item.largura}
+            data-altura={item.altura}
+          >
+            <Imagem
+              src={item.src}
+              alt={item.alt}
+              sizes="(min-width: 1024px) 26rem, (min-width: 640px) 33vw, 50vw"
+              largura={800}
+              class="ease-suave transition-transform duration-700 group-hover:scale-[1.07]"
+            />
+            <span class="sr-only">
+              (ampliar foto {indice + 1} de {total})
+            </span>
+            <span
+              class="text-mar-950 absolute right-2 bottom-2 flex size-8 items-center justify-center rounded-full bg-white/90 opacity-0 shadow transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100"
+              aria-hidden="true"
+            >
+              <Icone nome="ampliar" class="size-4" />
+            </span>
+          </a>
+        </li>
+      ))}
+    </ul>
+
+    <dialog
+      class="bg-mar-950 backdrop:bg-mar-950/80 m-0 h-dvh max-h-none w-full max-w-none animate-[sair-pagina_0.35s_ease-out_reverse_both] p-0 text-white"
+      aria-label={`Fotos: ${titulo}`}
+      data-galeria-dialogo
+    >
+      <div class="flex h-full flex-col">
+        <div class="flex items-center justify-between gap-4 px-4 py-3">
+          <p class="text-sm text-white/80" aria-hidden="true" data-galeria-contador></p>
+          <button
+            type="button"
+            class="inline-flex size-11 items-center justify-center rounded-full text-white hover:bg-white/10"
+            data-galeria-fechar
+          >
+            <Icone nome="fechar" class="size-6" />
+            <span class="sr-only">Fechar galeria</span>
+          </button>
+        </div>
+        {/* A <img> é criada pelo script ao abrir (evita baixar a foto ampliada antes). */}
+        <figure
+          class="flex min-h-0 flex-1 flex-col items-center justify-center gap-3 px-4 pb-4"
+          data-galeria-figura
+        >
+          <figcaption
+            class="max-w-3xl text-center text-sm text-white/90"
+            aria-hidden="true"
+            data-galeria-legenda
+          ></figcaption>
+        </figure>
+        <div class="flex justify-center gap-4 px-4 pb-6" data-galeria-navegacao>
+          <button
+            type="button"
+            class="inline-flex min-h-11 items-center gap-2 rounded-full px-4 text-sm font-semibold ring-2 ring-white/60 hover:bg-white/10"
+            data-galeria-anterior
+          >
+            <Icone nome="anterior" class="size-5" />
+            Anterior
+          </button>
+          <button
+            type="button"
+            class="inline-flex min-h-11 items-center gap-2 rounded-full px-4 text-sm font-semibold ring-2 ring-white/60 hover:bg-white/10"
+            data-galeria-proxima
+          >
+            Próxima
+            <Icone nome="proxima" class="size-5" />
+          </button>
+        </div>
+        <p class="sr-only" aria-live="polite" data-galeria-anuncio></p>
+      </div>
+    </dialog>
+  </div>
+)}
+
+<script>
+  import '@/scripts/galeria';
+</script>

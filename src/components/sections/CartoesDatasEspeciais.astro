@@ -1,0 +1,147 @@
+---
+/**
+ * Feriados e temporadas (coleção datasEspeciais) em carrossel, no mesmo padrão dos outros resorts
+ * all inclusive (CarrosselOutrosResorts): cartões altos com a foto, a data em selo, o tipo e o
+ * título sobre a foto e "Ver detalhes", que leva à página da data.
+ * Ordem do calendário anual, de janeiro a dezembro (pelo dia da próxima ocorrência); períodos que
+ * valem o ano inteiro (ex.: lua de mel) aparecem por último, como "O ano todo".
+ * Com oferta vigente, o selo mostra o preço "a partir de" (nunca vai para o JSON-LD).
+ * Setas rolam o carrossel (src/scripts/carrossel.ts); no celular, rola com o dedo.
+ */
+import { getCollection } from 'astro:content';
+
+import Icone from '@/components/ui/Icone.astro';
+import Imagem from '@/components/ui/Imagem.astro';
+import { iconeDaData } from '@/data/icones-datas';
+import { caminhoDataEspecial } from '@/data/rotas';
+import { datasEmOrdem, ofertaVigente } from '@/lib/datas';
+import { formatarOcorrencia, formatarPreco } from '@/lib/formatar';
+import { obterImagem } from '@/lib/imagens';
+
+interface Props {
+  /** Data especial que não entra (a própria página, em "Outros feriados"). */
+  exceto?: string;
+  nivelTitulo?: 2 | 3;
+  class?: string;
+  /** Mantido por compatibilidade: o carrossel mostra todas as datas. */
+  limite?: number;
+}
+
+const { exceto, nivelTitulo = 3, class: classe } = Astro.props;
+const Titulo = `h${nivelTitulo}` as const;
+const hoje = new Date();
+const UM_DIA = 86_400_000;
+
+const itens = datasEmOrdem(await getCollection('datasEspeciais'), hoje)
+  .filter(({ item }) => item.id !== exceto)
+  .map((par) => {
+    const duracao = (par.ocorrencia.fim.getTime() - par.ocorrencia.inicio.getTime()) / UM_DIA;
+    const anoTodo = duracao >= 300;
+    const d = par.ocorrencia.data;
+    // Posição no calendário anual (mês e dia); o ano todo vai para o fim.
+    const posicao = anoTodo ? 9999 : (d.getUTCMonth() + 1) * 100 + d.getUTCDate();
+    return { ...par, anoTodo, posicao };
+  })
+  .sort((a, b) => a.posicao - b.posicao);
+
+const cartoes = await Promise.all(
+  itens.map(async ({ item, ocorrencia, anoTodo }) => {
+    const oferta = ofertaVigente(item.data.oferta, hoje);
+    return {
+      item,
+      tipo: item.data.tipo === 'feriado' ? 'Feriado' : 'Temporada',
+      // Datas fixas: tipo e mês (`periodo`); móveis (Carnaval): a data calculada.
+      quando: anoTodo
+        ? 'O ano todo'
+        : (item.data.periodo ?? formatarOcorrencia(ocorrencia).replace(/ de \d{4}/g, '')),
+      selo: oferta ? `A partir de ${formatarPreco(oferta.aPartirDe)}` : undefined,
+      foto: item.data.fotos[0] ? await obterImagem(item.data.fotos[0]) : undefined,
+    };
+  }),
+);
+const selo =
+  'inline-flex items-center gap-1 rounded-full bg-black/40 px-2.5 py-1 text-[0.6875rem] font-semibold text-white backdrop-blur-sm';
+---
+
+{cartoes.length > 0 && (
+  <div class:list={['relative', classe]} data-carrossel>
+    {cartoes.length > 1 && (
+      <div class="mb-5 flex justify-end gap-2">
+        <button
+          type="button"
+          class="ring-areia-300 text-mar-800 hover:bg-mar-50 inline-flex size-11 items-center justify-center rounded-full bg-white ring-1"
+          data-carrossel-anterior
+        >
+          <Icone nome="anterior" class="size-5" />
+          <span class="sr-only">Data anterior</span>
+        </button>
+        <button
+          type="button"
+          class="ring-areia-300 text-mar-800 hover:bg-mar-50 inline-flex size-11 items-center justify-center rounded-full bg-white ring-1"
+          data-carrossel-proximo
+        >
+          <Icone nome="proxima" class="size-5" />
+          <span class="sr-only">Próxima data</span>
+        </button>
+      </div>
+    )}
+
+    <ul
+      class="-mx-4 flex snap-x snap-mandatory gap-5 overflow-x-auto px-4 pb-2 [scrollbar-width:none]"
+      data-carrossel-trilho
+    >
+      {cartoes.map(({ item, tipo, quando, selo: preco, foto }) => (
+        <li class="w-[78%] shrink-0 snap-start sm:w-72 lg:w-80">
+          <article class="group relative aspect-3/4 overflow-hidden rounded-grande shadow-cartao">
+            {foto ? (
+              <div class="absolute inset-0 [&_img]:h-full [&_img]:w-full [&_img]:object-cover">
+                <Imagem
+                  src={foto.src}
+                  alt={foto.alt}
+                  sizes="(min-width: 1024px) 20rem, 78vw"
+                  largura={800}
+                  class="ease-suave transition-transform duration-700 group-hover:scale-[1.05]"
+                />
+              </div>
+            ) : (
+              <div
+                class="from-mar-700 to-mar-950 absolute inset-0 bg-linear-to-br"
+                aria-hidden="true"
+              ></div>
+            )}
+            <div
+              class="absolute inset-0 bg-linear-to-t from-black/80 via-black/10 to-black/30"
+              aria-hidden="true"
+            ></div>
+            <div class="absolute inset-x-4 top-4 flex flex-wrap items-start justify-between gap-2">
+              <span class={selo}>
+                <Icone nome="calendario" class="size-3.5" />
+                {quando}
+              </span>
+              {preco && <span class={selo}>{preco}</span>}
+            </div>
+            <div class="absolute inset-x-5 bottom-5 space-y-2 text-white">
+              <p class="text-coral-400 flex items-center gap-1.5 text-[0.6875rem] font-bold tracking-[0.14em] uppercase">
+                <Icone nome={iconeDaData(item.id)} class="size-3.5" />
+                {tipo}
+              </p>
+              <Titulo class="leading-tight font-bold text-white">{item.data.titulo}</Titulo>
+              <a
+                href={caminhoDataEspecial(item.id)}
+                class="link-esticado inline-flex items-center gap-1.5 text-sm font-semibold text-white/90 no-underline hover:text-white"
+              >
+                Ver detalhes
+                <Icone nome="seta-direita" class="size-4" />
+                <span class="sr-only"> de {item.data.titulo}</span>
+              </a>
+            </div>
+          </article>
+        </li>
+      ))}
+    </ul>
+  </div>
+)}
+
+<script>
+  import '@/scripts/carrossel';
+</script>

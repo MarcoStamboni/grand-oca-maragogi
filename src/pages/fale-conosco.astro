@@ -1,0 +1,157 @@
+---
+/**
+ * Fale conosco: canais e horário do operador ativo (site.config), formulário (só com
+ * PUBLIC_FORM_ENDPOINT), orientação para quem já está hospedado e endereços.
+ * Textos: src/data/paginas.ts (contato).
+ */
+import CanaisAtendimento from '@/components/sections/CanaisAtendimento.astro';
+import FormularioCotacao from '@/components/sections/FormularioCotacao.astro';
+import Botao from '@/components/ui/Botao.astro';
+import MapaSobDemanda from '@/components/ui/MapaSobDemanda.astro';
+import Nota from '@/components/ui/Nota.astro';
+import Secao from '@/components/ui/Secao.astro';
+import TabelaFatos from '@/components/ui/TabelaFatos.astro';
+import { rotas } from '@/data/rotas';
+import PaginaLayout from '@/layouts/PaginaLayout.astro';
+import { enderecoFormulario } from '@/lib/ambiente';
+import { pacoteComAereo, reservarHospedagem } from '@/lib/acoes';
+import { DATA_CONTEUDO } from '@/lib/datas';
+import { obterImagem } from '@/lib/imagens';
+import { alternarFundos } from '@/lib/secoes';
+import { type Endereco, operador, resort } from '@/site.config';
+
+const ehAgencia = operador.id === 'agencia';
+const proximoFundo = alternarFundos();
+const topo = await obterImagem('grand-oca/piscinas/piscina-solario.jpg');
+const linhaEndereco = (endereco: Endereco) =>
+  [
+    endereco.logradouro,
+    endereco.bairro,
+    `${endereco.cidade} (${endereco.uf})`,
+    endereco.cep && `CEP ${endereco.cep}`,
+  ]
+    .filter(Boolean)
+    .join(', ');
+const atendimento = [
+  ...operador.telefones.map((telefone) => ({ rotulo: telefone.rotulo, valor: telefone.exibicao })),
+  ...(operador.email ? [{ rotulo: 'E-mail', valor: operador.email }] : []),
+  ...(operador.horarioAtendimento
+    ? [{ rotulo: 'Horário de atendimento', valor: operador.horarioAtendimento }]
+    : []),
+];
+---
+
+<PaginaLayout rota="contato" imagem={topo} atualizadoEm={DATA_CONTEUDO}>
+  <Secao
+    foto="grand-oca/piscinas/piscina-borda-infinita.jpg"
+    introducao={`A central de reservas atende por telefone e WhatsApp para cotações de hospedagem e de pacotes com aéreo para o ${resort.nomeCurto}.`}
+    titulo="Como falar sobre reservas e cotações?"
+    sobretitulo="Atendimento"
+    fundo={proximoFundo()}
+  >
+    <div class="grid items-start gap-10 lg:grid-cols-[minmax(0,1fr)_24rem]">
+      <div class="space-y-6">
+        <CanaisAtendimento mensagem={`Olá! Gostaria de uma cotação para o ${resort.nome}.`} />
+        {ehAgencia && operador.aviso && (
+          <Nota titulo="Quem atende">
+            {operador.aviso} Saiba mais em <a href={rotas.quemSomos.caminho}>Quem somos</a>.
+          </Nota>
+        )}
+      </div>
+      <TabelaFatos legenda="Canais e horário de atendimento" linhas={atendimento} />
+    </div>
+  </Secao>
+
+  {enderecoFormulario && (
+    <Secao
+      introducao={`Prefere escrever? Envie a sua dúvida ou o pedido de cotação pelo formulário.`}
+      titulo="Como enviar uma mensagem pelo site?"
+      sobretitulo="Formulário"
+      fundo={proximoFundo()}
+    >
+      <p class="text-tinta-suave mb-6 max-w-3xl text-lg">
+        Escreva a sua dúvida ou pedido e a nossa equipe responde pelo e-mail ou pelo telefone
+        informado.
+      </p>
+      <FormularioCotacao tipo="contato" class="max-w-3xl" />
+    </Secao>
+  )}
+
+  <Secao
+    titulo="Prefere reservar agora?"
+    sobretitulo="Reserva"
+    introducao={
+      operador.reservas.hospedagemUrl
+        ? `Consulte as datas e as tarifas do ${resort.nomeCurto} no motor de reservas e receba a confirmação na hora, sem precisar esperar o atendimento.`
+        : `Escolha a acomodação mais adequada ao perfil da viagem e verifique a disponibilidade do ${resort.nomeCurto} para as datas desejadas com a nossa equipe.`
+    }
+    foto="grand-oca/acomodacoes/bangalo-triplo-fachada.jpg"
+    fundo={proximoFundo()}
+  >
+    <p class="flex flex-wrap gap-3">
+      <Botao
+        variante="verde"
+        href={reservarHospedagem.href}
+        icone={reservarHospedagem.icone}
+        evento={reservarHospedagem.evento}
+        externo={reservarHospedagem.externo}
+        tamanho="lg"
+      >
+        Ver datas e tarifas
+      </Botao>
+      {pacoteComAereo && (
+        <Botao
+          href={pacoteComAereo.href}
+          icone={pacoteComAereo.icone}
+          variante="contorno"
+          tamanho="lg"
+        >
+          Pacote com aéreo
+        </Botao>
+      )}
+    </p>
+  </Secao>
+
+  <Secao
+    introducao={`Durante a estada, os pedidos ao ${resort.nomeCurto}, como o agendamento do spa e da pizzaria, são feitos diretamente no resort.`}
+    foto="grand-oca/piscinas/piscina-solario.jpg"
+    titulo={`Já está hospedado no ${resort.nomeCurto}?`}
+    sobretitulo="Durante a estadia"
+    fundo={proximoFundo()}
+  >
+    <div class="conteudo">
+      <p>
+        Pedidos durante a estada, como a reserva dos restaurantes temáticos no Guest Service, o
+        mergulho e os passeios, são feitos diretamente no {resort.nomeCurto}.
+        {ehAgencia &&
+          ' Para alterar datas ou acomodação de uma reserva feita conosco, fale com a nossa equipe pelos canais acima.'}
+      </p>
+    </div>
+  </Secao>
+
+  <Secao
+    introducao={`O ${resort.nomeCurto} fica às margens do ${resort.praia}, em ${resort.endereco.cidade} (MT). Veja o mapa e como chegar.`}
+    titulo={`Onde fica o ${resort.nomeCurto}?`}
+    sobretitulo="Endereço"
+    fundo={proximoFundo()}
+  >
+    <div class="grid items-start gap-8 lg:grid-cols-2">
+      <div class="space-y-6">
+        <address class="not-italic">
+          <strong class="text-mar-950 block">{resort.nome}</strong>
+          {linhaEndereco(resort.endereco)}
+          <a href={rotas.comoChegar.caminho} class="mt-3 block text-base">
+            Veja como chegar
+          </a>
+        </address>
+        {ehAgencia && operador.endereco && (
+          <address class="text-tinta-suave not-italic">
+            <strong class="text-mar-950 block">{operador.nome} (agência)</strong>
+            {linhaEndereco(operador.endereco)}
+          </address>
+        )}
+      </div>
+      <MapaSobDemanda />
+    </div>
+  </Secao>
+</PaginaLayout>

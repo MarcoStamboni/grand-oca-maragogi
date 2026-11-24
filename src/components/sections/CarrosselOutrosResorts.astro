@@ -1,0 +1,195 @@
+---
+/**
+ * Outros resorts da rede Resort All Inclusive em carrossel, no mesmo padrão dos bares
+ * (CarrosselBares): cartões altos com o destino em selo e o nome do resort; "Ver prévia" abre uma
+ * janela (Popover API, src/components/ui/Janela.astro) com o resumo do resort, o atendimento da
+ * agência e os botões "Conhecer o resort" (portal *.resortallinclusive.com.br) e WhatsApp.
+ * Sem foto autorizada, o cartão usa um fundo da marca (azul, com coqueiro discreto).
+ * Setas rolam o carrossel (src/scripts/carrossel.ts); no celular, rola com o dedo.
+ */
+import Botao from '@/components/ui/Botao.astro';
+import Icone from '@/components/ui/Icone.astro';
+import Imagem from '@/components/ui/Imagem.astro';
+import Janela from '@/components/ui/Janela.astro';
+import { acaoWhatsApp } from '@/lib/acoes';
+import type { OutroResortExibido } from '@/lib/outros-resorts';
+import { operador } from '@/site.config';
+
+interface Props {
+  resorts: readonly OutroResortExibido[];
+  /** Grade fixa (página /outros-resorts/) em vez do carrossel com setas (home). */
+  grade?: boolean;
+}
+
+const { resorts, grade = false } = Astro.props;
+const carrossel = !grade;
+const selo =
+  'inline-flex items-center gap-1 rounded-full bg-black/35 px-2.5 py-1 text-[0.6875rem] font-semibold text-white backdrop-blur-sm';
+---
+
+<div class="relative" data-carrossel={carrossel ? '' : undefined}>
+  {carrossel && resorts.length > 1 && (
+    <div class="mb-5 flex justify-end gap-2">
+      <button
+        type="button"
+        class="ring-areia-300 text-mar-800 hover:bg-mar-50 inline-flex size-11 items-center justify-center rounded-full bg-white ring-1"
+        data-carrossel-anterior
+      >
+        <Icone nome="anterior" class="size-5" />
+        <span class="sr-only">Resort anterior</span>
+      </button>
+      <button
+        type="button"
+        class="ring-areia-300 text-mar-800 hover:bg-mar-50 inline-flex size-11 items-center justify-center rounded-full bg-white ring-1"
+        data-carrossel-proximo
+      >
+        <Icone nome="proxima" class="size-5" />
+        <span class="sr-only">Próximo resort</span>
+      </button>
+    </div>
+  )}
+
+  <ul
+    class={
+      carrossel
+        ? '-mx-4 flex snap-x snap-mandatory gap-5 overflow-x-auto px-4 pb-2 [scrollbar-width:none]'
+        : 'grid gap-5 sm:grid-cols-2 lg:grid-cols-4'
+    }
+    data-carrossel-trilho={carrossel ? '' : undefined}
+  >
+    {resorts.map(({ resort, foto }, indice) => (
+      <li
+        id={`resort-${resort.id}`}
+        class={carrossel ? 'w-[78%] shrink-0 snap-start sm:w-72 lg:w-80' : undefined}
+      >
+        <article class="group relative aspect-3/4 overflow-hidden rounded-grande shadow-cartao">
+          {foto ? (
+            <div class="absolute inset-0 [&_img]:h-full [&_img]:w-full [&_img]:object-cover">
+              <Imagem
+                src={foto.src}
+                alt={foto.alt}
+                sizes="(min-width: 1024px) 20rem, 78vw"
+                largura={800}
+                class="ease-suave transition-transform duration-700 group-hover:scale-[1.05]"
+              />
+            </div>
+          ) : (
+            <div
+              class="from-mar-700 to-mar-950 absolute inset-0 overflow-hidden bg-linear-to-br"
+              aria-hidden="true"
+            >
+              <Icone
+                nome="coqueiro"
+                class="ease-suave absolute -right-10 -bottom-6 size-64 text-white/10 transition-transform duration-700 group-hover:scale-110"
+              />
+              <Icone nome="sol" class="text-sol-400/70 absolute top-14 right-6 size-14" />
+            </div>
+          )}
+          <div
+            class="absolute inset-0 bg-linear-to-t from-black/70 via-black/5 to-black/20"
+            aria-hidden="true"
+          ></div>
+          <div class="absolute inset-x-4 top-4 flex items-start justify-between gap-2">
+            <span class="text-sm font-bold text-white/90 tabular-nums">
+              {String(indice + 1).padStart(2, '0')}
+            </span>
+            <span class={selo}>
+              <Icone nome="local" class="size-3.5" />
+              {resort.data.destino} · {resort.data.uf}
+            </span>
+          </div>
+          <div class="absolute inset-x-5 bottom-5 space-y-2 text-white">
+            <p class="text-coral-400 text-[0.6875rem] font-bold tracking-[0.14em] uppercase">
+              Resort All Inclusive
+            </p>
+            <h3 class="leading-tight font-bold text-white">{resort.data.nome}</h3>
+            <button
+              type="button"
+              popovertarget={`previa-${resort.id}`}
+              class="link-esticado inline-flex items-center gap-1.5 text-sm font-semibold text-white/90 hover:text-white"
+            >
+              Ver prévia
+              <Icone nome="seta-direita" class="size-4" />
+              <span class="sr-only"> do {resort.data.nome}</span>
+            </button>
+          </div>
+        </article>
+      </li>
+    ))}
+  </ul>
+
+  {resorts.map(({ resort, foto, resumo }) => {
+    const whatsapp = acaoWhatsApp(
+      `Olá! Quero saber mais sobre o ${resort.data.nome}, em ${resort.data.destino} (${resort.data.uf}).`,
+      'Cotar pelo WhatsApp',
+    );
+    return (
+      <Janela
+        id={`previa-${resort.id}`}
+        titulo={resort.data.nome}
+        subtitulo={`${resort.data.destino} · ${resort.data.uf}`}
+      >
+        <div class="ring-areia-200 grid gap-5 rounded-cartao p-4 ring-1 sm:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] sm:p-5">
+          <div class="relative aspect-4/3 overflow-hidden rounded-xl sm:aspect-auto">
+            {foto ? (
+              <Imagem
+                src={foto.src}
+                alt={foto.alt}
+                sizes="(min-width: 640px) 18rem, 90vw"
+                class="h-full w-full object-cover"
+              />
+            ) : (
+              <div
+                class="from-mar-700 to-mar-950 absolute inset-0 flex items-center justify-center bg-linear-to-br"
+                aria-hidden="true"
+              >
+                <Icone nome="coqueiro" class="size-24 text-white/25" />
+              </div>
+            )}
+          </div>
+          <div class="space-y-4">
+            <p class="text-mar-800 flex items-center gap-2 text-xl font-semibold">
+              <Icone nome="guarda-sol" class="text-coral-700 size-5 shrink-0" />
+              {resort.data.nome}
+            </p>
+            <p class="text-tinta">{resumo}</p>
+            <dl class="grid gap-3 text-sm sm:grid-cols-2">
+              <div>
+                <dt class="text-mar-800 font-semibold">Onde fica</dt>
+                <dd class="text-tinta-suave">
+                  {resort.data.destino} ({resort.data.uf})
+                </dd>
+              </div>
+              <div>
+                <dt class="text-mar-800 font-semibold">Como reservar</dt>
+                <dd class="text-tinta-suave">
+                  Hospedagem e pacotes com aéreo com a equipe da {operador.nome}
+                </dd>
+              </div>
+            </dl>
+            <div class="flex flex-col items-start gap-3 pt-1">
+              {resort.data.url && (
+                <Botao href={resort.data.url} variante="verde" iconeFim="link-externo" externo>
+                  Conhecer o resort
+                </Botao>
+              )}
+              <Botao
+                href={whatsapp.href}
+                icone="whatsapp"
+                evento={whatsapp.evento}
+                variante="texto"
+                externo
+              >
+                {whatsapp.rotulo}
+              </Botao>
+            </div>
+          </div>
+        </div>
+      </Janela>
+    );
+  })}
+</div>
+
+<script>
+  import '@/scripts/carrossel';
+</script>

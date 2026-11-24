@@ -1,0 +1,87 @@
+---
+/**
+ * Metadados de SEO e compartilhamento de cada página: title, description, canonical,
+ * robots, Open Graph e Twitter. A imagem social é a arte fixa public/compartilhar.jpg (1200×630).
+ * Dados estruturados (JSON-LD): ver JsonLd.astro.
+ */
+
+import { dataIso } from '@/lib/formatar';
+import type { ImagemResolvida } from '@/lib/imagens';
+import { avisosMetadados, urlCanonica } from '@/lib/seo';
+import { indexacaoLiberada, site } from '@/site.config';
+
+export interface Props {
+  /** Título completo (já com o nome do site, quando for o caso). */
+  titulo: string;
+  descricao: string;
+  /** Caminho canônico; padrão: a URL atual. */
+  caminho?: string;
+  imagem?: ImagemResolvida;
+  tipo?: 'website' | 'article';
+  semIndice?: boolean;
+  atualizadoEm?: Date;
+}
+
+const {
+  titulo,
+  descricao,
+  caminho = Astro.url.pathname,
+  imagem,
+  tipo = 'website',
+  semIndice = false,
+  atualizadoEm,
+} = Astro.props;
+
+const base = Astro.site ?? site.url;
+const canonica = urlCanonica(caminho, base);
+
+/*
+ * Cartão de compartilhamento (WhatsApp, redes sociais): a mesma arte em todas as páginas, com a
+ * foto do resort, o nome e o 0800 (public/compartilhar.jpg, gerada por
+ * scripts/imagens/compartilhar.ts). A `imagem` da página fica só para os dados estruturados.
+ */
+void imagem;
+const urlImagem = new URL('/compartilhar.jpg', base).href;
+const imagemSocial = {
+  alt: `${site.nome}: vista aérea do resort, de frente para a Praia de Ponta de Mangue, em Maragogi, com a central de reservas`,
+};
+
+if (!semIndice) {
+  for (const aviso of avisosMetadados(titulo, descricao)) {
+    console.warn(`[seo] ${caminho}: ${aviso}`);
+  }
+}
+---
+
+<title>{titulo}</title>
+<meta name="description" content={descricao} />
+<link rel="canonical" href={canonica} />
+{/* Modo modelo ou domínio pendente: nada é indexado, mas a página continua auditada como indexável. */}
+<meta
+  name="robots"
+  content={
+    semIndice || !indexacaoLiberada ? 'noindex, nofollow' : 'index, follow, max-image-preview:large'
+  }
+/>
+{!indexacaoLiberada && !semIndice && <meta name="modelo-indexavel" content="sim" />}
+
+<meta property="og:type" content={tipo} />
+<meta property="og:site_name" content={site.nome} />
+<meta property="og:locale" content={site.locale} />
+<meta property="og:title" content={titulo} />
+<meta property="og:description" content={descricao} />
+<meta property="og:url" content={canonica} />
+<meta property="og:image" content={urlImagem} />
+<meta property="og:image:type" content="image/jpeg" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content={imagemSocial.alt} />
+{atualizadoEm && <meta property="og:updated_time" content={dataIso(atualizadoEm)} />}
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={titulo} />
+<meta name="twitter:description" content={descricao} />
+<meta name="twitter:image" content={urlImagem} />
+<meta name="twitter:image:alt" content={imagemSocial.alt} />
+
+<link rel="sitemap" type="application/xml" href="/sitemap-index.xml" />

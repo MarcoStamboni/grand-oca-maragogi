@@ -1,0 +1,63 @@
+---
+/**
+ * Faixa de números (fatos do site.config e dos dados). Os números contam ao aparecer
+ * (src/scripts/movimento.ts); o HTML traz o valor final e leitores de tela leem esse valor.
+ * Cada número tem um selo com ícone que balança no hover.
+ */
+import Icone from '@/components/ui/Icone.astro';
+import { formatarNumero } from '@/lib/formatar';
+import type { NomeIcone } from '@/lib/icones';
+
+export interface Numero {
+  valor: number;
+  /** Unidade depois do número ("m²", "km", "h"). */
+  unidade?: string;
+  rotulo: string;
+  detalhe?: string;
+  icone?: NomeIcone;
+}
+
+interface Props {
+  itens: readonly Numero[];
+  class?: string;
+}
+
+const { itens, class: classe } = Astro.props;
+---
+
+<div class:list={['container-site', classe]}>
+  <dl class="grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-4">
+    {itens.map((item) => (
+      <div
+        class="group ring-areia-200 relative overflow-hidden rounded-cartao bg-white p-5 shadow-cartao ring-1 sm:p-7"
+        data-revelar
+      >
+        {item.icone && (
+          <span
+            class="text-mar-700 ease-suave absolute top-4 right-4 flex transition duration-500 group-hover:-rotate-12 group-hover:scale-110 sm:top-5 sm:right-5"
+            aria-hidden="true"
+          >
+            <Icone nome={item.icone} class="size-7" />
+          </span>
+        )}
+        <dt class="text-tinta-suave relative pr-12 text-xs font-semibold tracking-widest uppercase sm:text-sm">
+          {item.rotulo}
+        </dt>
+        <dd class="relative mt-3">
+          <span class="text-mar-950 block text-4xl leading-none font-semibold tracking-tight sm:text-5xl">
+            <span aria-hidden="true" data-contador={item.valor}>
+              {formatarNumero(item.valor)}
+            </span>
+            <span class="sr-only">{formatarNumero(item.valor)}</span>
+            {item.unidade && (
+              <span class="text-coral-700 text-2xl sm:text-3xl"> {item.unidade}</span>
+            )}
+          </span>
+          {item.detalhe && (
+            <span class="text-tinta-suave mt-2 block text-sm leading-snug">{item.detalhe}</span>
+          )}
+        </dd>
+      </div>
+    ))}
+  </dl>
+</div>

@@ -1,0 +1,13 @@
+---
+/**
+ * Faixa do modo modelo (site.config: `modelo.ativo`): avisa no topo de todas as páginas que o
+ * resort, os dados, os preços e as imagens são fictícios. Some quando o modo modelo é desligado.
+ */
+import { modelo } from '@/site.config';
+---
+
+{modelo.ativo && (
+  <p class="bg-mar-950 px-4 py-2 text-center text-xs font-semibold text-white sm:text-sm">
+    {modelo.aviso}
+  </p>
+)}

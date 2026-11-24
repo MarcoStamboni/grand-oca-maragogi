@@ -1,0 +1,81 @@
+---
+/**
+ * Página não encontrada: explica o erro, oferece atalhos para as seções principais
+ * e os canais de atendimento. Fora do índice dos buscadores.
+ */
+import Botao from '@/components/ui/Botao.astro';
+import Icone from '@/components/ui/Icone.astro';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { acoes } from '@/lib/acoes';
+import { linkRota, linksDisponiveis } from '@/lib/navegacao';
+
+const atalhos = [
+  linkRota('home', 'Página inicial'),
+  ...linksDisponiveis([
+    'acomodacoes',
+    'allInclusive',
+    'lazer',
+    'fotos',
+    'datasEspeciais',
+    'comoChegar',
+    'reservas',
+    'perguntasFrequentes',
+    'contato',
+  ]),
+];
+---
+
+<BaseLayout
+  titulo="Não encontramos esta página"
+  descricao="O endereço não existe ou mudou. Veja os atalhos para as principais páginas do site do Grand Oca Maragogi Resort."
+  semIndice
+  caminhoCanonico="/404.html"
+>
+  <div class="bg-areia-100">
+    <div class="container-site max-w-3xl space-y-6 py-16 sm:py-24">
+      <p class="text-coral-700 text-sm font-semibold tracking-widest uppercase">Erro 404</p>
+      <h1 class="titulo-pagina">Não encontramos esta página</h1>
+      <p class="text-tinta-suave text-lg">
+        O endereço pode ter mudado ou sido digitado de outra forma. Se você chegou por um link
+        antigo, as páginas foram reorganizadas: escolha um dos atalhos abaixo.
+      </p>
+      <nav aria-labelledby="atalhos-titulo">
+        <h2 id="atalhos-titulo" class="sr-only">
+          Atalhos
+        </h2>
+        <ul class="grid gap-3 sm:grid-cols-2">
+          {atalhos.map((link) => (
+            <li>
+              <a
+                href={link.href}
+                class="ring-areia-200 text-mar-950 hover:ring-mar-700 flex min-h-12 items-center justify-between gap-3 rounded-cartao bg-white px-4 py-3 font-semibold no-underline ring-1"
+              >
+                {link.rotulo}
+                <Icone nome="seta-direita" class="text-mar-700 size-4" />
+              </a>
+            </li>
+          ))}
+        </ul>
+      </nav>
+      <div class="flex flex-wrap gap-3 pt-2">
+        <Botao
+          href={acoes.whatsapp.href}
+          variante="whatsapp"
+          icone="whatsapp"
+          externo
+          evento={acoes.whatsapp.evento}
+        >
+          {acoes.whatsapp.rotulo}
+        </Botao>
+        <Botao
+          href={acoes.ligar.href}
+          variante="contorno"
+          icone="telefone"
+          evento={acoes.ligar.evento}
+        >
+          {acoes.ligar.rotulo}
+        </Botao>
+      </div>
+    </div>
+  </div>
+</BaseLayout>

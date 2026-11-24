@@ -1,0 +1,1101 @@
+---
+/**
+ * Motor de reservas embutido num cartão de bordas arredondadas (padrão do Enotel): cabeçalho
+ * "Reserva online", e o motor (iframe), sem link para tela cheia. Usado na home (busca de
+ * tarifas) e nas páginas de reserva. Só renderize quando houver `url` incorporável.
+ *
+ * Captura de contato para abandono de carrinho (EXEMPLO DE TESTE, sem banco de dados):
+ * na primeira interação com o motor, abre uma janela pedindo nome, WhatsApp, e-mail e a forma
+ * de contato preferida; depois a pessoa segue no motor. Os dados ficam só no navegador
+ * (localStorage "grand-oca-leads-teste") e no console. O motor é de outro domínio, então o
+ * site não consegue ver o clique em "Reservar" dentro dele: o gatilho é a primeira interação.
+ * Para disparar no clique exato, o motor precisaria avisar o site (postMessage) ou ter a captura.
+ */
+import Icone from '@/components/ui/Icone.astro';
+import Imagem from '@/components/ui/Imagem.astro';
+import type { NomeIcone } from '@/lib/icones';
+import { enderecoLeads } from '@/lib/ambiente';
+import { outrosResorts } from '@/lib/outros-resorts';
+import { condicoesPagamento } from '@/lib/pagamento';
+import { operador, resort } from '@/site.config';
+
+interface Props {
+  /** Endereço do motor (padrão: o de hospedagem). O pacote com aéreo passa o dele. */
+  url?: string | null;
+  /** Cabeçalho do cartão. */
+  rotulo?: string;
+  class?: string;
+}
+
+const {
+  url = operador.reservas.hospedagemUrl,
+  rotulo = 'Reserva online',
+  class: classe,
+} = Astro.props;
+/**
+ * Pesquisa de hospedagem da Infotravel (o "motor" do site é uma casca em volta dela). Com a
+ * máscara, o site monta o próprio formulário e abre esta pesquisa já preenchida.
+ */
+const infotravel = {
+  // Motor 94 (motordereservas.app.br): b2cUrl e hotel 369307 do Grand Oca Maragogi.
+  b2c: 'https://reservas-grandocamaragogi.resortallinclusive.com.br/b2c',
+  destinoId: '369307',
+  destinoNome: 'Grand Oca Maragogi Resort',
+};
+/**
+ * Pacote dinâmico (aéreo + hotel de qualquer origem): o voo vai para Recife (aeroporto mais
+ * próximo em distância rodoviária) e o hotel é buscado na região do resort (destinationDiff). Mesmo visual da hospedagem.
+ */
+const pacote = Boolean(url) && url === operador.reservas.pacoteComAereoUrl;
+// Hospedagem: iframe do motor (motordereservas.app.br), como no La Torre. A máscara só vale no pacote.
+const mascara = pacote;
+/**
+ * Janela "Antes de continuar a sua reserva" (contato, convite e perfil do viajante). Desligada a
+ * pedido do cliente (21/10/2026) até a integração com o WhatsApp: "Reservar" abre direto a
+ * disponibilidade. Para religar, troque para `true`; todo o fluxo continua no componente.
+ */
+const CAPTURA_ATIVA = false;
+/**
+ * Motor de reservas bloqueado (21/10/2026): site em validação, então "Reservar" não abre a
+ * disponibilidade nem faz nada. Para desbloquear, troque para `true`.
+ */
+const MOTOR_ATIVO = true;
+const configMascara = {
+  ...infotravel,
+  tipo: pacote ? 'pacote' : 'hospedagem',
+  // PENDENTE: id da região de Recife na Infotravel.
+  regiao: {
+    id: 'PENDENTE',
+    nome: 'Recife',
+    complemento: 'Região Nordeste, Brasil',
+  },
+};
+const campoMotor =
+  'w-full border-0 border-b border-white/30 bg-transparent px-0 py-1.5 text-lg text-white outline-none [color-scheme:dark] focus:border-[#f9b233] [&>option]:text-tinta';
+/** Perfil do viajante: perguntas do passo a passo (rótulo e ícone de cada opção). */
+const perguntasPerfil: {
+  id: string;
+  titulo: string;
+  /** Rótulo curto usado na mensagem do WhatsApp. */
+  resumo: string;
+  opcoes: [string, NomeIcone][];
+}[] = [
+  {
+    id: 'destino',
+    titulo: 'Que tipo de destino você prefere?',
+    resumo: 'Destino',
+    opcoes: [
+      ['Praia', 'coqueiro'],
+      ['Serra ou montanha', 'arvore'],
+      ['Campo e natureza', 'folha'],
+      ['Águas termais', 'gotas'],
+    ],
+  },
+  {
+    id: 'estilo',
+    titulo: 'O que você espera do resort?',
+    resumo: 'Estilo',
+    opcoes: [
+      ['Diversão e agito', 'festa'],
+      ['Descanso e tranquilidade', 'lua'],
+      ['Um pouco de cada', 'sol'],
+    ],
+  },
+  {
+    id: 'padrao',
+    titulo: 'Qual padrão de resort você procura?',
+    resumo: 'Padrão',
+    opcoes: [
+      ['Luxo', 'estrela'],
+      ['Superior', 'selo'],
+      ['Confortável e econômico', 'coracao'],
+    ],
+  },
+  {
+    id: 'regime',
+    titulo: 'Qual regime de alimentação você prefere?',
+    resumo: 'Regime',
+    opcoes: [
+      ['All inclusive', 'taca'],
+      ['Pensão completa', 'talheres'],
+      ['Meia pensão', 'salada'],
+      ['Café da manhã', 'cafe'],
+    ],
+  },
+  {
+    id: 'aereo',
+    titulo: 'Você já tem a passagem aérea?',
+    resumo: 'Aéreo',
+    opcoes: [
+      ['Sim, já tenho', 'validado'],
+      ['Não, quero incluir no pacote', 'aviao'],
+      ['Vou de carro', 'carro'],
+    ],
+  },
+  {
+    id: 'investimento',
+    titulo: 'Quanto pretende investir na viagem?',
+    resumo: 'Investimento',
+    opcoes: [
+      ['De R$ 8 mil a R$ 15 mil', 'cartao'],
+      ['De R$ 16 mil a R$ 26 mil', 'cartao'],
+      ['De R$ 27 mil a R$ 40 mil', 'cartao'],
+      ['Acima de R$ 41 mil', 'cartao'],
+    ],
+  },
+];
+const campo =
+  'ring-areia-300 focus:ring-mar-700 w-full rounded-xl bg-white px-3.5 py-2.5 text-sm text-tinta ring-1 outline-none focus:ring-2';
+/** Vitrine do convite "outras opções": resorts da rede com foto (só ilustração, sem link). */
+const vitrine = mascara ? (await outrosResorts()).filter(({ foto }) => foto).slice(0, 10) : [];
+---
+
+{url && (
+  <div
+    class:list={[
+      'mx-auto w-full rounded-grande bg-[#f85000]',
+      mascara ? 'relative z-30' : 'overflow-hidden',
+      mascara ? 'max-w-[25rem]' : 'max-w-md',
+      ' shadow-flutuante ring-1 ring-black/10',
+      classe,
+    ]}
+    data-motor
+    data-motor-rotulo={rotulo}
+    data-whatsapp={mascara ? operador.whatsapp.numero : undefined}
+    data-captura={CAPTURA_ATIVA ? 'sim' : undefined}
+    data-motor-ativo={MOTOR_ATIVO ? 'sim' : undefined}
+    data-leads={mascara && enderecoLeads ? enderecoLeads : undefined}
+    data-infotravel={mascara ? JSON.stringify(configMascara) : undefined}
+  >
+    <div class:list={['space-y-2 px-6 py-4 text-white', mascara && 'hidden']}>
+      <p class="flex items-center gap-2 font-semibold">
+        <Icone nome="calendario" class="text-coral-400 size-5" />
+        {rotulo}
+      </p>
+      <div class="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-white/80">
+        <p class="flex items-center gap-1.5">
+          <Icone nome="check" class="text-verde-400 size-4" />
+          Confirmação imediata
+        </p>
+        <p class="flex items-center gap-1.5">
+          <Icone nome="escudo" class="size-4" />
+          Ambiente seguro
+        </p>
+        {condicoesPagamento.map((condicao) => (
+          <p class="flex items-center gap-1.5">
+            <Icone nome={condicao.icone} class="text-sol-400 size-4" />
+            <span>
+              <strong class="font-semibold text-white">{condicao.destaque}</strong>{' '}
+              {condicao.complemento}
+            </span>
+          </p>
+        ))}
+      </div>
+    </div>
+    {mascara ? (
+      /*
+       * Máscara do motor de hospedagem (TESTE): busca no visual do site. Ao reservar, pede o
+       * contato, guarda contato + pesquisa e abre a pesquisa da Infotravel já preenchida.
+       */
+      <form class="space-y-5 px-7 pt-6 pb-7 text-white" data-motor-busca>
+        <p class="text-lg leading-snug sm:text-xl">
+          <span class="block whitespace-nowrap">
+            Os melhores <strong class="font-bold text-[#f9b233]">Resorts All Inclusive</strong>
+          </span>
+          para sua viagem
+        </p>
+        <p class="font-semibold">
+          {pacote ? 'Aéreo + hotel para' : 'Consulte e reserve sua viagem para'}
+          <span class="block text-lg font-bold text-[#f9b233]">{resort.nome}</span>
+        </p>
+        {pacote && (
+          /* Origem do voo: sugestões de cidades da Infotravel enquanto a pessoa digita. */
+          <div class="relative" data-origem>
+            <label class="block space-y-1">
+              <span class="text-[0.6875rem] tracking-[0.12em] text-white/70 uppercase">
+                Saindo de
+              </span>
+              <input
+                type="text"
+                name="origem"
+                required
+                autocomplete="off"
+                placeholder="Digite a cidade de origem"
+                class:list={[campoMotor, 'placeholder:text-white/50']}
+                role="combobox"
+                aria-expanded="false"
+                aria-controls="motor-origens"
+                aria-autocomplete="list"
+                data-origem-campo
+              />
+            </label>
+            <div
+              id="motor-origens"
+              class="text-tinta absolute inset-x-0 top-full z-50 mt-2 max-h-64 overflow-y-auto rounded-xl bg-white py-1 shadow-flutuante ring-1 ring-black/5"
+              role="listbox"
+              hidden
+              data-origem-lista
+            ></div>
+          </div>
+        )}
+        <div class="grid grid-cols-2 gap-4">
+          <label class="block space-y-1">
+            <span class="text-[0.6875rem] tracking-[0.12em] text-white/70 uppercase">
+              {pacote ? 'Ida' : 'Entrada'}
+            </span>
+            <input type="date" name="entrada" required class={campoMotor} data-entrada />
+          </label>
+          <label class="block space-y-1">
+            <span class="text-[0.6875rem] tracking-[0.12em] text-white/70 uppercase">
+              {pacote ? 'Volta' : 'Saída'}
+            </span>
+            <input type="date" name="saida" required class={campoMotor} data-saida />
+          </label>
+        </div>
+        {/* Hóspedes: resumo que abre o painel de quartos (adultos, crianças e idades). */}
+        <div class="relative" data-hospedes>
+          <span class="block text-[0.6875rem] tracking-[0.12em] text-white/70 uppercase">
+            Hóspedes
+          </span>
+          <button
+            type="button"
+            class="w-full border-b border-white/30 py-1.5 text-left text-lg text-white"
+            aria-expanded="false"
+            data-hospedes-resumo
+          >
+            1 Quarto(s), 2 Adulto(s)
+          </button>
+          <div
+            class="text-tinta absolute inset-x-0 top-full z-50 mt-2 flex max-h-[min(26rem,60vh)] flex-col rounded-xl bg-white shadow-flutuante ring-1 ring-black/5"
+            hidden
+            data-hospedes-painel
+          >
+            <div class="flex-1 space-y-1 overflow-y-auto overscroll-contain px-4 pt-3">
+              <label class="flex items-center justify-between gap-3 border-b border-[#f0f0f0] pb-3 text-sm">
+                <span class="font-semibold text-mar-800">Quartos</span>
+                <select
+                  class="rounded-md bg-[#f5f7fa] px-2 py-1 text-sm font-semibold"
+                  data-quartos
+                >
+                  {[1, 2, 3, 4].map((n) => (
+                    <option value={n}>{n}</option>
+                  ))}
+                </select>
+              </label>
+              <div class="divide-y divide-[#f0f0f0]" data-quartos-lista></div>
+            </div>
+            <button
+              type="button"
+              class="bg-mar-700 hover:bg-mar-800 m-3 rounded-full px-4 py-2 text-sm font-semibold text-white"
+              data-hospedes-ok
+            >
+              Aplicar
+            </button>
+          </div>
+        </div>
+        <button
+          type="submit"
+          class="w-full rounded-full bg-[#f7790d] px-5 py-3 font-semibold text-white hover:bg-[#e06a05]"
+        >
+          Reservar
+        </button>
+      </form>
+    ) : (
+      <iframe
+        src={url}
+        title={`Motor de reservas do ${resort.nome}`}
+        loading="lazy"
+        allow="payment"
+        scrolling="no"
+        style="width:100%;border:0;min-height:400px;"
+        class="block h-[48rem] w-full border-0 bg-[#f85000] lg:h-[43rem]"
+        data-motor-quadro
+      ></iframe>
+    )}
+
+    {CAPTURA_ATIVA ? (
+      <dialog
+        class="m-auto w-[min(92vw,30rem)] rounded-grande p-0 shadow-flutuante backdrop:bg-mar-950/60 backdrop:backdrop-blur-sm"
+        aria-labelledby="motor-dados-titulo"
+        data-motor-dialogo
+      >
+        <form method="dialog" class="relative space-y-4 p-6 sm:p-7" data-motor-form>
+          <button
+            type="button"
+            class="text-tinta-suave hover:bg-mar-50 hover:text-mar-800 absolute top-3 right-3 inline-flex size-10 items-center justify-center rounded-full"
+            aria-label="Fechar"
+            data-motor-fechar
+          >
+            <Icone nome="fechar" class="size-5" />
+          </button>
+          <div class="space-y-1">
+            <p id="motor-dados-titulo" class="text-mar-800 pr-10 text-xl font-bold">
+              Antes de continuar a sua reserva
+            </p>
+            <p class="text-tinta-suave text-sm">
+              Informe os seus dados para a equipe da {operador.nome} ajudar se algo der errado na
+              reserva.
+            </p>
+          </div>
+          <label class="block space-y-1.5">
+            <span class="text-mar-950 text-sm font-semibold">Nome</span>
+            <input name="nome" required autocomplete="name" class={campo} />
+          </label>
+          <label class="block space-y-1.5">
+            <span class="text-mar-950 text-sm font-semibold">WhatsApp</span>
+            <input
+              name="whatsapp"
+              type="tel"
+              required
+              autocomplete="tel"
+              inputmode="tel"
+              placeholder="(11) 99999-9999"
+              pattern="[\d\s()+\-]{10,}"
+              class={campo}
+            />
+          </label>
+          <label class="block space-y-1.5">
+            <span class="text-mar-950 text-sm font-semibold">E-mail</span>
+            <input name="email" type="email" required autocomplete="email" class={campo} />
+          </label>
+          <fieldset class="space-y-2">
+            <legend class="text-mar-950 mb-1 text-sm font-semibold">
+              Como deseja ser contactado?
+            </legend>
+            <div class="flex gap-3">
+              <label class="ring-areia-300 has-checked:ring-verde-700 has-checked:bg-verde-100 flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-xl px-3 py-2.5 text-sm font-semibold ring-1">
+                <input type="radio" name="contato" value="whatsapp" required class="sr-only" />
+                <Icone nome="whatsapp" class="text-verde-700 size-4" />
+                WhatsApp
+              </label>
+              <label class="ring-areia-300 has-checked:ring-mar-700 has-checked:bg-mar-50 flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-xl px-3 py-2.5 text-sm font-semibold ring-1">
+                <input type="radio" name="contato" value="email" class="sr-only" />
+                <Icone nome="email" class="text-mar-700 size-4" />
+                E-mail
+              </label>
+            </div>
+          </fieldset>
+          <p class="text-tinta-suave text-xs">
+            Usamos esses dados só para falar com você sobre esta reserva, conforme a nossa política
+            de privacidade.
+          </p>
+          <button
+            type="submit"
+            class="bg-verde-700 hover:bg-verde-800 w-full rounded-full px-5 py-3 text-sm font-semibold text-white"
+          >
+            Continuar para a reserva
+          </button>
+        </form>
+        {mascara && (
+          /* Depois do contato: convite para conhecer outras opções antes de seguir para a reserva. */
+          <div class="relative space-y-5 p-6 text-center sm:p-7" hidden data-perfil-convite>
+            <button
+              type="button"
+              class="text-tinta-suave hover:bg-mar-50 hover:text-mar-800 absolute top-3 right-3 inline-flex size-10 items-center justify-center rounded-full"
+              aria-label="Fechar"
+              data-motor-fechar
+            >
+              <Icone nome="fechar" class="size-5" />
+            </button>
+            <span class="bg-mar-50 text-mar-700 mx-auto flex size-14 items-center justify-center rounded-full">
+              <Icone nome="bussola" class="size-7" />
+            </span>
+            <div class="space-y-2">
+              <p class="text-mar-800 text-xl font-bold">
+                Temos dezenas de outras opções, quer conhecer?
+              </p>
+              <p class="text-tinta-suave text-sm">
+                Responda 6 perguntas rápidas e os nossos consultores enviam sugestões de resorts
+                para o seu perfil, além do {resort.nomeCurto}.
+              </p>
+            </div>
+            {vitrine.length > 0 && (
+              /* Mini carrossel só ilustrativo: arrasta para o lado, sem links nos cartões. */
+              <div class="-mx-6 space-y-2 sm:-mx-7">
+                <ul
+                  class="flex cursor-grab snap-x snap-mandatory gap-3 overflow-x-auto px-6 pb-1 select-none [scrollbar-width:none] active:cursor-grabbing sm:px-7 [&::-webkit-scrollbar]:hidden"
+                  aria-label="Alguns resorts all inclusive da rede"
+                  data-vitrine
+                >
+                  {vitrine.map(({ resort: item, foto }) => (
+                    <li class="ring-areia-200 w-36 shrink-0 snap-start overflow-hidden rounded-xl bg-white text-left ring-1">
+                      {foto && (
+                        <div class="pointer-events-none aspect-4/3 overflow-hidden">
+                          <Imagem src={foto.src} alt={foto.alt} sizes="144px" />
+                        </div>
+                      )}
+                      <div class="p-2.5">
+                        <p class="text-mar-950 line-clamp-2 text-xs leading-snug font-semibold">
+                          {item.data.nome}
+                        </p>
+                        <p class="text-tinta-suave mt-0.5 text-[0.6875rem]">
+                          {item.data.destino} ({item.data.uf})
+                        </p>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+                <p class="text-tinta-suave flex items-center justify-center gap-1 text-[0.6875rem]">
+                  Arraste para o lado
+                  <Icone nome="seta-direita" class="size-3" />
+                </p>
+              </div>
+            )}
+            <div class="grid gap-3">
+              <button
+                type="button"
+                class="bg-verde-700 hover:bg-verde-800 w-full rounded-full px-5 py-3 text-sm font-semibold text-white"
+                data-perfil-sim
+              >
+                Sim, quero conhecer
+              </button>
+              <button
+                type="button"
+                class="text-mar-800 ring-areia-300 hover:bg-mar-50 w-full rounded-full px-5 py-3 text-sm font-semibold ring-1"
+                data-perfil-nao
+              >
+                Não, seguir com a reserva
+              </button>
+            </div>
+          </div>
+        )}
+        {mascara && (
+          /*
+           * Perfil do viajante (TESTE): uma pergunta por tela, com barra de progresso. No fim, o
+           * botão Enviar abre o WhatsApp da agência com as respostas, as datas e os hóspedes já
+           * escritos, e leva a pessoa à disponibilidade do motor, como no fluxo normal.
+           */
+          <div class="relative space-y-5 p-6 sm:p-7" hidden data-perfil>
+            <button
+              type="button"
+              class="text-tinta-suave hover:bg-mar-50 hover:text-mar-800 absolute top-3 right-3 inline-flex size-10 items-center justify-center rounded-full"
+              aria-label="Fechar"
+              data-motor-fechar
+            >
+              <Icone nome="fechar" class="size-5" />
+            </button>
+            <div class="space-y-1 pr-10">
+              <p class="text-mar-800 text-xl font-bold">Encontre a viagem ideal para você</p>
+              <p class="text-tinta-suave text-sm">
+                Responda rapidinho: nossos consultores vão sugerir as melhores opções para o seu
+                perfil.
+              </p>
+            </div>
+            <div class="space-y-1.5">
+              <div class="flex items-center gap-3">
+                <div
+                  class="bg-areia-200 h-2 flex-1 overflow-hidden rounded-full"
+                  role="progressbar"
+                  aria-label="Progresso do questionário"
+                  aria-valuemin="0"
+                  aria-valuemax="100"
+                  aria-valuenow="0"
+                  data-perfil-progresso
+                >
+                  <div
+                    class="bg-verde-700 ease-suave h-full w-0 rounded-full transition-[width] duration-500"
+                    data-perfil-barra
+                  ></div>
+                </div>
+                <span
+                  class="text-mar-800 w-10 text-right text-sm font-semibold tabular-nums"
+                  data-perfil-pct
+                >
+                  0%
+                </span>
+              </div>
+              <p class="text-tinta-suave text-xs" data-perfil-passo>
+                Passo 1 de {perguntasPerfil.length}
+              </p>
+            </div>
+            {perguntasPerfil.map((pergunta, indice) => (
+              <fieldset hidden={indice > 0} data-perfil-etapa>
+                <legend class="text-mar-950 mb-3 font-semibold">{pergunta.titulo}</legend>
+                <div class="grid gap-2 sm:grid-cols-2">
+                  {pergunta.opcoes.map(([rotulo, icone]) => (
+                    <label class="ring-areia-300 has-checked:ring-mar-700 has-checked:bg-mar-50 hover:bg-mar-50 flex cursor-pointer items-center gap-3 rounded-xl p-3 text-sm font-semibold ring-1 transition-colors">
+                      <input
+                        type="radio"
+                        name={`perfil-${pergunta.id}`}
+                        value={rotulo}
+                        class="sr-only"
+                        data-pergunta={pergunta.resumo}
+                      />
+                      <Icone nome={icone} class="text-mar-700 size-5 shrink-0" />
+                      {rotulo}
+                    </label>
+                  ))}
+                </div>
+              </fieldset>
+            ))}
+            <div class="space-y-4 text-center" hidden data-perfil-fim>
+              <span class="bg-verde-100 text-verde-700 mx-auto flex size-14 items-center justify-center rounded-full">
+                <Icone nome="validado" class="size-7" />
+              </span>
+              <p class="text-mar-800 text-lg font-bold" data-perfil-obrigado>
+                Obrigado!
+              </p>
+              <p class="text-mar-950 font-semibold">Agora vamos seguir com a sua consulta.</p>
+              <p class="text-tinta-suave text-sm">
+                As suas respostas seguem para os nossos consultores, que vão falar com você pelo
+                WhatsApp. Enquanto isso, veja a disponibilidade do {resort.nomeCurto}.
+              </p>
+              <button
+                type="button"
+                class="bg-verde-700 hover:bg-verde-800 inline-flex w-full items-center justify-center gap-2 rounded-full px-5 py-3 text-sm font-semibold text-white"
+                data-perfil-enviar
+              >
+                Enviar e seguir com a consulta
+                <Icone nome="seta-direita" class="size-4" />
+              </button>
+            </div>
+            <button
+              type="button"
+              class="text-mar-700 hover:text-mar-800 inline-flex items-center gap-1 text-sm font-semibold"
+              data-perfil-voltar
+            >
+              <Icone nome="anterior" class="size-4" />
+              Voltar
+            </button>
+          </div>
+        )}
+      </dialog>
+    ) : (
+      /* Captura desligada: só um marcador vazio (o script continua funcionando sem a janela). */
+      <dialog hidden data-motor-dialogo>
+        <form data-motor-form></form>
+      </dialog>
+    )}
+  </div>
+)}
+
+<script>
+  /**
+   * TESTE de captura para abandono de carrinho (sem servidor; dados só neste navegador).
+   * - Máscara (hospedagem e pacote): "Reservar" abre a janela de contato; ao continuar, guarda o
+   *   contato e pergunta se a pessoa quer conhecer outras opções (perfil do viajante); depois
+   *   abre a pesquisa da Infotravel já preenchida.
+   * - Motor embutido (pacote): a janela abre na primeira interação com o quadro.
+   */
+  const CHAVE = 'grand-oca-leads-teste';
+  const JA_INFORMOU = 'grand-oca-lead-informado';
+
+  const guardar = (lead: Record<string, unknown>) => {
+    try {
+      const lista = JSON.parse(localStorage.getItem(CHAVE) ?? '[]') as unknown[];
+      lista.push(lead);
+      localStorage.setItem(CHAVE, JSON.stringify(lista));
+      sessionStorage.setItem(JA_INFORMOU, '1');
+    } catch {
+      // Armazenamento bloqueado: segue para a reserva mesmo assim.
+    }
+    console.warn('[teste] contato capturado para abandono de carrinho:', lead);
+  };
+  const jaInformou = () => {
+    try {
+      return sessionStorage.getItem(JA_INFORMOU) === '1';
+    } catch {
+      return false;
+    }
+  };
+  const isoLocal = (d: Date) =>
+    `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+
+  // Vitrine do convite: no mouse, arrastar rola o carrossel (no toque, a rolagem já é nativa).
+  for (const trilho of document.querySelectorAll<HTMLElement>('[data-vitrine]')) {
+    let inicioX = 0;
+    let inicioScroll = 0;
+    let arrastando = false;
+    trilho.addEventListener('pointerdown', (e) => {
+      if (e.pointerType !== 'mouse') return;
+      arrastando = true;
+      inicioX = e.clientX;
+      inicioScroll = trilho.scrollLeft;
+      trilho.style.scrollSnapType = 'none';
+      trilho.setPointerCapture(e.pointerId);
+    });
+    trilho.addEventListener('pointermove', (e) => {
+      if (arrastando) trilho.scrollLeft = inicioScroll - (e.clientX - inicioX);
+    });
+    const soltar = () => {
+      arrastando = false;
+      trilho.style.scrollSnapType = '';
+    };
+    trilho.addEventListener('pointerup', soltar);
+    trilho.addEventListener('pointercancel', soltar);
+  }
+
+  for (const cartao of document.querySelectorAll<HTMLElement>('[data-motor]')) {
+    const dialogo = cartao.querySelector<HTMLDialogElement>('[data-motor-dialogo]');
+    const contato = cartao.querySelector<HTMLFormElement>('[data-motor-form]');
+    if (!dialogo || !contato) continue;
+    // X da janela: fecha sem enviar (não dispara o envio do formulário).
+    cartao
+      .querySelectorAll('[data-motor-fechar]')
+      .forEach((botao) => botao.addEventListener('click', () => dialogo.close()));
+    const base = {
+      motor: cartao.dataset.motorRotulo,
+      pagina: location.pathname,
+    };
+
+    const busca = cartao.querySelector<HTMLFormElement>('[data-motor-busca]');
+    if (busca && cartao.dataset.infotravel) {
+      const cfg = JSON.parse(cartao.dataset.infotravel) as {
+        b2c: string;
+        destinoId: string;
+        destinoNome: string;
+        tipo: 'hospedagem' | 'pacote';
+        regiao: { id: string; nome: string; complemento: string };
+      };
+
+      // Origem do pacote: busca de cidades (API pública do motor, a mesma do motor original).
+      interface Origem {
+        id: number;
+        nome: string;
+        complemento: string;
+      }
+      let origem: Origem | undefined;
+      const campoOrigem = busca.querySelector<HTMLInputElement>('[data-origem-campo]');
+      const listaOrigem = busca.querySelector<HTMLElement>('[data-origem-lista]');
+      const mostrarOrigens = (itens: Origem[]) => {
+        if (!listaOrigem || !campoOrigem) return;
+        listaOrigem.replaceChildren(
+          ...itens.map((item) => {
+            const li = document.createElement('div');
+            li.setAttribute('role', 'option');
+            li.className = 'cursor-pointer px-4 py-2 text-sm hover:bg-[#f5f7fa]';
+            const nome = document.createElement('span');
+            nome.className = 'block font-semibold text-mar-800';
+            nome.textContent = item.nome;
+            const comp = document.createElement('span');
+            comp.className = 'block text-xs text-[#6b7280]';
+            comp.textContent = item.complemento;
+            li.append(nome, comp);
+            li.addEventListener('mousedown', (e) => {
+              e.preventDefault();
+              origem = item;
+              campoOrigem.value = `${item.nome}, ${item.complemento}`;
+              campoOrigem.setCustomValidity('');
+              listaOrigem.hidden = true;
+              campoOrigem.setAttribute('aria-expanded', 'false');
+            });
+            return li;
+          }),
+        );
+        listaOrigem.hidden = itens.length === 0;
+        campoOrigem.setAttribute('aria-expanded', String(itens.length > 0));
+      };
+      let espera: number | undefined;
+      campoOrigem?.addEventListener('input', () => {
+        origem = undefined;
+        campoOrigem.setCustomValidity('');
+        window.clearTimeout(espera);
+        const termo = campoOrigem.value.trim();
+        if (termo.length < 3) return mostrarOrigens([]);
+        espera = window.setTimeout(async () => {
+          try {
+            const resposta = await fetch(
+              `https://motorv2.infotravel.com.br/integra/api/regiao/pesquisar/${encodeURIComponent(termo)}/null/pt_BR`,
+            );
+            const lista = (await resposta.json()) as {
+              id: number;
+              nmRegiao: string;
+              sbRegiao?: string;
+            }[];
+            mostrarOrigens(
+              lista
+                .slice(0, 8)
+                .map((d) => ({ id: d.id, nome: d.nmRegiao, complemento: d.sbRegiao ?? '' })),
+            );
+          } catch {
+            mostrarOrigens([]);
+          }
+        }, 300);
+      });
+      campoOrigem?.addEventListener('blur', () => {
+        if (listaOrigem) listaOrigem.hidden = true;
+      });
+      const entrada = busca.querySelector<HTMLInputElement>('[data-entrada]');
+      const saida = busca.querySelector<HTMLInputElement>('[data-saida]');
+      // Clique em qualquer ponto do campo de data abre o calendário (não só no ícone).
+      [entrada, saida].forEach((campo) =>
+        campo?.addEventListener('click', () => {
+          try {
+            campo.showPicker();
+          } catch {
+            /* navegador sem showPicker: segue o comportamento padrão */
+          }
+        }),
+      );
+      const resumo = busca.querySelector<HTMLButtonElement>('[data-hospedes-resumo]');
+      const painel = busca.querySelector<HTMLElement>('[data-hospedes-painel]');
+      const seletorQuartos = busca.querySelector<HTMLSelectElement>('[data-quartos]');
+      const lista = busca.querySelector<HTMLElement>('[data-quartos-lista]');
+      const opcoes = (de: number, ate: number, atual: number) =>
+        Array.from({ length: ate - de + 1 }, (_, i) => de + i)
+          .map((n) => `<option value="${n}"${n === atual ? ' selected' : ''}>${n}</option>`)
+          .join('');
+      const linha = 'flex items-center justify-between gap-3 text-sm text-[#6b7280]';
+
+      /** Uma caixa por quarto: adultos, crianças (até 17 anos) e a idade de cada criança. */
+      const montarQuartos = () => {
+        if (!lista || !seletorQuartos) return;
+        const total = Number(seletorQuartos.value);
+        const atuais = [...lista.querySelectorAll<HTMLElement>('[data-quarto]')];
+        atuais.slice(total).forEach((q) => q.remove());
+        for (let n = atuais.length; n < total; n++) {
+          const quarto = document.createElement('div');
+          quarto.dataset.quarto = '';
+          quarto.className = 'space-y-2 py-3';
+          quarto.innerHTML = `
+            <p class="text-[0.6875rem] font-semibold tracking-wider text-mar-700 uppercase">Quarto ${n + 1}</p>
+            <label class="${linha}"><span>Adultos</span>
+              <select class="rounded-md bg-[#f5f7fa] px-2 py-0.5 text-sm font-semibold text-tinta" data-adt>${opcoes(1, 4, n === 0 ? 2 : 1)}</select></label>
+            <label class="${linha}"><span>Crianças<small class="block text-[0.6875rem] text-[#9ca3af]">Até 17 anos</small></span>
+              <select class="rounded-md bg-[#f5f7fa] px-2 py-0.5 text-sm font-semibold text-tinta" data-chd>${opcoes(0, 3, 0)}</select></label>
+            <div class="space-y-2 empty:hidden" data-idades></div>`;
+          const chd = quarto.querySelector<HTMLSelectElement>('[data-chd]');
+          const idades = quarto.querySelector<HTMLElement>('[data-idades]');
+          chd?.addEventListener('change', () => {
+            if (!idades) return;
+            const atuaisIdades = idades.querySelectorAll('select').length;
+            const alvo = Number(chd.value);
+            [...idades.children].slice(alvo).forEach((c) => c.remove());
+            for (let i = atuaisIdades; i < alvo; i++) {
+              const sel = document.createElement('select');
+              sel.required = true;
+              sel.dataset.idade = '';
+              sel.className =
+                'w-28 rounded-md bg-[#f5f7fa] px-2 py-0.5 text-sm font-semibold text-tinta';
+              sel.innerHTML =
+                '<option value="" disabled selected>Selecione</option>' +
+                Array.from(
+                  { length: 18 },
+                  (_, a) => `<option value="${a}">${a} ${a === 1 ? 'ano' : 'anos'}</option>`,
+                ).join('');
+              // Uma linha por criança: rótulo claro à esquerda, idade à direita.
+              const rotulo = document.createElement('label');
+              rotulo.className = linha;
+              const texto = document.createElement('span');
+              texto.textContent = `Idade da criança ${i + 1}`;
+              rotulo.append(texto, sel);
+              idades.append(rotulo);
+            }
+            atualizarResumo();
+          });
+          quarto.querySelector('[data-adt]')?.addEventListener('change', atualizarResumo);
+          lista.append(quarto);
+        }
+        atualizarResumo();
+      };
+
+      const lerQuartos = () =>
+        [...(lista?.querySelectorAll<HTMLElement>('[data-quarto]') ?? [])].map((q) => ({
+          adultos: Number(q.querySelector<HTMLSelectElement>('[data-adt]')?.value ?? 2),
+          idades: [...q.querySelectorAll<HTMLSelectElement>('[data-idade]')].map((s) => s.value),
+        }));
+
+      function atualizarResumo() {
+        const quartos = lerQuartos();
+        const adt = quartos.reduce((s, q) => s + q.adultos, 0);
+        const chd = quartos.reduce((s, q) => s + q.idades.length, 0);
+        if (resumo) {
+          resumo.textContent = `${quartos.length} Quarto(s), ${adt} Adulto(s)${chd ? `, ${chd} Criança(s)` : ''}`;
+        }
+      }
+
+      const abrirPainel = (abrir: boolean) => {
+        if (!painel || !resumo) return;
+        painel.hidden = !abrir;
+        resumo.setAttribute('aria-expanded', String(abrir));
+      };
+      resumo?.addEventListener('click', () => abrirPainel(Boolean(painel?.hidden)));
+      busca
+        .querySelector('[data-hospedes-ok]')
+        ?.addEventListener('click', () => abrirPainel(false));
+      document.addEventListener('click', (e) => {
+        if (
+          painel &&
+          !painel.hidden &&
+          !busca.querySelector('[data-hospedes]')?.contains(e.target as Node)
+        ) {
+          abrirPainel(false);
+        }
+      });
+      seletorQuartos?.addEventListener('change', montarQuartos);
+      montarQuartos();
+
+      // Datas: entrada a partir de 10 dias (regra do motor); saída depois da entrada.
+      const minimo = new Date();
+      minimo.setDate(minimo.getDate() + 10);
+      if (entrada) entrada.min = isoLocal(minimo);
+      entrada?.addEventListener('change', () => {
+        if (!saida || !entrada.value) return;
+        const proximo = new Date(`${entrada.value}T12:00:00`);
+        proximo.setDate(proximo.getDate() + 1);
+        saida.min = isoLocal(proximo);
+        if (!saida.value || saida.value <= entrada.value) saida.value = isoLocal(proximo);
+      });
+
+      let pesquisa: Record<string, unknown> = {};
+      let urlInfotravel = '';
+      busca.addEventListener('submit', (evento) => {
+        evento.preventDefault();
+        const quartos = lerQuartos();
+        // Idade de criança em branco: abre o painel para a pessoa completar.
+        if (quartos.some((q) => q.idades.includes(''))) {
+          abrirPainel(true);
+          busca.querySelector<HTMLSelectElement>('[data-idade]:invalid')?.reportValidity();
+          return;
+        }
+        if (campoOrigem && !origem) {
+          campoOrigem.setCustomValidity('Escolha a cidade de origem na lista.');
+          campoOrigem.reportValidity();
+          return;
+        }
+        const dados = new FormData(busca);
+        // Ocupação no formato da Infotravel: um quarto "2" ou "2-5,8"; os demais quartos vêm
+        // como "&occupancy=..." dentro do mesmo parâmetro (igual ao motor original).
+        const ocupacao = quartos
+          .map((q, i) => {
+            const quarto = q.idades.length
+              ? `${q.adultos}-${q.idades.join(',')}`
+              : String(q.adultos);
+            return i === 0 ? quarto : `occupancy=${quarto}`;
+          })
+          .join('&');
+        pesquisa = {
+          entrada: dados.get('entrada'),
+          saida: dados.get('saida'),
+          quartos: quartos.length,
+          porQuarto: quartos,
+          adultos: quartos.reduce((s, q) => s + q.adultos, 0),
+          criancas: quartos.reduce((s, q) => s + q.idades.length, 0),
+        };
+        if (cfg.tipo === 'pacote' && origem) {
+          // Pacote dinâmico da Infotravel: voo de ida e volta + hotel na região do resort.
+          pesquisa.origem = `${origem.nome}, ${origem.complemento}`;
+          const p = new URLSearchParams({
+            originType: 'M',
+            originId: String(origem.id),
+            originName: `${origem.nome} ${origem.complemento}`.trim(),
+            originIata: '',
+            destinyType: 'M',
+            destinyId: cfg.regiao.id,
+            destinyName: `${cfg.regiao.nome} ${cfg.regiao.complemento}`,
+            destinyIata: '',
+            goingDate: String(dados.get('entrada')),
+            returnDate: String(dados.get('saida')),
+            occupancy: ocupacao,
+            tab: 'dynamic-package',
+            packageType: 'DYN',
+            destinationDiffType: 'M',
+            // PENDENTE: id da região do resort (Maragogi) na Infotravel.
+            destinationDiffId: 'PENDENTE',
+            destinationDiffName: 'Maragogi, Região Nordeste, Brasil',
+          });
+          urlInfotravel = `${cfg.b2c}/search/packages/dynamic/flights?${p.toString()}`;
+        } else {
+          const p = new URLSearchParams({
+            destinyType: 'H',
+            destinyId: cfg.destinoId,
+            destinyName: cfg.destinoNome,
+            goingDate: String(dados.get('entrada')),
+            returnDate: String(dados.get('saida')),
+            occupancy: ocupacao,
+          });
+          urlInfotravel = `${cfg.b2c}/search/hotels?${p.toString()}`;
+        }
+        // Captura de contato e perfil do viajante desligada por enquanto (CAPTURA_ATIVA): vai
+        // direto para a disponibilidade. O fluxo continua pronto para ser religado.
+        // Motor bloqueado no projeto de teste (MOTOR_ATIVO): o botão não faz nada.
+        if (cartao.dataset.motorAtivo !== 'sim') return;
+        if (cartao.dataset.captura === 'sim') dialogo.showModal();
+        else window.open(urlInfotravel, '_blank', 'noopener');
+      });
+
+      // Perfil do viajante: passo a passo com barra de progresso (TESTE, sem servidor).
+      const perfil = dialogo.querySelector<HTMLElement>('[data-perfil]');
+      const etapas = [...dialogo.querySelectorAll<HTMLFieldSetElement>('[data-perfil-etapa]')];
+      const fim = dialogo.querySelector<HTMLElement>('[data-perfil-fim]');
+      const voltar = dialogo.querySelector<HTMLButtonElement>('[data-perfil-voltar]');
+      let etapaAtual = 0;
+      const mostrarEtapa = (indice: number) => {
+        etapaAtual = indice;
+        etapas.forEach((etapa, i) => (etapa.hidden = i !== indice));
+        if (fim) fim.hidden = indice < etapas.length;
+        if (voltar) voltar.hidden = indice === 0 || indice >= etapas.length;
+        const pct = Math.round((Math.min(indice, etapas.length) / etapas.length) * 100);
+        const barra = dialogo.querySelector<HTMLElement>('[data-perfil-barra]');
+        if (barra) barra.style.width = `${pct}%`;
+        dialogo
+          .querySelector('[data-perfil-progresso]')
+          ?.setAttribute('aria-valuenow', String(pct));
+        const textoPct = dialogo.querySelector('[data-perfil-pct]');
+        if (textoPct) textoPct.textContent = `${pct}%`;
+        const passo = dialogo.querySelector('[data-perfil-passo]');
+        if (passo) {
+          passo.textContent =
+            indice < etapas.length ? `Passo ${indice + 1} de ${etapas.length}` : 'Tudo pronto!';
+        }
+      };
+      const respostas = () =>
+        etapas.flatMap((etapa) => {
+          const marcada = etapa.querySelector<HTMLInputElement>('input:checked');
+          return marcada
+            ? [{ pergunta: marcada.dataset.pergunta ?? '', resposta: marcada.value }]
+            : [];
+        });
+
+      const convite = dialogo.querySelector<HTMLElement>('[data-perfil-convite]');
+      // "Sim, quero conhecer": começa o passo a passo do perfil.
+      dialogo.querySelector('[data-perfil-sim]')?.addEventListener('click', () => {
+        if (!perfil) return;
+        if (convite) convite.hidden = true;
+        perfil.hidden = false;
+        const nome = String(new FormData(contato).get('nome') ?? '').split(' ')[0];
+        const obrigado = dialogo.querySelector('[data-perfil-obrigado]');
+        if (obrigado) obrigado.textContent = nome ? `Obrigado, ${nome}!` : 'Obrigado!';
+        mostrarEtapa(0);
+      });
+      // "Não, seguir com a reserva": abre a disponibilidade, como no fluxo sem perfil.
+      dialogo.querySelector('[data-perfil-nao]')?.addEventListener('click', () => {
+        dialogo.close();
+        window.open(urlInfotravel, '_blank', 'noopener');
+      });
+      // Escolher uma opção já avança para a próxima pergunta.
+      etapas.forEach((etapa, indice) =>
+        etapa.addEventListener('change', () =>
+          window.setTimeout(() => mostrarEtapa(indice + 1), 250),
+        ),
+      );
+      voltar?.addEventListener('click', () => mostrarEtapa(Math.max(0, etapaAtual - 1)));
+      // Ao fechar a janela, volta ao formulário de contato.
+      dialogo.addEventListener('close', () => {
+        contato.hidden = false;
+        if (convite) convite.hidden = true;
+        if (perfil) perfil.hidden = true;
+      });
+
+      const dataBr = (iso: unknown) =>
+        String(iso ?? '')
+          .split('-')
+          .reverse()
+          .join('/');
+      dialogo.querySelector('[data-perfil-enviar]')?.addEventListener('click', () => {
+        const dados = Object.fromEntries(new FormData(contato).entries()) as Record<string, string>;
+        const perfilRespostas = respostas();
+        const quartos = (pesquisa.porQuarto ?? []) as { adultos: number; idades: string[] }[];
+        const linhas = [
+          `Olá! Fiz uma pesquisa para o ${cfg.destinoNome} no site e quero receber outras opções de viagem.`,
+          '',
+          `*Nome:* ${dados.nome ?? ''}`,
+          `*WhatsApp:* ${dados.whatsapp ?? ''}`,
+          `*E-mail:* ${dados.email ?? ''}`,
+          `*Prefere contato por:* ${dados.contato === 'email' ? 'E-mail' : 'WhatsApp'}`,
+          ...(pesquisa.origem ? [`*Saindo de:* ${String(pesquisa.origem)}`] : []),
+          `*Datas:* ${dataBr(pesquisa.entrada)} a ${dataBr(pesquisa.saida)}`,
+          ...quartos.map(
+            (q, i) =>
+              `*Quarto ${i + 1}:* ${q.adultos} adulto(s)${
+                q.idades.length
+                  ? `, ${q.idades.length} criança(s) (${q.idades.map((a) => `${a} anos`).join(', ')})`
+                  : ''
+              }`,
+          ),
+          '',
+          '*Perfil da viagem*',
+          ...perfilRespostas.map(({ pergunta, resposta }) => `${pergunta}: ${resposta}`),
+        ];
+        const lead = {
+          ...dados,
+          ...base,
+          pesquisa,
+          urlPesquisa: urlInfotravel,
+          perfil: perfilRespostas,
+          // Texto pronto para o WhatsApp dos consultores (o serviço só repassa).
+          mensagem: linhas.join('\n'),
+          whatsappAgencia: cartao.dataset.whatsapp,
+          data: new Date().toISOString(),
+        };
+        guardar(lead);
+        // Envio em segundo plano, sem abrir o WhatsApp: o serviço de automação (PUBLIC_LEADS_WEBHOOK)
+        // recebe e repassa aos consultores. `keepalive` mantém o envio mesmo com a troca de página.
+        // Sem o serviço configurado, é o modo teste (só o registro no navegador).
+        const webhook = cartao.dataset.leads;
+        if (webhook) {
+          fetch(webhook, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(lead),
+            keepalive: true,
+          }).catch(() => {
+            // Falha no envio não impede a reserva; o registro local fica como reserva de teste.
+          });
+        }
+        // Segue para a disponibilidade do motor nesta aba, como no fluxo normal.
+        location.assign(urlInfotravel);
+      });
+
+      // "Continuar para a reserva": guarda o contato e, em vez de abrir a reserva na hora,
+      // pergunta se a pessoa quer conhecer outras opções (a janela fica aberta).
+      contato.addEventListener('submit', (evento) => {
+        evento.preventDefault();
+        guardar({
+          ...Object.fromEntries(new FormData(contato).entries()),
+          ...base,
+          pesquisa,
+          urlPesquisa: urlInfotravel,
+          data: new Date().toISOString(),
+        });
+        contato.hidden = true;
+        if (convite) convite.hidden = false;
+      });
+      continue;
+    }
+
+    // Motor embutido de outro domínio: o clique dentro dele tira o foco da página.
+    const quadro = cartao.querySelector<HTMLIFrameElement>('[data-motor-quadro]');
+    if (!quadro) continue;
+    window.addEventListener('blur', () => {
+      if (
+        cartao.dataset.captura !== 'sim' ||
+        document.activeElement !== quadro ||
+        jaInformou() ||
+        dialogo.open
+      )
+        return;
+      dialogo.showModal();
+    });
+    contato.addEventListener('submit', () => {
+      guardar({
+        ...Object.fromEntries(new FormData(contato).entries()),
+        ...base,
+        motorUrl: quadro.src,
+        data: new Date().toISOString(),
+      });
+      quadro.focus();
+    });
+  }
+</script>
+
+<script>
+  // O motor avisa a altura do conteúdo (motorReservasHeight); o quadro acompanha, sem rolagem interna.
+  window.addEventListener('message', (e) => {
+    const altura = e.data?.motorReservasHeight;
+    if (typeof altura !== 'number') return;
+    for (const quadro of document.querySelectorAll<HTMLIFrameElement>(
+      'iframe[data-motor-quadro]',
+    )) {
+      if (quadro.contentWindow === e.source) quadro.style.height = `${altura}px`;
+    }
+  });
+</script>
+
+<style is:global>
+  /* Cada seção é um contexto de empilhamento (isolate): com o painel de quartos aberto, a seção
+     do motor sobe para o painel ficar por cima da seção seguinte. */
+  section:has([data-hospedes-painel]:not([hidden])) {
+    z-index: 30;
+  }
+</style>

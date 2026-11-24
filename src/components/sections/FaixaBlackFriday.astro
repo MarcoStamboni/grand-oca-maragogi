@@ -1,0 +1,341 @@
+---
+/**
+ * Faixa preta da Black Friday no topo do cabeçalho (padrão do site hoteisemolimpia.com.br):
+ * selo amarelo, chamada, relógio d/h/m/s e o link "Ver hospedagens" à direita. Antes do início,
+ * conta até o começo das ofertas; durante a campanha, mostra a frase `depois` e conta até o fim;
+ * depois do fim, some. Enquanto a faixa está visível, o cabeçalho, os submenus e o menu do
+ * celular ficam pretos (#0B0B0B), com letras e logos brancas (estilos abaixo).
+ * A altura da faixa entra em `--bf-h` (40px; 36px até 560px), somada ao scroll-padding e aos
+ * painéis fixos. Tudo é configurado em `blackFriday` (src/site.config.ts).
+ * Sem JavaScript, mostra a data por extenso no lugar do relógio; leitores de tela leem o texto
+ * oculto com as datas, e não os segundos.
+ */
+import { formatarData } from '@/lib/formatar';
+import { blackFriday } from '@/site.config';
+
+const inicio = new Date(blackFriday.inicio);
+const fim = new Date(blackFriday.fim);
+// Gerada só enquanto a campanha não acabou (o navegador também esconde depois do fim).
+const visivel = blackFriday.ativo && Date.now() < fim.getTime();
+const dataInicio = formatarData(blackFriday.inicio.slice(0, 10));
+const dataFim = formatarData(blackFriday.fim.slice(0, 10));
+const unidades = ['d', 'h', 'm', 's'] as const;
+---
+
+{visivel && (
+  <div
+    class="bf-band"
+    data-black-friday
+    data-inicio={inicio.toISOString()}
+    data-fim={fim.toISOString()}
+    data-chamada={blackFriday.chamada}
+    data-chamada-fim={blackFriday.chamadaFim}
+  >
+    <div class="container-site bf-in">
+      <span class="bf-selo">{blackFriday.rotulo}</span>
+      <p class="sr-only">
+        {`Black Friday: as ofertas começam em ${dataInicio} e vão até ${dataFim}.`}
+      </p>
+      <span class="bf-depois" aria-hidden="true" hidden data-bf-depois>
+        {blackFriday.depois}
+      </span>
+      <span class="bf-txt" aria-hidden="true" data-bf-txt>
+        {blackFriday.chamada}
+      </span>
+      {/* Sem JavaScript: a data por extenso. Com JavaScript: o relógio. */}
+      <span class="bf-data" aria-hidden="true" data-bf-data>
+        {dataInicio.replace(/ de \d{4}$/, '')}
+      </span>
+      <span class="bf-clock" aria-hidden="true" hidden data-bf-clock>
+        {unidades.map((chave) => (
+          <>
+            <b data-bf={chave}>--</b>
+            <i data-bf-unidade={chave}>{chave}</i>
+          </>
+        ))}
+      </span>
+      <a class="bf-cta" href={blackFriday.ctaHref}>
+        {blackFriday.cta}
+      </a>
+    </div>
+  </div>
+)}
+
+<style is:global>
+  /* Altura da faixa: somada ao scroll-padding e aos painéis fixos abaixo do cabeçalho. */
+  :root {
+    --bf-h: 0px;
+  }
+  :root:has([data-black-friday]:not([hidden])) {
+    --bf-h: 40px;
+  }
+  @media (max-width: 560px) {
+    :root:has([data-black-friday]:not([hidden])) {
+      --bf-h: 36px;
+    }
+  }
+
+  /* Faixa */
+  .bf-band {
+    display: flex;
+    align-items: center;
+    height: var(--bf-h);
+    overflow: hidden;
+    background: #000;
+    border-bottom: 1px solid rgb(255 255 255 / 0.14);
+    font-size: 13px;
+    color: rgb(255 255 255 / 0.88);
+  }
+  .bf-band[hidden] {
+    display: none;
+  }
+  .bf-in {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+    white-space: nowrap;
+  }
+  .bf-selo {
+    flex-shrink: 0;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: #f5c04a;
+    color: #111;
+    font-size: 11.5px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .bf-txt {
+    opacity: 0.8;
+  }
+  /* Frase da campanha no ar: classe própria, encolhe com reticências e nunca estoura a faixa. */
+  .bf-depois {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-weight: 600;
+    color: #fff;
+  }
+  .bf-data {
+    font-weight: 600;
+    color: #fff;
+  }
+  .bf-clock {
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+    gap: 3px;
+    font-variant-numeric: tabular-nums;
+  }
+  .bf-clock[hidden],
+  .bf-depois[hidden],
+  .bf-data[hidden] {
+    display: none;
+  }
+  .bf-clock b {
+    min-width: 28px;
+    padding: 3px 6px;
+    border-radius: 6px;
+    background: rgb(255 255 255 / 0.12);
+    color: #fff;
+    font-size: 13px;
+    font-weight: 700;
+    text-align: center;
+  }
+  .bf-clock i {
+    margin-right: 4px;
+    font-size: 11px;
+    font-style: normal;
+    opacity: 0.6;
+  }
+  .bf-cta {
+    flex-shrink: 0;
+    margin-left: auto;
+    padding-bottom: 1px;
+    border-bottom: 1px solid rgb(245 192 74 / 0.45);
+    color: #f5c04a;
+    font-weight: 600;
+    text-decoration: none;
+  }
+  .bf-cta:hover {
+    border-bottom-color: #fff;
+    color: #fff;
+    text-decoration: none;
+  }
+  @media (max-width: 860px) {
+    .bf-txt {
+      display: none;
+    }
+  }
+  @media (max-width: 560px) {
+    .bf-band {
+      font-size: 12px;
+    }
+    .bf-in {
+      gap: 8px;
+    }
+    .bf-selo {
+      padding: 3px 8px;
+      font-size: 10px;
+      letter-spacing: 0.06em;
+    }
+    .bf-clock b {
+      min-width: 24px;
+      padding: 2px 5px;
+      font-size: 12px;
+    }
+    .bf-cta {
+      font-size: 12px;
+    }
+    .bf-clock b[data-bf='s'],
+    .bf-clock i[data-bf-unidade='s'] {
+      display: none;
+    }
+  }
+  @media (max-width: 400px) {
+    .bf-cta {
+      display: none;
+    }
+  }
+
+  /* Cabeçalho preto enquanto a faixa aparece (o botão de reserva mantém a cor da marca). */
+  :root:has([data-black-friday]:not([hidden])) {
+    [data-cabecalho] {
+      background: #0b0b0b;
+      border-color: rgb(255 255 255 / 0.14);
+      box-shadow: 0 1px 0 rgb(255 255 255 / 0.14);
+      backdrop-filter: none;
+      color: #fff;
+    }
+    [data-cabecalho] nav a,
+    [data-cabecalho] [data-submenu-botao],
+    [data-cabecalho] [data-menu-abrir],
+    [data-cabecalho] a[href='#mapa-do-site'] {
+      color: #fff;
+    }
+    [data-cabecalho] nav a[aria-current],
+    [data-cabecalho] nav .text-coral-700 {
+      color: var(--color-coral-400);
+    }
+    [data-cabecalho] nav a:hover {
+      color: var(--color-sol-400);
+    }
+    [data-cabecalho] [data-menu-abrir],
+    [data-cabecalho] a[href='#mapa-do-site'] {
+      background: transparent;
+      --tw-ring-color: rgb(255 255 255 / 0.3);
+    }
+    [data-submenu-painel] {
+      background: #0b0b0b;
+      --tw-ring-color: rgb(255 255 255 / 0.14);
+    }
+    [data-submenu-painel] a {
+      color: #fff;
+    }
+    [data-submenu-painel] a:hover,
+    [data-submenu-painel] a[aria-current] {
+      background: rgb(255 255 255 / 0.1);
+      color: #fff;
+    }
+
+    /* Menu do celular */
+    #menu-celular {
+      background: #0b0b0b;
+      color: #fff;
+    }
+    #menu-celular :is(p, a, button) {
+      color: #fff;
+    }
+    #menu-celular a[aria-current] {
+      background: rgb(255 255 255 / 0.1);
+      color: var(--color-coral-400);
+    }
+    #menu-celular :is(.border-areia-200, .divide-areia-200 > *) {
+      border-color: rgb(255 255 255 / 0.14);
+    }
+    #menu-celular .text-tinta {
+      color: rgb(255 255 255 / 0.85);
+    }
+    #menu-celular .text-mar-700 {
+      color: var(--color-coral-400);
+    }
+
+    /* Logos brancas só no cabeçalho */
+    [data-logo-resort] {
+      filter: brightness(0) invert(1);
+    }
+    [data-logo-agencia] {
+      display: none;
+    }
+    [data-logo-agencia-claro] {
+      display: block;
+    }
+  }
+  [data-logo-agencia-claro] {
+    display: none;
+  }
+</style>
+
+<script>
+  /**
+   * Relógio da faixa: atualiza a cada segundo (pausa com a aba escondida). Antes do início, conta
+   * até o começo; durante a campanha, mostra a frase `depois` e conta até o fim; depois, some.
+   */
+  for (const faixa of document.querySelectorAll<HTMLElement>('[data-black-friday]')) {
+    const inicio = Date.parse(faixa.dataset['inicio'] ?? '');
+    const fim = Date.parse(faixa.dataset['fim'] ?? '');
+    const txt = faixa.querySelector<HTMLElement>('[data-bf-txt]');
+    const depois = faixa.querySelector<HTMLElement>('[data-bf-depois]');
+    const data = faixa.querySelector<HTMLElement>('[data-bf-data]');
+    const relogio = faixa.querySelector<HTMLElement>('[data-bf-clock]');
+    const campos = {
+      d: faixa.querySelector<HTMLElement>('[data-bf="d"]'),
+      h: faixa.querySelector<HTMLElement>('[data-bf="h"]'),
+      m: faixa.querySelector<HTMLElement>('[data-bf="m"]'),
+      s: faixa.querySelector<HTMLElement>('[data-bf="s"]'),
+    };
+    const doisDigitos = (valor: number) => String(valor).padStart(2, '0');
+    let intervalo = 0;
+
+    const atualizar = (): boolean => {
+      const agora = Date.now();
+      if (Number.isNaN(fim) || agora >= fim) {
+        faixa.hidden = true;
+        return false;
+      }
+      const noAr = agora >= inicio;
+      faixa.classList.toggle('is-ok', noAr);
+      if (depois) depois.hidden = !noAr;
+      if (txt) {
+        txt.textContent = (noAr ? faixa.dataset['chamadaFim'] : faixa.dataset['chamada']) ?? '';
+      }
+      const segundos = Math.floor(Math.max(0, (noAr ? fim : inicio) - agora) / 1000);
+      if (campos.d) campos.d.textContent = doisDigitos(Math.floor(segundos / 86_400));
+      if (campos.h) campos.h.textContent = doisDigitos(Math.floor(segundos / 3600) % 24);
+      if (campos.m) campos.m.textContent = doisDigitos(Math.floor(segundos / 60) % 60);
+      if (campos.s) campos.s.textContent = doisDigitos(segundos % 60);
+      return true;
+    };
+    const iniciar = () => {
+      window.clearInterval(intervalo);
+      if (atualizar()) {
+        intervalo = window.setInterval(() => {
+          if (!atualizar()) window.clearInterval(intervalo);
+        }, 1000);
+      }
+    };
+
+    if (atualizar()) {
+      if (data) data.hidden = true;
+      if (relogio) relogio.hidden = false;
+      iniciar();
+      document.addEventListener('visibilitychange', () => {
+        window.clearInterval(intervalo);
+        if (!document.hidden && !faixa.hidden) iniciar();
+      });
+    }
+  }
+</script>

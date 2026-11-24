@@ -1,0 +1,49 @@
+---
+/**
+ * Ficha técnica em tabela de duas colunas (atributo → valor), com legenda.
+ * Formato fácil de extrair por buscadores e mecanismos de resposta.
+ */
+export interface LinhaFato {
+  rotulo: string;
+  valor: string;
+}
+
+interface Props {
+  legenda: string;
+  linhas: readonly LinhaFato[];
+  /** Mostra a legenda só para leitores de tela (quando já há um título visível). */
+  legendaOculta?: boolean;
+  class?: string;
+}
+
+const { legenda, linhas, legendaOculta = false, class: classe } = Astro.props;
+---
+
+<div
+  class:list={[
+    'ring-areia-200 overflow-hidden rounded-cartao bg-white shadow-cartao ring-1',
+    classe,
+  ]}
+>
+  <table class="w-full border-collapse text-left text-sm sm:text-base">
+    <caption
+      class:list={[
+        legendaOculta
+          ? 'sr-only'
+          : 'text-mar-950 border-areia-200 bg-areia-50 border-b px-5 py-4 text-left text-lg font-semibold',
+      ]}
+    >
+      {legenda}
+    </caption>
+    <tbody>
+      {linhas.map((linha) => (
+        <tr class="border-areia-100 hover:bg-mar-50/60 border-b transition-colors last:border-b-0">
+          <th scope="row" class="text-tinta-suave w-2/5 px-5 py-3.5 align-top font-medium">
+            {linha.rotulo}
+          </th>
+          <td class="text-mar-950 px-5 py-3.5 align-top font-medium">{linha.valor}</td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>

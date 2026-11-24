@@ -1,0 +1,98 @@
+# Gerado no build por src/integrations/arquivos-servidor.ts. Não edite em dist/.
+
+Options -Indexes
+DirectoryIndex index.html
+ErrorDocument 404 /404.html
+AddDefaultCharset utf-8
+AddCharset utf-8 .html .css .js .json .xml .txt .webmanifest
+
+<IfModule mod_mime.c>
+  AddType application/manifest+json .webmanifest
+  AddType image/avif .avif
+  AddType image/webp .webp
+  AddType font/woff2 .woff2
+</IfModule>
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+
+  # Redirecionamento 301 de www.grandocamaragogi.resortallinclusive.com.br (HTTP ou HTTPS) para o host canônico.
+  RewriteCond %{HTTP_HOST} ^www\.grandocamaragogi\.resortallinclusive\.com\.br$ [NC]
+  RewriteRule ^(.*)$ https://grandocamaragogi.resortallinclusive.com.br/$1 [R=301,L,NE]
+
+  # HTTPS obrigatório (HostGator com SSL ativo nos subdomínios).
+  RewriteCond %{HTTPS} !=on
+  RewriteCond %{HTTP:X-Forwarded-Proto} !=https
+  RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
+
+  # URLs antigas → novas (40 regras)
+  RewriteRule ^contato/?$ /fale-conosco/ [R=301,L,NC]
+  RewriteRule ^acomodacoes/apartamentos/?$ /acomodacoes/apartamento-standard/ [R=301,L,NC]
+  RewriteRule ^acomodacoes/bangalo/?$ /acomodacoes/bangalo-vista-jardim/ [R=301,L,NC]
+  RewriteRule ^acomodacoes/bangalo-triplo$ /acomodacoes/bangalo-triplo/ [R=301,L,NC]
+  RewriteRule ^acomodacoes/standard-comunicante$ /acomodacoes/standard-comunicante/ [R=301,L,NC]
+  RewriteRule ^acomodacoes/suites/?$ /acomodacoes/suite/ [R=301,L,NC]
+  RewriteRule ^acomodacoes/family-suite/?$ /acomodacoes/ [R=301,L,NC]
+  RewriteRule ^acomodacoes/deluxe/?$ /acomodacoes/deluxe-duas-camas-grandes/ [R=301,L,NC]
+  RewriteRule ^acomodacoes/duplo-deluxe-sofa-cama$ /acomodacoes/duplo-deluxe-sofa-cama/ [R=301,L,NC]
+  RewriteRule ^acomodacoes/suite-deluxe$ /acomodacoes/suite-deluxe/ [R=301,L,NC]
+  RewriteRule ^acomodacoes/deluxe-adaptado/?$ /acomodacoes/ [R=301,L,NC]
+  RewriteRule ^gastronomia-all-inclusive/?$ /all-inclusive/ [R=301,L,NC]
+  RewriteRule ^gastronomia-all-inclusive/restaurantes/?$ /all-inclusive/restaurantes/ [R=301,L,NC]
+  RewriteRule ^gastronomia-all-inclusive/bares/?$ /all-inclusive/bares/ [R=301,L,NC]
+  RewriteRule ^gastronomia-all-inclusive/carta-de-bebidas/?$ /all-inclusive/ [R=301,L,NC]
+  RewriteRule ^o-que-fazer-grand-oca-maragogi-resort/?$ /lazer/ [R=301,L,NC]
+  RewriteRule ^o-que-fazer-grand-oca-maragogi-resort/lazer/?$ /lazer/esportes/ [R=301,L,NC]
+  RewriteRule ^o-que-fazer-grand-oca-maragogi-resort/criancas/?$ /lazer/criancas/ [R=301,L,NC]
+  RewriteRule ^o-que-fazer-grand-oca-maragogi-resort/piscina-grand-oca-maragogi/?$ /lazer/piscinas/ [R=301,L,NC]
+  RewriteRule ^localizacao/?$ /como-chegar/ [R=301,L,NC]
+  RewriteRule ^blog$ /blog/ [R=301,L,NC]
+  RewriteRule ^reservas-grand-oca/?$ /reservas/ [R=301,L,NC]
+  RewriteRule ^reserva-online-grand-oca/?$ /reservas/ [R=301,L,NC]
+  RewriteRule ^reserva-online-grand-oca/somente-hospedagem/?$ /reservas/hospedagem/ [R=301,L,NC]
+  RewriteRule ^reserva-online-grand-oca/pacote-completo/?$ /reservas/pacote-com-aereo/ [R=301,L,NC]
+  RewriteRule ^pacotes-grand-oca-maragogi-resort-all-inclusive/?$ /reservas/pacote-com-aereo/ [R=301,L,NC]
+  RewriteRule ^post/natal-no-grand-oca-maragogi/?$ /datas-especiais/natal/ [R=301,L,NC]
+  RewriteRule ^post/feriado-da-proclamacao-da-republica-grand-oca-maragogi-2026/?$ /datas-especiais/proclamacao-da-republica/ [R=301,L,NC]
+  RewriteRule ^post/black-friday-2026-no-grand-oca-maragogi-garanta-suas-ferias-all-inclusive-no-caribe-brasileiro/?$ /datas-especiais/ [R=301,L,NC]
+  RewriteRule ^reveillon/?$ /datas-especiais/reveillon/ [R=301,L,NC]
+  RewriteRule ^carnaval/?$ /datas-especiais/carnaval/ [R=301,L,NC]
+  RewriteRule ^natal/?$ /datas-especiais/natal/ [R=301,L,NC]
+  RewriteRule ^feriado-de-pascoa/?$ /datas-especiais/pascoa/ [R=301,L,NC]
+  RewriteRule ^feriado-21-de-abril/?$ /datas-especiais/tiradentes/ [R=301,L,NC]
+  RewriteRule ^feriado-dia-do-trabalho/?$ /datas-especiais/dia-do-trabalho/ [R=301,L,NC]
+  RewriteRule ^feriado-7-de-setembro/?$ /datas-especiais/sete-de-setembro/ [R=301,L,NC]
+  RewriteRule ^feriado-dia-das-criancas/?$ /datas-especiais/dia-das-criancas/ [R=301,L,NC]
+  RewriteRule ^feriado-2-de-novembro/?$ /datas-especiais/finados/ [R=301,L,NC]
+  RewriteRule ^feriado-15-de-novembro/?$ /datas-especiais/proclamacao-da-republica/ [R=301,L,NC]
+  RewriteRule ^feriado-20-de-novembro/?$ /datas-especiais/consciencia-negra/ [R=301,L,NC]
+</IfModule>
+
+<IfModule mod_headers.c>
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+  Header always set X-Frame-Options "SAMEORIGIN"
+  Header always set Permissions-Policy "camera=(), microphone=(), geolocation=()"
+  # HSTS: descomente só depois de o HTTPS estar ativo em todo o domínio.
+  # Header always set Strict-Transport-Security "max-age=31536000"
+
+  <FilesMatch "\.html$">
+    Header set Cache-Control "public, max-age=0, must-revalidate"
+  </FilesMatch>
+  <FilesMatch "\.(png|svg|ico|jpg|webp|avif)$">
+    Header set Cache-Control "public, max-age=604800"
+  </FilesMatch>
+  <FilesMatch "\.(txt|xml|webmanifest)$">
+    Header set Cache-Control "public, max-age=3600"
+  </FilesMatch>
+  <If "%{REQUEST_URI} =~ m#^/_astro/#">
+    Header set Cache-Control "public, max-age=31536000, immutable"
+  </If>
+</IfModule>
+
+<IfModule mod_brotli.c>
+  AddOutputFilterByType BROTLI_COMPRESS text/html text/css text/plain text/xml application/javascript application/json application/xml application/manifest+json image/svg+xml
+</IfModule>
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/css text/plain text/xml application/javascript application/json application/xml application/manifest+json image/svg+xml
+</IfModule>

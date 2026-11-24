@@ -1,0 +1,64 @@
+---
+/**
+ * Faixa de fotos correndo na horizontal (fotos do resort sem rostos de pessoas).
+ * Cada foto aparece uma vez para leitores de tela; a cópia que fecha o laço fica escondida.
+ * Para com hover, foco, o botão de pausar (src/scripts/faixas.ts) ou "menos movimento".
+ */
+import BotaoPausarFaixa from '@/components/ui/BotaoPausarFaixa.astro';
+import Imagem from '@/components/ui/Imagem.astro';
+import { obterImagens } from '@/lib/imagens';
+
+interface Props {
+  chaves: readonly string[];
+  /** Nome acessível da faixa. */
+  rotulo: string;
+  sentido?: 'normal' | 'inverso';
+  class?: string;
+}
+
+const { chaves, rotulo, sentido = 'normal', class: classe } = Astro.props;
+const fotos = await obterImagens(chaves);
+// Alturas e giros alternados deixam a faixa com cara de mural de fotos.
+const estilos = ['-rotate-2', 'rotate-1 translate-y-4', '-rotate-1', 'rotate-2 translate-y-2'];
+---
+
+<div
+  class:list={['faixa relative', classe]}
+  data-faixa
+  data-sentido={sentido}
+  role="region"
+  aria-label={rotulo}
+>
+  <div class="faixa-janela overflow-hidden py-8">
+    <div class="faixa-trilho" style="--duracao-faixa: 70s">
+      {[false, true].map((copia) => (
+        <ul
+          class="flex shrink-0 gap-5 pr-5 sm:gap-7 sm:pr-7"
+          aria-hidden={copia ? 'true' : undefined}
+        >
+          {fotos.map((foto, indice) => (
+            <li
+              class:list={[
+                'ease-suave w-60 shrink-0 overflow-hidden rounded-cartao border-4 border-white shadow-flutuante transition duration-500 hover:z-10 hover:scale-105 hover:rotate-0 sm:w-80',
+                estilos[indice % estilos.length],
+              ]}
+            >
+              <Imagem
+                src={foto.src}
+                alt={copia ? '' : foto.alt}
+                sizes="(min-width: 640px) 20rem, 15rem"
+                largura={640}
+                class="aspect-4/3"
+              />
+            </li>
+          ))}
+        </ul>
+      ))}
+    </div>
+  </div>
+  <BotaoPausarFaixa conteudo="fotos" class="absolute right-4 bottom-0 sm:right-8" />
+</div>
+
+<script>
+  import '@/scripts/faixas';
+</script>

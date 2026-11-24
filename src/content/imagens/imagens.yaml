@@ -1,0 +1,150 @@
+# Registro das imagens usadas no site: chave (caminho relativo, com pastas) → texto alternativo.
+# Gerado por `npm run imagens:importar` a partir de scripts/imagens/importar-pasta.ts (curadoria
+# das fotos da pasta fotos/). Só as imagens registradas aqui existem para o site.
+
+grand-oca/acomodacoes/standard-quarto-casal-solteiro.jpg:
+  alt: 'Quarto Standard com cama de casal e cama de solteiro, toalhas dobradas em forma de cisne e cabeceira de madeira'
+grand-oca/acomodacoes/standard-quarto-camas.jpg:
+  alt: 'Quarto Standard com duas camas, escrivaninha, espelho de corpo inteiro e ar-condicionado'
+grand-oca/acomodacoes/standard-varanda.jpg:
+  alt: 'Varanda do apartamento Standard com cadeiras, espreguiçadeira de madeira e portas de vidro para o quarto'
+grand-oca/acomodacoes/standard-banheiro.jpg:
+  alt: 'Banheiro do Standard revestido de granito escuro, com box de vidro, bancada e espelho redondo'
+grand-oca/acomodacoes/standard-predio-jardim.jpg:
+  alt: 'Prédio de dois andares com varandas de madeira em meio ao gramado e aos coqueiros do Grand Oca Maragogi'
+grand-oca/acomodacoes/bangalo-fachada.jpg:
+  alt: 'Bangalô de tijolos aparentes com varanda, cadeiras e gramado sob coqueiros, no Grand Oca Maragogi'
+grand-oca/acomodacoes/bangalo-quarto.jpg:
+  alt: 'Quarto do Bangalô com cama de casal, cabeceira de palha trançada, quadro azul na parede de tijolos e escrivaninha'
+grand-oca/acomodacoes/bangalo-quarto-escrivaninha.jpg:
+  alt: 'Quarto do Bangalô com cama de casal, escrivaninha de vime, TV e janela voltada para o jardim'
+grand-oca/acomodacoes/bangalo-vista-piscina.jpg:
+  alt: 'Bangalôs de telhado de cerâmica ao lado da piscina, cercados por coqueiros'
+grand-oca/acomodacoes/bangalo-triplo-fachada.jpg:
+  alt: 'Fachada de tijolos de um bangalô com portas de madeira e canteiro de flores ao longo do caminho de pedra'
+grand-oca/acomodacoes/bangalo-triplo-quarto.jpg:
+  alt: 'Quarto do Bangalô Triplo com cama de casal, cama extra, quadro azul e cabeceira de palha trançada'
+grand-oca/acomodacoes/bangalo-triplo-janela.jpg:
+  alt: 'Cama e poltrona de vime ao lado da janela do Bangalô Triplo, com vista para o jardim'
+grand-oca/acomodacoes/bangalo-triplo-camas.jpg:
+  alt: 'Duas camas do Bangalô Triplo com toalhas enroladas e cortinas claras ao fundo'
+grand-oca/acomodacoes/bangalo-triplo-tres-camas.jpg:
+  alt: 'Bangalô Triplo com cama de casal e cama extra, ar-condicionado, TV e escrivaninha'
+grand-oca/acomodacoes/comunicante-cama-casal.jpg:
+  alt: 'Cama de casal com toalhas e pétalas, cabeceira marrom e luminárias de leitura no Standard Comunicante'
+grand-oca/acomodacoes/comunicante-duas-camas.jpg:
+  alt: 'Quarto do Standard Comunicante com cama de casal e cama de solteiro e cortinas leves'
+grand-oca/acomodacoes/comunicante-escrivaninha.jpg:
+  alt: 'Escrivaninha com cadeira laranja, TV de parede e ar-condicionado no Standard Comunicante'
+grand-oca/acomodacoes/comunicante-entrada.jpg:
+  alt: 'Quarto do Standard Comunicante visto da porta, com duas camas, armário e TV'
+grand-oca/acomodacoes/comunicante-varanda.jpg:
+  alt: 'Varanda comprida de madeira com mesa e cadeiras, de frente para o gramado do Grand Oca Maragogi'
+grand-oca/acomodacoes/suite-predio.jpg:
+  alt: 'Prédio de dois andares com varandas de madeira, caminho de pedra e piscina entre coqueiros'
+grand-oca/acomodacoes/deluxe-quarto.jpg:
+  alt: 'Quarto Deluxe com duas camas extragrandes, TV, bancada em azul-turquesa e banquetas de palha'
+grand-oca/acomodacoes/deluxe-varanda.jpg:
+  alt: 'Varanda do quarto Deluxe com espreguiçadeiras azul-turquesa e vista para o parque aquático'
+grand-oca/acomodacoes/deluxe-bandeja-cafe.jpg:
+  alt: 'Bandeja com chaleira elétrica, xícaras e sachês de chá e café no quarto Deluxe'
+grand-oca/acomodacoes/deluxe-banheiro.jpg:
+  alt: 'Banheiro do quarto Deluxe com box de vidro, bancada de madeira, cuba sobre a bancada e espelho redondo iluminado'
+grand-oca/acomodacoes/duplo-deluxe-varanda.jpg:
+  alt: 'Varanda do Duplo Deluxe com espreguiçadeiras azul-turquesa de frente para a piscina e o parque aquático'
+grand-oca/acomodacoes/duplo-deluxe-quarto.jpg:
+  alt: 'Quarto Duplo Deluxe com cama de casal, sofá-cama, TV e bancada com banquetas azul-turquesa'
+grand-oca/acomodacoes/duplo-deluxe-camas.jpg:
+  alt: 'Duas camas de casal do Duplo Deluxe, com cabeceira ondulada e ar-condicionado'
+grand-oca/acomodacoes/suite-deluxe-sala.jpg:
+  alt: 'Sala de estar da Suíte Deluxe com sofá-cama, mesa redonda e cadeiras azul-turquesa'
+grand-oca/acomodacoes/suite-deluxe-quarto.jpg:
+  alt: 'Cama extragrande da Suíte Deluxe com toalhas em forma de cisne e cabeceira ondulada'
+grand-oca/acomodacoes/suite-deluxe-camas.jpg:
+  alt: 'Suíte Deluxe com duas camas extragrandes, piso de madeira clara e ar-condicionado'
+grand-oca/acomodacoes/suite-deluxe-varanda.jpg:
+  alt: "Varanda da Suíte Deluxe com espreguiçadeiras e vista para a piscina da área D'Água"
+grand-oca/acomodacoes/suite-deluxe-banheiro.jpg:
+  alt: 'Banheiro da Suíte Deluxe com bancada de madeira, cuba, espelho redondo e box de vidro'
+grand-oca/acomodacoes/suite-deluxe-closet.jpg:
+  alt: 'Armário aberto da Suíte Deluxe com cofre, frigobar e toalhas dobradas'
+grand-oca/resort/vista-aerea-resort.jpg:
+  alt: 'Vista aérea do Grand Oca Maragogi, com os bangalôs, as piscinas e o mar azul-esverdeado da Costa dos Corais ao fundo'
+grand-oca/resort/vista-aerea-bangalos.jpg:
+  alt: 'Vista aérea dos bangalôs, dos jardins e das piscinas do Grand Oca Maragogi, com o mar ao fundo'
+grand-oca/resort/vista-aerea-praia-piscina.jpg:
+  alt: 'Vista aérea do resort entre coqueiros, com a piscina de contorno orgânico, o pavilhão do bar e a faixa de areia'
+grand-oca/resort/vista-aerea-edificios-novos.jpg:
+  alt: 'Vista aérea dos edifícios novos e dos bangalôs do Grand Oca Maragogi entre os coqueirais, com o mar ao fundo'
+grand-oca/resort/praia-espreguicadeiras-aerea.jpg:
+  alt: 'Espreguiçadeiras e guarda-sóis sobre a areia da Praia de Ponta de Mangue, vistos do alto, entre coqueiros'
+grand-oca/resort/cabana-gramado.jpg:
+  alt: 'Cabana de cortinas brancas com espreguiçadeiras azuis sobre o gramado, em frente a um bangalô'
+grand-oca/resort/jardim-cabanas-piscina.jpg:
+  alt: 'Jardim com cabanas de cortinas brancas, espreguiçadeiras e piscina ao fundo, entre coqueiros'
+grand-oca/resort/jardim-cabanas-coqueiral.jpg:
+  alt: 'Cabanas com espreguiçadeiras sobre o gramado, canteiros floridos, piscina e bangalôs entre os coqueiros'
+grand-oca/resort/praia-coqueiral.jpg:
+  alt: 'Praia de águas turquesa com coqueiros inclinados sobre a areia, na região de Maragogi'
+grand-oca/resort/praia-areia-ampla.jpg:
+  alt: 'Faixa de areia ampla e mar tranquilo sob céu azul com nuvens, com coqueiral ao fundo'
+grand-oca/resort/nascer-do-sol-mar.jpg:
+  alt: 'Nascer do sol sobre o mar calmo, com nuvens coloridas refletidas na água'
+grand-oca/piscinas/piscina-borda-infinita.jpg:
+  alt: "Piscina de borda infinita com jacuzzi circular de pedra escura e edifícios de apartamentos ao fundo, na área D'Água"
+grand-oca/piscinas/piscina-solario.jpg:
+  alt: 'Deck de solário com espreguiçadeiras à beira da piscina, em frente aos apartamentos de varandas de vidro'
+grand-oca/piscinas/piscina-bangalos.jpg:
+  alt: 'Piscina de águas claras cercada por coqueiros e bangalôs de telhado de cerâmica'
+grand-oca/piscinas/piscina-lagoa-coqueiros.jpg:
+  alt: 'Piscina em formato de lagoa, com ilhas de grama e coqueiros altos ao redor'
+grand-oca/piscinas/piscina-ponte-madeira.jpg:
+  alt: 'Ponte de madeira sobre a piscina, com bangalôs e coqueiros ao fundo'
+grand-oca/piscinas/piscina-aerea-curvas.jpg:
+  alt: 'Piscina de formato sinuoso vista do alto, entre bangalôs de telhado alaranjado e coqueiros'
+grand-oca/piscinas/piscina-caminho-pedra.jpg:
+  alt: 'Piscina sinuosa com caminho de pedra, ilhas de grama e bangalôs ao fundo'
+grand-oca/criancas/parque-aquatico-escorregadores.jpg:
+  alt: 'Escorregadores amarelo e roxo do parque aquático infantil, com coqueiros e bangalôs ao fundo'
+grand-oca/criancas/parque-aquatico-torre.jpg:
+  alt: 'Torre de brinquedos aquáticos com escorregadores vermelho e amarelo, em área rasa da piscina infantil'
+grand-oca/criancas/piscina-infantil-escorregador.jpg:
+  alt: 'Piscina infantil rasa com brinquedo de escorregador laranja e coqueiros ao fundo'
+grand-oca/criancas/play-zone.jpg:
+  alt: 'Tenda colorida do Play Zone, espaço de brinquedos infantis, com caminho de piso intertravado e coqueiros'
+grand-oca/criancas/varanda-parque-aquatico.jpg:
+  alt: 'Varanda com espreguiçadeiras de frente para o parque aquático e os escorregadores da piscina'
+grand-oca/gastronomia/restaurante-corais-fachada.jpg:
+  alt: 'Fachada do Restaurante dos Corais, com o letreiro de coral laranja e a rua de pedras do resort'
+grand-oca/gastronomia/restaurante-corais-buffet.jpg:
+  alt: 'Salão do Restaurante dos Corais com mesas de toalha branca e balcões de buffet sob teto de madeira'
+grand-oca/gastronomia/restaurante-corais-noite.jpg:
+  alt: 'Restaurante dos Corais iluminado à noite, com a ilha de buffet em primeiro plano'
+grand-oca/gastronomia/restaurante-salao-mesas.jpg:
+  alt: 'Salão de restaurante com mesas de toalha branca, cadeiras de madeira e plantas penduradas no teto'
+grand-oca/gastronomia/il-giardino-salao.jpg:
+  alt: 'Salão do restaurante italiano Il Giardino, com mesa posta, cadeiras de madeira e painel de tijolos'
+grand-oca/gastronomia/il-giardino-mesa.jpg:
+  alt: 'Mesa de toalha branca com taças e prato de massa, sob o letreiro iluminado do restaurante Il Giardino'
+grand-oca/gastronomia/la-brasa-mesa.jpg:
+  alt: 'Mesa do restaurante La Brasa com petiscos, cervejas e taça, diante da cozinha com lenha aparente'
+grand-oca/gastronomia/bar-piscina-noite.jpg:
+  alt: 'Bar com cobertura de palha à beira da piscina, iluminado à noite'
+grand-oca/lazer/academia.jpg:
+  alt: 'Academia ampla do resort, com esteiras e aparelhos de musculação diante de parede vermelha'
+grand-oca/regiao/piscinas-naturais-aereo.jpg:
+  alt: 'Vista aérea dos recifes e das piscinas naturais de águas turquesa de Maragogi, na Costa dos Corais'
+rede/grand-oca-maragogi.jpg:
+  alt: Coqueiros e piscina do Grand Oca Maragogi Resort sob o céu azul
+rede/enotel-porto-de-galinhas.jpg:
+  alt: Piscina de ondas do Enotel Porto de Galinhas vista entre as folhas de um coqueiro
+rede/vila-gale-mares.jpg:
+  alt: Vista aérea do Vila Galé Marés, com as piscinas, os jardins e o mar de Guarajuba
+rede/vila-gale-touros.jpg:
+  alt: Vista aérea do Vila Galé Touros, com as piscinas entre coqueiros e o mar ao fundo
+rede/vila-gale-alagoas.jpg:
+  alt: Vista aérea do Vila Galé Alagoas à beira-mar, com os prédios e as piscinas
+rede/vila-gale-cumbuco.jpg:
+  alt: Vista aérea do Vila Galé Cumbuco, com os chalés, a piscina e o mar
+rede/vila-gale-eco-resort-do-cabo.jpg:
+  alt: Vista aérea do Vila Galé Eco Resort do Cabo, à beira-mar no Cabo de Santo Agostinho

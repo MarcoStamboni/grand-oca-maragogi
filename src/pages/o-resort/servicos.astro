@@ -1,0 +1,80 @@
+---
+/**
+ * Serviços e comodidades: o que está à disposição dos hóspedes, o que é cobrado à parte e
+ * as comodidades comuns às acomodações. Textos: src/data/paginas.ts; dados: src/data/.
+ */
+import CartaoDestaque from '@/components/ui/CartaoDestaque.astro';
+import Secao from '@/components/ui/Secao.astro';
+import { servicosResort } from '@/data/comodidades';
+import PaginaLayout from '@/layouts/PaginaLayout.astro';
+import { DATA_CONTEUDO } from '@/lib/datas';
+import { obterImagem } from '@/lib/imagens';
+import { resort } from '@/site.config';
+
+const topo = await obterImagem('grand-oca/piscinas/piscina-solario.jpg');
+const inclusos = servicosResort.filter(({ pago }) => !pago);
+const pagos = servicosResort.filter(({ pago }) => pago);
+
+/** Foto de cada serviço: o próprio espaço quando há foto dele, ou um ambiente do resort ligado a ele. */
+const fotoDoServico: Record<string, string> = {
+  Academia: 'grand-oca/lazer/academia.jpg',
+  'Baby area': 'grand-oca/criancas/play-zone.jpg',
+  'Centro de mergulho PADI': 'grand-oca/regiao/piscinas-naturais-aereo.jpg',
+  'Agência de viagens': 'grand-oca/resort/praia-coqueiral.jpg',
+};
+const fotos = new Map(
+  await Promise.all(
+    servicosResort
+      .filter(({ nome }) => fotoDoServico[nome])
+      .map(async ({ nome }) => [nome, await obterImagem(fotoDoServico[nome] as string)] as const),
+  ),
+);
+---
+
+<PaginaLayout rota="servicos" imagem={topo} atualizadoEm={DATA_CONTEUDO}>
+  <Secao
+    introducao={`Muitos serviços já estão na diária all inclusive do ${resort.nomeCurto}, sem custo extra.`}
+    foto="grand-oca/acomodacoes/bangalo-triplo-fachada.jpg"
+    titulo={`Quais serviços estão incluídos na diária do ${resort.nomeCurto}?`}
+    sobretitulo="Incluídos"
+  >
+    <ul class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+      {inclusos.map((servico) => (
+        <li>
+          <CartaoDestaque titulo={servico.nome} foto={fotos.get(servico.nome)}>
+            <p>{servico.descricao}</p>
+          </CartaoDestaque>
+        </li>
+      ))}
+    </ul>
+  </Secao>
+
+  <Secao
+    introducao={`Alguns serviços do ${resort.nomeCurto} ficam fora do all inclusive: o salão de beleza, as lojas, o centro de mergulho PADI e a agência de viagens, que reserva traslados e passeios pela região. Eles são contratados e pagos à parte.`}
+    foto="grand-oca/resort/praia-areia-ampla.jpg"
+    titulo={`Quais serviços do ${resort.nomeCurto} são cobrados à parte?`}
+    sobretitulo="Pagos à parte"
+    fundo="areia"
+  >
+    <ul class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+      {pagos.map((servico) => (
+        <li>
+          <CartaoDestaque
+            titulo={servico.nome}
+            sobretitulo="Pago à parte"
+            foto={fotos.get(servico.nome)}
+          >
+            <p>{servico.descricao}</p>
+          </CartaoDestaque>
+        </li>
+      ))}
+    </ul>
+  </Secao>
+
+  <Secao
+    introducao={`As acomodações do ${resort.nomeCurto} se espalham por uma grande área de jardins e coqueiros: apartamentos e bangalôs ao lado das piscinas, as suítes no andar superior perto da piscina central e os quartos Deluxe na nova área D’Água. Compare as dez categorias e escolha a que combina com a sua viagem.`}
+    foto="grand-oca/acomodacoes/bangalo-fachada.jpg"
+    titulo={`Onde ficam as acomodações do ${resort.nomeCurto}?`}
+    sobretitulo="Acomodações"
+  />
+</PaginaLayout>

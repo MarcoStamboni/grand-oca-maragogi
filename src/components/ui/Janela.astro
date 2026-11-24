@@ -1,0 +1,60 @@
+---
+/**
+ * Janela sobreposta (cardápios, programações), recurso do site do Vila Galé. Usa a Popover API
+ * do navegador: abre com `<BotaoJanela alvo={id}>` (atributo `popovertarget`) e fecha pelo botão,
+ * pela tecla Esc ou clicando fora, sem JavaScript. O conteúdo fica no HTML (indexável).
+ * Navegadores sem Popover API mostram o conteúdo no fluxo da página, logo abaixo do botão.
+ */
+interface Props {
+  id: string;
+  titulo: string;
+  /** Linha curta abaixo do título (ex.: aviso de que o cardápio pode mudar). */
+  subtitulo?: string;
+  class?: string;
+}
+
+const { id, titulo, subtitulo, class: classe } = Astro.props;
+const idTitulo = `${id}-titulo`;
+---
+
+<div
+  id={id}
+  popover
+  role="dialog"
+  aria-labelledby={idTitulo}
+  class:list={[
+    'janela backdrop:bg-mar-950/60 m-auto max-h-[88dvh] w-[min(44rem,calc(100%-2rem))] overflow-hidden rounded-grande bg-white p-0 shadow-flutuante',
+    classe,
+  ]}
+>
+  <div class="flex max-h-[88dvh] flex-col">
+    <div class="border-areia-200 flex items-start justify-between gap-4 border-b px-6 py-5">
+      <div>
+        <p id={idTitulo} class="text-mar-800 text-xl font-bold">
+          {titulo}
+        </p>
+        {subtitulo && <p class="text-tinta-suave mt-1 text-sm">{subtitulo}</p>}
+      </div>
+      <button
+        type="button"
+        popovertarget={id}
+        popovertargetaction="hide"
+        class="text-mar-800 hover:bg-mar-50 inline-flex size-11 shrink-0 items-center justify-center rounded-full"
+      >
+        <svg viewBox="0 0 24 24" class="size-6" aria-hidden="true" focusable="false">
+          <path
+            d="M18 6 6 18M6 6l12 12"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+          ></path>
+        </svg>
+        <span class="sr-only">Fechar</span>
+      </button>
+    </div>
+    <div class="overflow-y-auto px-6 py-5">
+      <slot />
+    </div>
+  </div>
+</div>

@@ -1,0 +1,105 @@
+---
+/**
+ * Widget "Agora no <destino>": hora local do resort e nascer e pôr do sol do dia, com o sol
+ * andando no arco do céu (src/scripts/hoje.ts). Os horários são cálculo astronômico para as
+ * coordenadas do site.config (src/lib/sol.ts), não informação do resort.
+ * Depende de JavaScript (hora atual): sem ele, o widget não aparece.
+ */
+import Icone from '@/components/ui/Icone.astro';
+import { resort, site } from '@/site.config';
+
+interface Props {
+  class?: string;
+}
+
+const { class: classe } = Astro.props;
+---
+
+<div
+  class:list={[
+    'ring-areia-200 relative overflow-hidden rounded-grande bg-white p-6 shadow-flutuante ring-1 sm:p-8 sem-js:hidden',
+    classe,
+  ]}
+  data-hoje
+  data-latitude={resort.geo.latitude}
+  data-longitude={resort.geo.longitude}
+  data-fuso={site.fusoHorario}
+>
+  <div class="bg-coral-700 absolute inset-x-0 top-0 h-36 bg-linear-to-br" aria-hidden="true" />
+  <div class="relative">
+    <p class="text-white flex items-center gap-2 text-sm font-semibold">
+      <span class="relative flex size-2.5" aria-hidden="true">
+        <span class="bg-white/60 animate-pulsar absolute inset-0 rounded-full"></span>
+        <span class="bg-white relative size-2.5 rounded-full"></span>
+      </span>
+      Agora {resort.destino.em} {resort.destino.nome}
+    </p>
+    <p class="text-white mt-1 text-5xl leading-none font-semibold tracking-tight tabular-nums">
+      <time data-hoje-hora>--:--</time>
+    </p>
+    <p class="text-white/85 mt-1 text-sm first-letter:uppercase" data-hoje-data></p>
+
+    <svg viewBox="0 0 200 104" class="mt-4 w-full" aria-hidden="true" focusable="false">
+      <path
+        d="M10 94 A90 90 0 0 1 190 94"
+        fill="none"
+        class="stroke-areia-300"
+        stroke-width="2"
+        stroke-dasharray="3 5"
+      ></path>
+      <path
+        d="M10 94 A90 90 0 0 1 190 94"
+        fill="none"
+        class="stroke-coral-700"
+        stroke-width="3"
+        stroke-linecap="round"
+        pathLength="1"
+        stroke-dasharray="1"
+        stroke-dashoffset="1"
+        data-hoje-trilha
+      ></path>
+      <line x1="0" y1="94" x2="200" y2="94" class="stroke-mar-200" stroke-width="2"></line>
+      <g data-hoje-sol transform="translate(100 4)">
+        <circle
+          r="13"
+          class="fill-coral-500/40 animate-pulsar origin-center [transform-box:fill-box]"
+        ></circle>
+        <circle r="8" class="fill-coral-700 stroke-white" stroke-width="2"></circle>
+      </g>
+    </svg>
+
+    <dl class="mt-3 grid grid-cols-2 gap-3 text-sm">
+      <div class="bg-coral-700 relative rounded-2xl py-3 pr-4 pl-13">
+        <dt class="text-white/85">
+          <Icone
+            nome="nascer-do-sol"
+            class="text-white absolute top-1/2 left-4 size-6 -translate-y-1/2"
+          />
+          Nascer do sol
+        </dt>
+        <dd class="text-white text-lg font-semibold tabular-nums" data-hoje-nascer>
+          --:--
+        </dd>
+      </div>
+      <div class="bg-coral-700 relative rounded-2xl py-3 pr-4 pl-13">
+        <dt class="text-white/85">
+          <Icone
+            nome="por-do-sol"
+            class="text-white absolute top-1/2 left-4 size-6 -translate-y-1/2"
+          />
+          Pôr do sol
+        </dt>
+        <dd class="text-white text-lg font-semibold tabular-nums" data-hoje-por>
+          --:--
+        </dd>
+      </div>
+    </dl>
+    <p class="text-tinta-suave mt-4 text-xs">
+      Horários aproximados, calculados para a localização do resort.
+    </p>
+  </div>
+</div>
+
+<script>
+  import '@/scripts/hoje';
+</script>

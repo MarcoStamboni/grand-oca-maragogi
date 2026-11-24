@@ -1,0 +1,217 @@
+---
+/**
+ * Política de privacidade (LGPD, Lei 13.709/2018). O controlador é o operador ativo
+ * (site.config.ts); dados ainda não informados ficam de fora (TODO no site.config).
+ * Suposição registrada no progresso: compartilhamento com o resort e fornecedores para
+ * cotar e efetivar a reserva. TODO: revisão jurídica antes da publicação.
+ */
+import DadosControlador from '@/components/sections/DadosControlador.astro';
+import Botao from '@/components/ui/Botao.astro';
+import ListaCheck from '@/components/ui/ListaCheck.astro';
+import Nota from '@/components/ui/Nota.astro';
+import RespostaDireta from '@/components/ui/RespostaDireta.astro';
+import Secao from '@/components/ui/Secao.astro';
+import TabelaComparativa from '@/components/ui/TabelaComparativa.astro';
+import { rotas } from '@/data/rotas';
+import ContatoOperador from '@/components/sections/ContatoOperador.astro';
+import PaginaLayout from '@/layouts/PaginaLayout.astro';
+import { analytics, enderecoFormulario } from '@/lib/ambiente';
+import { DATA_POLITICAS } from '@/lib/datas';
+import { obterImagem } from '@/lib/imagens';
+import { operadorComArtigo } from '@/lib/operador';
+import { operador, resort } from '@/site.config';
+
+const ehAgencia = operador.id === 'agencia';
+const quemTrata = operadorComArtigo();
+const compartilhamento = [
+  ...(ehAgencia
+    ? [
+        `Com o ${resort.nome} e com outros fornecedores da viagem, como companhias aéreas, quando for necessário para cotar e confirmar a sua reserva.`,
+      ]
+    : [
+        `Com as áreas ${resort.rede ? `da rede ${resort.rede}` : 'do resort'} envolvidas no atendimento e na sua reserva.`,
+      ]),
+  'Com empresas que prestam serviços para o funcionamento do site, como hospedagem, sempre limitadas ao necessário.',
+  ...(enderecoFormulario
+    ? [
+        'Com o serviço que recebe os formulários do site e os entrega à nossa equipe, que só pode usar os dados para essa entrega.',
+      ]
+    : []),
+  ...(analytics.ativo
+    ? [
+        'Com o Google, se você aceitar a medição de audiência: dados de navegação, sem nome, e-mail ou telefone.',
+      ]
+    : []),
+  'Com autoridades públicas, quando a lei ou uma ordem judicial exigir.',
+];
+const capa = await obterImagem('grand-oca/resort/jardim-cabanas-coqueiral.jpg');
+---
+
+<PaginaLayout
+  titulo="Política de privacidade"
+  descricao="Política de privacidade do site do Grand Oca Maragogi Resort: dados tratados, finalidades, prazos e direitos pela LGPD."
+  rota="privacidade"
+  h1="Política de privacidade"
+  sobretitulo="Seus dados"
+  subtitulo="Como tratamos os dados pessoais de quem usa este site e fala com a nossa equipe."
+  imagem={capa}
+  atualizadoEm={DATA_POLITICAS}
+  chaveFaq={false}
+>
+  <RespostaDireta slot="resumo">
+    Esta política explica como {quemTrata} trata os dados pessoais de quem usa este site. Usamos
+    apenas os dados que você informa ao pedir uma cotação ou falar com a nossa equipe, para
+    responder e organizar a sua viagem. Você pode pedir acesso, correção ou exclusão dos seus dados
+    a qualquer momento, como garante a LGPD.
+  </RespostaDireta>
+
+  <Secao
+    introducao={`Quem decide como os seus dados pessoais são usados neste site.`}
+    titulo="Quem é o responsável pelos seus dados?"
+    sobretitulo="Controlador"
+    largura="estreito"
+  >
+    <div class="space-y-6">
+      <DadosControlador />
+      {operador.aviso && <Nota titulo="Importante">{operador.aviso}</Nota>}
+    </div>
+  </Secao>
+
+  <Secao
+    introducao={`Só coletamos os dados necessários para responder ao seu contato e organizar a sua viagem.`}
+    titulo="Quais dados coletamos?"
+    sobretitulo="Dados"
+    fundo="areia"
+    largura="estreito"
+  >
+    <div class="conteudo">
+      <p>Tratamos dois tipos de dados:</p>
+      <ListaCheck
+        itens={[
+          'Dados que você nos envia ao pedir uma cotação ou tirar dúvidas: nome, telefone, e-mail, datas da viagem, número de hóspedes, idade das crianças e o conteúdo da mensagem.',
+          'Registros técnicos de acesso ao site, como endereço IP, data e hora, guardados pelo prazo exigido pelo Marco Civil da Internet (Lei 12.965/2014).',
+        ]}
+      />
+      <p>
+        {analytics.ativo
+          ? 'Ferramentas de análise de audiência só são carregadas depois do seu consentimento, pelo aviso de cookies; a sua escolha fica guardada no próprio navegador, com data e hora.'
+          : 'Hoje este site não usa ferramentas de análise de audiência nem de publicidade.'}{' '}
+        Não pedimos dados de cartão de pagamento pelo site.
+      </p>
+    </div>
+  </Secao>
+
+  <Secao
+    introducao={`Os dados pessoais têm usos definidos, previstos na Lei Geral de Proteção de Dados (LGPD).`}
+    titulo="Para que usamos os dados?"
+    sobretitulo="Finalidades"
+    largura="estreito"
+  >
+    <TabelaComparativa
+      legenda="Finalidades e bases legais (LGPD, art. 7º)"
+      colunas={['Finalidade', 'Base legal']}
+      linhas={[
+        {
+          cabecalho: 'Responder pedidos de cotação e dúvidas',
+          celulas: ['Procedimentos preliminares a um contrato, a seu pedido (inciso V)'],
+        },
+        {
+          cabecalho: 'Fazer e acompanhar a reserva',
+          celulas: ['Execução de contrato (inciso V)'],
+        },
+        {
+          cabecalho: 'Guardar registros de acesso e documentos exigidos por lei',
+          celulas: ['Cumprimento de obrigação legal (inciso II)'],
+        },
+        {
+          cabecalho: 'Manter o site seguro e funcionando',
+          celulas: ['Legítimo interesse (inciso IX)'],
+        },
+        ...(analytics.ativo
+          ? [
+              {
+                cabecalho: 'Medir a audiência do site',
+                celulas: ['Consentimento (inciso I), que pode ser retirado a qualquer momento'],
+              },
+            ]
+          : []),
+      ]}
+    />
+  </Secao>
+
+  <Secao
+    introducao={`Os dados só são compartilhados com quem participa da sua reserva ou do funcionamento do site.`}
+    titulo="Com quem compartilhamos?"
+    sobretitulo="Compartilhamento"
+    fundo="areia"
+    largura="estreito"
+  >
+    <div class="conteudo">
+      <p>Não vendemos dados pessoais. O compartilhamento acontece só nestes casos:</p>
+      <ListaCheck itens={compartilhamento} />
+    </div>
+  </Secao>
+
+  <Secao
+    introducao={`Os dados ficam guardados apenas pelo tempo necessário ou exigido por lei.`}
+    titulo="Por quanto tempo guardamos os dados?"
+    sobretitulo="Prazos"
+    largura="estreito"
+  >
+    <div class="conteudo">
+      <p>
+        Pelo tempo necessário para atender ao seu pedido e à sua reserva e para cumprir as
+        obrigações legais, como as fiscais e as do Marco Civil da Internet. Depois disso, os dados
+        são excluídos ou anonimizados.
+      </p>
+    </div>
+  </Secao>
+
+  <Secao
+    introducao={`A LGPD garante direitos sobre os seus dados pessoais, que você pode exercer a qualquer momento.`}
+    titulo="Quais são os seus direitos?"
+    sobretitulo="Direitos"
+    fundo="areia"
+    largura="estreito"
+  >
+    <div class="conteudo">
+      <p>Pela LGPD (art. 18), você pode pedir, a qualquer momento:</p>
+      <ListaCheck
+        itens={[
+          'Confirmação de que tratamos os seus dados e acesso a eles',
+          'Correção de dados incompletos, inexatos ou desatualizados',
+          'Anonimização, bloqueio ou eliminação de dados desnecessários ou tratados em desacordo com a lei',
+          'Portabilidade dos dados a outro fornecedor',
+          'Informação sobre com quem compartilhamos os dados',
+          'Revogação do consentimento, quando ele for a base legal',
+        ]}
+      />
+      <p>
+        Para exercer esses direitos, use os canais de atendimento informados no início desta página.
+        Você também pode apresentar reclamação à Autoridade Nacional de Proteção de Dados (ANPD).
+      </p>
+    </div>
+  </Secao>
+
+  <Secao
+    introducao={`As medidas de segurança que protegem os seus dados e como você fica sabendo de mudanças nesta política.`}
+    titulo="Como protegemos os dados e o que muda nesta política?"
+    sobretitulo="Segurança"
+    largura="estreito"
+  >
+    <div class="conteudo">
+      <p>
+        Adotamos medidas técnicas e administrativas para proteger os dados contra acesso não
+        autorizado, perda ou uso indevido. Esta política pode ser atualizada; a data no topo da
+        página indica a última revisão.
+      </p>
+      <p>
+        <Botao href={rotas.cookies.caminho} variante="texto" iconeFim="seta-direita">
+          Ler a política de cookies
+        </Botao>
+      </p>
+    </div>
+  </Secao>
+
+  <ContatoOperador />
+</PaginaLayout>

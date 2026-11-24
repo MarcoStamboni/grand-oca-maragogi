@@ -1,0 +1,169 @@
+---
+/**
+ * Quem somos: a operadora por trás do site (Resorts Online Viagens e Turismo, com a submarca
+ * Resort All Inclusive), na estrutura das páginas institucionais da agência: nossa história, no
+ * que acreditamos, como trabalhamos, sobre este site e onde nos encontrar.
+ * Textos: src/data/institucional.ts; dados de contato: operador no site.config.ts.
+ */
+import CanaisAtendimento from '@/components/sections/CanaisAtendimento.astro';
+import Botao from '@/components/ui/Botao.astro';
+import CartaoDestaque from '@/components/ui/CartaoDestaque.astro';
+import Nota from '@/components/ui/Nota.astro';
+import Secao from '@/components/ui/Secao.astro';
+import TabelaFatos from '@/components/ui/TabelaFatos.astro';
+import { comoTrabalhamos, crenca, historia } from '@/data/institucional';
+import { rotas } from '@/data/rotas';
+import PaginaLayout from '@/layouts/PaginaLayout.astro';
+import { DATA_CONTEUDO } from '@/lib/datas';
+import { formatarData } from '@/lib/formatar';
+import { obterImagem } from '@/lib/imagens';
+import { rotaDisponivel } from '@/lib/navegacao';
+import { operador, resort, site } from '@/site.config';
+
+const ehAgencia = operador.id === 'agencia';
+const endereco = operador.endereco
+  ? [
+      operador.endereco.logradouro,
+      operador.endereco.bairro,
+      `${operador.endereco.cidade} - ${operador.endereco.uf}`,
+      operador.endereco.cep && `CEP ${operador.endereco.cep}`,
+    ]
+      .filter(Boolean)
+      .join(', ')
+  : null;
+const dadosEmpresa = [
+  ...(operador.razaoSocial ? [{ rotulo: 'Razão social', valor: operador.razaoSocial }] : []),
+  { rotulo: 'Nome', valor: operador.nome },
+  ...(operador.submarca ? [{ rotulo: 'Submarca', valor: operador.submarca }] : []),
+  ...(operador.cnpj ? [{ rotulo: 'CNPJ', valor: operador.cnpj }] : []),
+  ...(operador.fundacao
+    ? [{ rotulo: 'Fundação', valor: `${operador.fundacao}, em São Paulo` }]
+    : []),
+  { rotulo: 'Atividade', valor: operador.descricao },
+];
+const contato = [
+  ...(endereco ? [{ rotulo: 'Endereço', valor: `${operador.nome} · ${endereco}` }] : []),
+  {
+    rotulo: 'Central de reservas',
+    valor: operador.telefones.map((telefone) => telefone.exibicao).join(' · '),
+  },
+  ...(operador.email ? [{ rotulo: 'E-mail', valor: operador.email }] : []),
+  ...(operador.horarioAtendimento
+    ? [{ rotulo: 'Atendimento', valor: operador.horarioAtendimento }]
+    : []),
+];
+const topo = await obterImagem('grand-oca/resort/vista-aerea-resort.jpg');
+---
+
+<PaginaLayout rota="quemSomos" imagem={topo} atualizadoEm={DATA_CONTEUDO}>
+  <Secao
+    titulo="Quem opera este site?"
+    sobretitulo="Operadora"
+    introducao={
+      ehAgencia
+        ? `Este site faz parte do portal ${operador.submarca ?? operador.nome}, da ${operador.razaoSocial ?? operador.nome}, operadora de turismo especializada em hotéis e resorts que vende hospedagem e pacotes para o ${resort.nomeCurto}.`
+        : `Este é o site oficial do ${resort.nome}.`
+    }
+    foto="grand-oca/resort/praia-espreguicadeiras-aerea.jpg"
+  >
+    <div class="grid items-start gap-8 lg:grid-cols-2">
+      <TabelaFatos legenda="Dados da operadora" linhas={dadosEmpresa} />
+      {operador.aviso && <Nota titulo="Importante">{operador.aviso}</Nota>}
+    </div>
+  </Secao>
+
+  {ehAgencia && (
+    <Secao
+      titulo="Qual é a nossa história?"
+      sobretitulo="Nossa história"
+      introducao={`Fundada em ${operador.fundacao ?? 'São Paulo'}, a ${operador.nome} soma mais de duas décadas no turismo, com foco em hotéis e resorts.`}
+      foto="grand-oca/resort/jardim-cabanas-coqueiral.jpg"
+      fotoLado="esquerda"
+      fundo="areia"
+    >
+      <div class="conteudo">
+        {historia.map((paragrafo) => (
+          <p>{paragrafo}</p>
+        ))}
+      </div>
+    </Secao>
+  )}
+
+  {ehAgencia && (
+    <Secao
+      titulo="No que acreditamos?"
+      sobretitulo="Propósito"
+      introducao={crenca}
+      foto="grand-oca/piscinas/piscina-borda-infinita.jpg"
+    />
+  )}
+
+  {ehAgencia && (
+    <Secao
+      titulo="Como trabalhamos?"
+      sobretitulo="Atendimento"
+      introducao={`Atendimento humano, do primeiro contato ao check-in no ${resort.nomeCurto}, por telefone e WhatsApp.`}
+      fundo="areia"
+    >
+      <ul class="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+        {comoTrabalhamos.map((item) => (
+          <li>
+            <CartaoDestaque titulo={item.titulo} icone={item.icone}>
+              <p>{item.texto}</p>
+            </CartaoDestaque>
+          </li>
+        ))}
+      </ul>
+    </Secao>
+  )}
+
+  <Secao
+    titulo="O que você encontra neste site?"
+    sobretitulo="O site"
+    introducao={`O site reúne o que é preciso saber para planejar e reservar uma estadia no ${resort.nomeCurto}: acomodações, all inclusive, lazer, feriados e como chegar. As informações foram conferidas em ${formatarData(site.dataColetaFonte)}, e cada página mostra a data da última atualização.`}
+    foto="grand-oca/acomodacoes/suite-deluxe-quarto.jpg"
+    fotoLado="esquerda"
+  >
+    <div class="conteudo">
+      <p>
+        Condições, horários e programação podem mudar. Confirme os detalhes da sua estadia no
+        momento da reserva.
+      </p>
+    </div>
+    {ehAgencia && rotaDisponivel('outrosResorts') && (
+      <p class="mt-6">
+        <Botao href={rotas.outrosResorts.caminho} variante="contorno" iconeFim="seta-direita">
+          Outros resorts que vendemos
+        </Botao>
+      </p>
+    )}
+  </Secao>
+
+  <Secao
+    titulo="Onde nos encontrar?"
+    sobretitulo="Contato"
+    introducao={`Fale com a central de reservas ${operador.artigo === 'a' ? 'da' : 'do'} ${operador.nome} por telefone, WhatsApp ou e-mail.`}
+    fundo="areia"
+  >
+    <div class="grid items-start gap-8 lg:grid-cols-2">
+      <TabelaFatos legenda="Canais de atendimento" linhas={contato} />
+      <div class="space-y-5">
+        <CanaisAtendimento />
+        <p class="flex flex-wrap gap-x-5 gap-y-2 text-sm">
+          {operador.siteInstitucional && (
+            <a href={operador.siteInstitucional} target="_blank" rel="noopener noreferrer">
+              {new URL(operador.siteInstitucional).hostname.replace(/^www\./, '')}
+              <span class="sr-only"> (abre em nova aba)</span>
+            </a>
+          )}
+          {operador.instagram && (
+            <a href={operador.instagram} target="_blank" rel="noopener noreferrer">
+              Instagram<span class="sr-only"> (abre em nova aba)</span>
+            </a>
+          )}
+          <a href={rotas.contato.caminho}>Fale conosco</a>
+        </p>
+      </div>
+    </div>
+  </Secao>
+</PaginaLayout>

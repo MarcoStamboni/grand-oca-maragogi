@@ -1,0 +1,31 @@
+---
+/**
+ * Barra de progresso da leitura (topo da tela; CSS ligado à rolagem, global.css) e botão
+ * "Voltar ao topo", que aparece depois de rolar um pouco. Os dois somem sem JavaScript ou
+ * com "menos movimento" (a barra) e ficam acima da barra de ações do celular.
+ */
+import Icone from '@/components/ui/Icone.astro';
+---
+
+<div
+  class="barra-progresso fundo-por-do-sol pointer-events-none fixed inset-x-0 top-0 z-[60] h-1"
+  aria-hidden="true"
+></div>
+
+<a
+  href="#topo"
+  class="bg-mar-900 ease-suave fixed right-4 z-40 inline-flex size-12 translate-y-4 items-center justify-center rounded-full text-white no-underline opacity-0 pointer-events-none shadow-flutuante transition duration-500 hover:bg-mar-950 focus-visible:pointer-events-auto data-[visivel]:pointer-events-auto hover:no-underline focus-visible:translate-y-0 focus-visible:opacity-100 data-[visivel]:translate-y-0 data-[visivel]:opacity-100 bottom-[calc(var(--altura-barra-mobile)+env(safe-area-inset-bottom)+var(--altura-aviso-cookies,0px)+1rem)] sem-js:hidden lg:right-6 lg:bottom-[calc(var(--altura-aviso-cookies,0px)+5.75rem)]"
+  data-voltar-topo
+>
+  <Icone nome="seta-cima" class="size-5" />
+  <span class="sr-only">Voltar ao topo</span>
+</a>
+
+<script>
+  const botao = document.querySelector<HTMLElement>('[data-voltar-topo]');
+  if (botao) {
+    const alternar = () => botao.toggleAttribute('data-visivel', window.scrollY > 700);
+    alternar();
+    window.addEventListener('scroll', alternar, { passive: true });
+  }
+</script>

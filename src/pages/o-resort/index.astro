@@ -1,0 +1,291 @@
+---
+/**
+ * O resort: ficha técnica, estrutura, fotos, comodidades e localização.
+ * Textos da página: src/data/paginas.ts (resort); fatos: site.config.ts, src/data/ e coleções.
+ */
+import { getCollection } from 'astro:content';
+
+import Numeros, { type Numero } from '@/components/sections/Numeros.astro';
+import Botao from '@/components/ui/Botao.astro';
+import CartaoDestaque from '@/components/ui/CartaoDestaque.astro';
+import GaleriaFaixa from '@/components/ui/GaleriaFaixa.astro';
+import Imagem from '@/components/ui/Imagem.astro';
+import Icone from '@/components/ui/Icone.astro';
+import MapaSobDemanda from '@/components/ui/MapaSobDemanda.astro';
+import ListaCheck from '@/components/ui/ListaCheck.astro';
+import NotaTripadvisor from '@/components/ui/NotaTripadvisor.astro';
+import Secao from '@/components/ui/Secao.astro';
+import TabelaFatos from '@/components/ui/TabelaFatos.astro';
+import { textosHome } from '@/data/home';
+import { piscinaPrincipal } from '@/data/piscina';
+import { rotas } from '@/data/rotas';
+import PaginaLayout from '@/layouts/PaginaLayout.astro';
+import { DATA_CONTEUDO } from '@/lib/datas';
+import { formatarHora, formatarNumero } from '@/lib/formatar';
+import { obterImagem } from '@/lib/imagens';
+import { resort } from '@/site.config';
+
+const [topo, aerea] = await Promise.all([
+  obterImagem('grand-oca/resort/praia-coqueiral.jpg'),
+  obterImagem(resort.imagemPadrao),
+]);
+const restaurantes = await getCollection('restaurantes');
+const { aeroporto, horarios, endereco } = resort;
+
+const inauguracao = resort.inauguracao
+  ? new Date(`${resort.inauguracao}-01T00:00:00Z`).toLocaleDateString('pt-BR', {
+      month: 'long',
+      year: 'numeric',
+      timeZone: 'UTC',
+    })
+  : null;
+
+const numeros: Numero[] = [
+  {
+    valor: resort.categoriasAcomodacao,
+    rotulo: 'Categorias',
+    detalhe: 'De apartamentos a suítes',
+    icone: 'cama',
+  },
+  {
+    valor: 7,
+    rotulo: 'Bares',
+    detalhe: `${restaurantes.length} restaurantes e sete bares`,
+    icone: 'talheres',
+  },
+  {
+    valor: piscinaPrincipal.extensaoM,
+    unidade: 'm',
+    rotulo: 'De piscinas',
+    detalhe: 'Quase 400 metros de extensão',
+    icone: 'piscina',
+  },
+  {
+    valor: aeroporto.distanciaKm,
+    unidade: 'km',
+    rotulo: `De ${aeroporto.cidade}`,
+    detalhe: `Aeroporto ${aeroporto.iata}`,
+    icone: 'aviao',
+  },
+];
+
+const fotosFaixa = [
+  'grand-oca/resort/vista-aerea-resort.jpg',
+  'grand-oca/acomodacoes/bangalo-fachada.jpg',
+  'grand-oca/piscinas/piscina-solario.jpg',
+  'grand-oca/gastronomia/restaurante-salao-mesas.jpg',
+  'grand-oca/resort/vista-aerea-praia-piscina.jpg',
+  'grand-oca/resort/jardim-cabanas-coqueiral.jpg',
+  'grand-oca/acomodacoes/bangalo-triplo-fachada.jpg',
+  'grand-oca/resort/nascer-do-sol-mar.jpg',
+];
+const [fotoGastronomia, fotoAcomodacoes, fotoLazer, fotoBemEstar] = await Promise.all([
+  obterImagem('grand-oca/gastronomia/restaurante-corais-noite.jpg'),
+  obterImagem('grand-oca/acomodacoes/suite-deluxe-quarto.jpg'),
+  obterImagem('grand-oca/resort/jardim-cabanas-coqueiral.jpg'),
+  obterImagem('grand-oca/resort/nascer-do-sol-mar.jpg'),
+]);
+const gruposComodidades: {
+  titulo: string;
+  icone: 'piscina' | 'bebe' | 'trofeu' | 'escudo';
+  itens: string[];
+}[] = [
+  {
+    titulo: 'Piscinas e praia',
+    icone: 'piscina',
+    itens: [
+      'Piscinas ao longo de quase 400 metros',
+      'Área D’Água, com solário e borda infinita',
+      'Parque aquático infantil',
+      'Bares dentro e ao lado das piscinas',
+      'Praia de Ponta de Mangue a cerca de 10 metros',
+    ],
+  },
+  {
+    titulo: 'Crianças e família',
+    icone: 'bebe',
+    itens: [
+      'Kids Club para crianças de 4 a 12 anos',
+      'Playground com cama elástica',
+      'Baby area',
+      'Oficinas e shows infantis',
+    ],
+  },
+  {
+    titulo: 'Esportes e mergulho',
+    icone: 'trofeu',
+    itens: [
+      'Caiaque e atividades aquáticas',
+      'Vôlei, beach tênis e futebol',
+      'Hidro e hidro fitness',
+      'Academia com aulas programadas',
+      'Centro de mergulho PADI',
+    ],
+  },
+  {
+    titulo: 'Serviços',
+    icone: 'escudo',
+    itens: [
+      'Guest Service ao lado da recepção',
+      'Wi-Fi',
+      'Enfermaria e baby area',
+      'Lojas e salão de beleza',
+      'Agência de viagens para traslados e passeios',
+    ],
+  },
+];
+---
+
+<PaginaLayout rota="resort" imagem={topo} atualizadoEm={DATA_CONTEUDO}>
+  <Numeros itens={numeros} class="pt-14 sm:pt-20" />
+
+  <Secao
+    introducao={`Área, categorias de acomodação, gastronomia e piscinas: os números que mostram o tamanho e a estrutura do ${resort.nomeCurto}.`}
+    titulo={`Quais são os números do ${resort.nomeCurto}?`}
+    sobretitulo="Ficha técnica"
+  >
+    <div class="grid items-start gap-10 lg:grid-cols-2">
+      <TabelaFatos
+        legenda={`Ficha técnica do ${resort.nome}`}
+        legendaOculta
+        linhas={[
+          { rotulo: 'Nome', valor: resort.nome },
+          ...(resort.rede ? [{ rotulo: 'Rede', valor: resort.rede }] : []),
+          ...(inauguracao ? [{ rotulo: 'Inauguração', valor: inauguracao }] : []),
+          { rotulo: 'Localização', valor: `${resort.praia}, ${endereco.cidade} (${endereco.uf})` },
+          ...(resort.areaAproximadaM2
+            ? [{ rotulo: 'Área', valor: `Cerca de ${formatarNumero(resort.areaAproximadaM2)} m²` }]
+            : []),
+          {
+            rotulo: 'Acomodações',
+            valor: `${resort.categoriasAcomodacao} categorias, entre apartamentos, bangalôs, suítes e quartos Deluxe`,
+          },
+          { rotulo: 'Regime', valor: resort.regime },
+          {
+            rotulo: 'Check-in e check-out',
+            valor: `A partir das ${formatarHora(horarios.checkIn)} · até as ${formatarHora(horarios.checkOut)}`,
+          },
+          {
+            rotulo: 'Aeroporto mais próximo',
+            valor: `${aeroporto.nome} (${aeroporto.iata}), a ${aeroporto.distanciaKm} km`,
+          },
+          ...(resort.naoFumantes
+            ? [{ rotulo: 'Acomodações', valor: 'Todas para não fumantes' }]
+            : []),
+          ...(resort.estacionamento
+            ? [{ rotulo: 'Estacionamento', valor: resort.estacionamento }]
+            : []),
+        ]}
+      />
+      <div class="space-y-6">
+        <div class="aspect-8/5 overflow-hidden rounded-cartao shadow-cartao">
+          <Imagem src={aerea.src} alt={aerea.alt} sizes="(min-width: 1024px) 50vw, 100vw" />
+        </div>
+        <div class="conteudo">
+          {textosHome.apresentacao.map((paragrafo) => (
+            <p>{paragrafo}</p>
+          ))}
+        </div>
+      </div>
+    </div>
+  </Secao>
+
+  <GaleriaFaixa chaves={fotosFaixa} rotulo={`Fotos do ${resort.nomeCurto}`} class="py-6" />
+
+  <Secao
+    foto="grand-oca/piscinas/piscina-borda-infinita.jpg"
+    titulo={`Como é a estrutura do ${resort.nomeCurto}?`}
+    sobretitulo="Estrutura"
+    introducao={`De frente para o mar de Ponta de Mangue, o ${resort.nome} reúne tudo o que as férias pedem sem sair do resort: gastronomia e bares all inclusive, acomodações para casais, famílias e grupos, piscinas, esportes, recreação infantil e mergulho. É só escolher como aproveitar cada dia.`}
+  >
+    <ul class="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+      <li>
+        <CartaoDestaque
+          titulo="Gastronomia"
+          foto={fotoGastronomia}
+          href={rotas.allInclusive.caminho}
+        >
+          <p>
+            Quatro restaurantes e sete bares, com refeições e bebidas selecionadas incluídas na
+            diária.
+          </p>
+        </CartaoDestaque>
+      </li>
+      <li>
+        <CartaoDestaque
+          titulo="Acomodações"
+          foto={fotoAcomodacoes}
+          href={rotas.acomodacoes.caminho}
+        >
+          <p>
+            {resort.categoriasAcomodacao} categorias, de apartamentos a suítes, para casais,
+            famílias e grupos.
+          </p>
+        </CartaoDestaque>
+      </li>
+      <li>
+        <CartaoDestaque titulo="Lazer e crianças" foto={fotoLazer} href={rotas.lazer.caminho}>
+          <p>Piscinas, praia, Kids Club, esportes, academia e shows à noite.</p>
+        </CartaoDestaque>
+      </li>
+      <li>
+        <CartaoDestaque titulo="Bem-estar" foto={fotoBemEstar} href={rotas.bemEstar.caminho}>
+          <p>Grand Oca Spa, Espaço Beleza e academia com aulas de hidro fitness.</p>
+        </CartaoDestaque>
+      </li>
+    </ul>
+  </Secao>
+
+  <Secao
+    introducao={`Do Guest Service ao centro de mergulho, as comodidades do ${resort.nome} tornam a estada mais prática para casais, famílias e grupos.`}
+    titulo={`Que comodidades o ${resort.nomeCurto} oferece?`}
+    sobretitulo="Comodidades"
+    fundo="areia"
+  >
+    {/* Comodidades agrupadas por tema, em cartões lado a lado. */}
+    <ul class="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+      {gruposComodidades.map((grupo) => (
+        <li class="ring-areia-200 rounded-cartao bg-white p-6 shadow-cartao ring-1" data-revelar>
+          <p class="text-mar-800 mb-4 flex items-center gap-2 text-lg font-semibold">
+            <Icone nome={grupo.icone} class="text-coral-700 size-5" />
+            {grupo.titulo}
+          </p>
+          <ListaCheck itens={grupo.itens} />
+        </li>
+      ))}
+    </ul>
+    <p class="mt-8 flex flex-wrap gap-3">
+      <Botao href={rotas.servicos.caminho} variante="contorno" iconeFim="seta-direita">
+        Ver serviços e comodidades
+      </Botao>
+      <Botao href={rotas.fotos.caminho} variante="texto" iconeFim="seta-direita">
+        Ver todas as fotos
+      </Botao>
+    </p>
+  </Secao>
+
+  <Secao
+    introducao={`O ${resort.nomeCurto} fica de frente para a ${resort.praia}, ${resort.destino.em} ${resort.destino.nome}, no litoral norte de Alagoas.`}
+    titulo={`Onde fica o ${resort.nomeCurto}?`}
+    sobretitulo="Localização"
+  >
+    {/* Texto à esquerda e, no lugar da foto, o mapa do Google à direita. */}
+    <div class="grid items-start gap-10 lg:grid-cols-2 lg:gap-14">
+      <div class="conteudo">
+        <p>
+          O resort fica na {endereco.logradouro}, em {endereco.cidade} ({endereco.uf}), a cerca de{' '}
+          {aeroporto.distanciaKm} km de {aeroporto.cidade}, onde fica o {aeroporto.nome}. Maceió
+          fica a cerca de 136 km, e o centro de Maragogi, ao sul de Ponta de Mangue, costuma exigir
+          transporte.
+        </p>
+        <p>
+          <Botao href={rotas.comoChegar.caminho} variante="texto" iconeFim="seta-direita">
+            Veja como chegar
+          </Botao>
+        </p>
+      </div>
+      <MapaSobDemanda />
+    </div>
+    <NotaTripadvisor class="mt-6" />
+  </Secao>
+</PaginaLayout>

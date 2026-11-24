@@ -1,0 +1,137 @@
+---
+/**
+ * "Informações antes da reserva" (modelo do site do Grand Oca Maragogi da agência): quatro
+ * cartões com a central de reservas, o atendimento, a confirmação imediata (em destaque) e a
+ * operadora. Textos enviados pelo usuário em 05/10/2026; só no site da agência.
+ */
+import Icone from '@/components/ui/Icone.astro';
+import { rotas } from '@/data/rotas';
+import type { NomeIcone } from '@/lib/icones';
+import { linkTelefone, operador } from '@/site.config';
+
+interface Props {
+  class?: string;
+}
+
+const { class: classe } = Astro.props;
+
+const [central] = operador.telefones;
+
+interface Cartao {
+  titulo: string;
+  texto: string;
+  icone: NomeIcone;
+  /** Link do título (o cartão inteiro fica clicável). */
+  href?: string;
+  destaque?: boolean;
+}
+
+const cartoes: Cartao[] = [
+  {
+    titulo: 'Central de reservas',
+    texto: central?.exibicao ?? '',
+    icone: 'telefone',
+    ...(central ? { href: linkTelefone(central) } : {}),
+  },
+  {
+    titulo: 'Atendimento especializado',
+    texto: 'Suporte para hospedagem e pacote.',
+    icone: 'pessoas',
+    href: rotas.contato.caminho,
+  },
+  operador.reservas.hospedagemUrl
+    ? {
+        titulo: 'Confirmação imediata',
+        texto: 'Pague e receba o voucher na hora!',
+        icone: 'check',
+        destaque: true,
+      }
+    : {
+        titulo: 'Disponibilidade confirmada',
+        texto: 'A equipe confirma datas, categoria e tarifa antes do pagamento.',
+        icone: 'check',
+        destaque: true,
+      },
+  {
+    titulo: 'Operadora credenciada',
+    texto: operador.logo?.alt ?? operador.nome,
+    icone: 'escudo',
+  },
+];
+---
+
+{operador.id === 'agencia' && (
+  <section
+    class:list={['relative pt-16 sm:pt-24', classe]}
+    aria-labelledby="informacoes-reserva-titulo"
+  >
+    <div class="container-site">
+      <header class="mb-8 max-w-3xl space-y-3 sm:mb-10" data-revelar>
+        <h2 id="informacoes-reserva-titulo" class="titulo-secao">
+          Informações antes da reserva
+        </h2>
+        <p class="text-tinta-suave text-lg">
+          Transparência, atendimento e responsabilidade comercial em cada reserva.
+        </p>
+      </header>
+      <ul class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        {cartoes.map((cartao) => (
+          <li data-revelar>
+            <article
+              class:list={[
+                'group ease-suave relative flex h-full flex-col gap-3 rounded-cartao p-6 transition duration-500 hover:-translate-y-1 hover:shadow-flutuante',
+                cartao.destaque
+                  ? 'bg-verde-700 superficie-escura text-white shadow-flutuante'
+                  : 'ring-areia-200 bg-white shadow-cartao ring-1',
+              ]}
+            >
+              <span
+                class:list={['flex', cartao.destaque ? 'text-white' : 'text-mar-700']}
+                aria-hidden="true"
+              >
+                <Icone nome={cartao.icone} class="size-7" />
+              </span>
+              <h3 class:list={['', cartao.destaque && 'text-white']}>
+                {cartao.href ? (
+                  <a
+                    href={cartao.href}
+                    data-evento={cartao.href.startsWith('tel:') ? 'clique_telefone' : undefined}
+                    class:list={[
+                      'link-esticado underline-offset-4 hover:underline',
+                      cartao.destaque ? 'text-white' : 'text-mar-700',
+                    ]}
+                  >
+                    {cartao.titulo}
+                  </a>
+                ) : (
+                  cartao.titulo
+                )}
+              </h3>
+              <p class:list={[cartao.destaque ? 'text-white/90' : 'text-tinta']}>{cartao.texto}</p>
+              {cartao.icone === 'escudo' && operador.logo && (
+                <span class="mt-auto flex items-center gap-4">
+                  <img
+                    src={`${operador.logo.caminho}.webp`}
+                    alt=""
+                    width={operador.logo.largura}
+                    height={operador.logo.altura}
+                    loading="lazy"
+                    class="h-8 w-auto"
+                  />
+                  <img
+                    src="/marca/resorts-online.png"
+                    alt=""
+                    width="135"
+                    height="62"
+                    loading="lazy"
+                    class="h-8 w-auto"
+                  />
+                </span>
+              )}
+            </article>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+)}

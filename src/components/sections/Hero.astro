@@ -1,0 +1,142 @@
+---
+/**
+ * Abertura das páginas internas, no mesmo layout da home (HeroHome):
+ * - com foto: imagem em tela cheia (prioritária, é o LCP), parada (sem zoom, para não atrasar o LCP), com degradê preto,
+ *   trilha e, centralizados, sobretítulo, H1, subtítulo e as ações (slot `acoes`); sem foto real
+ *   ('indisponivel' ou ausente): fundo areia com formas suaves e texto escuro;
+ * - a ficha rápida (slot `fatos`, em geral ChipsFatos) numa barra fina e discreta logo abaixo
+ *   do topo (a faixa sobreposta em cartão fica só na home);
+ * - abaixo dela, o resumo (slot padrão, a resposta direta) alinhado à esquerda.
+ * Nas ações dentro da foto, os botões de contorno ficam brancos (global.css, .acoes-banner).
+ * Páginas com ações (as que levam à reserva) mostram abaixo delas o selo de pagamento.
+ * `destaque` deixa o topo quase da altura da tela e mostra a dica de rolar.
+ * As entradas são animações de CSS (sem JavaScript) e somem com "menos movimento".
+ */
+import type { ImageMetadata } from 'astro';
+
+import Breadcrumbs from '@/components/ui/Breadcrumbs.astro';
+import Icone from '@/components/ui/Icone.astro';
+import Imagem from '@/components/ui/Imagem.astro';
+import SeloPagamento from '@/components/ui/SeloPagamento.astro';
+import type { Link } from '@/lib/navegacao';
+
+interface Props {
+  titulo: string;
+  sobretitulo?: string;
+  subtitulo?: string;
+  /** Foto principal. 'indisponivel' = sem foto real (topo sem foto). */
+  imagem?: { src: ImageMetadata; alt: string } | 'indisponivel';
+  trilha?: readonly Link[];
+  destaque?: boolean;
+}
+
+const { titulo, sobretitulo, subtitulo, imagem, trilha = [], destaque = false } = Astro.props;
+const foto = typeof imagem === 'object' ? imagem : undefined;
+// Slots repassados pelo PaginaLayout existem mesmo vazios: decide pelo HTML renderizado.
+const renderizar = async (nome: string) =>
+  Astro.slots.has(nome) ? (await Astro.slots.render(nome)).trim() : '';
+const [resumo, acoes, fatos] = await Promise.all([
+  renderizar('default'),
+  renderizar('acoes'),
+  renderizar('fatos'),
+]);
+const temFaixa = fatos !== '';
+const base = 'pb-16 sm:pb-20';
+---
+
+<div class="relative">
+  {foto ? (
+    <div class="superficie-escura bg-carvao-950 relative isolate overflow-hidden text-white">
+      <div
+        class:list={[
+          'container-site flex flex-col gap-10 pt-6',
+          destaque ? 'min-h-[min(88svh,52rem)]' : 'min-h-[min(68svh,34rem)]',
+          base,
+        ]}
+      >
+        <Breadcrumbs itens={trilha} claro />
+        <div class="animate-subir mx-auto my-auto flex max-w-4xl flex-col items-center space-y-5 text-center [&_p]:[text-shadow:0_1px_3px_rgb(0_0_0/0.75),0_0_18px_rgb(0_0_0/0.5)]">
+          {sobretitulo && (
+            <p class="text-[0.6875rem] font-semibold tracking-[0.12em] text-white/85 uppercase sm:text-xs">
+              {sobretitulo}
+            </p>
+          )}
+          <h1 class="titulo-pagina text-white [text-shadow:0_2px_18px_rgb(0_0_0/0.55)]">
+            {titulo}
+          </h1>
+          {subtitulo && (
+            <p class="max-w-2xl text-base font-normal text-white sm:text-lg">{subtitulo}</p>
+          )}
+          {acoes && (
+            <div class="acoes-banner flex flex-wrap justify-center gap-3 pt-2" set:html={acoes} />
+          )}
+          {acoes && <SeloPagamento escuro centralizado />}
+        </div>
+        {destaque && (
+          <span
+            class="animate-dica-rolar absolute bottom-24 left-1/2 hidden -translate-x-1/2 text-white/80 sm:block"
+            aria-hidden="true"
+          >
+            <Icone nome="seta-baixo" class="size-7" />
+          </span>
+        )}
+      </div>
+      {/* A foto vem depois do texto no HTML (o leitor de tela ouve o título primeiro). */}
+      <div class="absolute inset-0 -z-20">
+        <Imagem src={foto.src} alt={foto.alt} layout="full-width" sizes="100vw" prioridade />
+      </div>
+      {/* Degradê preto de cima (60%) para baixo (transparente) (texto centralizado): escurece sem tingir a foto. */}
+      <div
+        class="absolute inset-0 -z-10 bg-linear-to-b from-black/60 via-black/30 to-black/0"
+        aria-hidden="true"
+      />
+      {/* Halo escuro suave atrás do texto central: dá leitura ao subtítulo sem escurecer a foto toda. */}
+      <div
+        class="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_60%_45%_at_50%_55%,rgb(0_0_0/0.45),transparent)]"
+        aria-hidden="true"
+      />
+    </div>
+  ) : (
+    <div class="bg-areia-100 relative isolate overflow-hidden">
+      <div
+        class="bg-mar-100 absolute -top-24 -right-20 -z-10 size-96 rounded-full opacity-80 blur-3xl"
+        aria-hidden="true"
+      />
+      <div
+        class="bg-mar-100 absolute -bottom-32 -left-24 -z-10 size-96 rounded-full opacity-90 blur-3xl"
+        aria-hidden="true"
+      />
+      <div class:list={['container-site flex flex-col gap-10 pt-6', base]}>
+        <Breadcrumbs itens={trilha} />
+        <div class="animate-subir mx-auto flex max-w-4xl flex-col items-center space-y-5 pt-6 text-center sm:pt-10">
+          {sobretitulo && (
+            <p class="text-mar-700 text-[0.6875rem] font-medium tracking-[0.12em] uppercase sm:text-xs">
+              {sobretitulo}
+            </p>
+          )}
+          <h1 class="titulo-pagina">{titulo}</h1>
+          {subtitulo && (
+            <p class="text-tinta-suave max-w-2xl text-base font-light sm:text-lg">{subtitulo}</p>
+          )}
+          {acoes && <div class="flex flex-wrap justify-center gap-3 pt-2" set:html={acoes} />}
+          {acoes && <SeloPagamento centralizado />}
+        </div>
+      </div>
+    </div>
+  )}
+
+  {/* Ficha logo abaixo do topo: pílulas centralizadas sobre um fundo claro. */}
+  {temFaixa && (
+    <div class="border-areia-200 border-b">
+      <div class="container-site py-4" set:html={fatos} />
+    </div>
+  )}
+
+  {resumo && (
+    <div class="container-site mt-12 sm:mt-14">
+      <div class="space-y-4 px-1 sm:px-3 lg:px-6 [&_[data-resposta-direta]]:max-w-3xl [&>div]:max-w-3xl">
+        <Fragment set:html={resumo} />
+      </div>
+    </div>
+  )}
+</div>

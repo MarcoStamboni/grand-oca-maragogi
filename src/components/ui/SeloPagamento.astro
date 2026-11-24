@@ -1,0 +1,49 @@
+---
+/**
+ * Selo comercial das condições de pagamento (10x sem juros no cartão, desconto no Pix), em
+ * pílulas lado a lado. `escuro` = sobre foto ou fundo escuro (texto branco, fundo translúcido).
+ * `nota` acrescenta uma linha curta abaixo (ex.: "Vale também para o pacote com aéreo").
+ * Sem condição configurada (operador.reservas.pagamento), não mostra nada.
+ */
+import Icone from '@/components/ui/Icone.astro';
+import { condicoesPagamento } from '@/lib/pagamento';
+
+interface Props {
+  escuro?: boolean;
+  /** Alinhamento das pílulas. */
+  centralizado?: boolean;
+  nota?: string;
+  class?: string;
+}
+
+const { escuro = false, centralizado = false, nota, class: classe } = Astro.props;
+---
+
+{condicoesPagamento.length > 0 && (
+  <div class:list={['space-y-2', centralizado && 'text-center', classe]}>
+    <ul
+      class:list={['flex flex-wrap gap-2', centralizado && 'justify-center']}
+      aria-label="Formas de pagamento"
+    >
+      {condicoesPagamento.map((condicao) => (
+        <li
+          class:list={[
+            'inline-flex items-center gap-2 rounded-full px-3.5 py-1.5 text-sm',
+            escuro
+              ? 'bg-black/35 text-white ring-1 ring-white/30 backdrop-blur-sm'
+              : 'bg-verde-100 text-verde-900',
+          ]}
+        >
+          <Icone
+            nome={condicao.icone}
+            class:list={['size-4 shrink-0', escuro ? 'text-sol-400' : 'text-verde-700']}
+          />
+          <span>
+            <strong class="font-bold">{condicao.destaque}</strong> {condicao.complemento}
+          </span>
+        </li>
+      ))}
+    </ul>
+    {nota && <p class:list={['text-xs', escuro ? 'text-white/80' : 'text-tinta-suave']}>{nota}</p>}
+  </div>
+)}

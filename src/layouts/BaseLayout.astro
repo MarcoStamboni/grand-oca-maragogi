@@ -1,0 +1,141 @@
+---
+/**
+ * Estrutura de todas as páginas: <head> (metadados via <SEO>, JSON-LD via <JsonLd>, fontes,
+ * ícones), link para pular ao conteúdo, aviso de cookies (só com analytics ativo), cabeçalho,
+ * <main>, rodapé, barra de ações do celular, barra de progresso e "Voltar ao topo".
+ * O slot "head" recebe extras por página. Páginas `semIndice` não têm JSON-LD.
+ * O aviso de cookies vem logo depois do link de pular, para ser encontrado cedo por teclado e
+ * leitor de tela (na tela, ele fica fixo embaixo).
+ */
+import '@/styles/global.css';
+
+import { Font } from 'astro:assets';
+
+import AvisoCookies from '@/components/sections/AvisoCookies.astro';
+import BarraAcoesMobile from '@/components/sections/BarraAcoesMobile.astro';
+import Footer from '@/components/sections/Footer.astro';
+import Header from '@/components/sections/Header.astro';
+import JsonLd from '@/components/seo/JsonLd.astro';
+import SEO from '@/components/seo/SEO.astro';
+import FaixaModelo from '@/components/ui/FaixaModelo.astro';
+import VoltarTopo from '@/components/ui/VoltarTopo.astro';
+import WhatsAppFlutuante from '@/components/ui/WhatsAppFlutuante.astro';
+import type { RotaChave } from '@/data/rotas';
+import { analytics } from '@/lib/ambiente';
+import type { ImagemResolvida } from '@/lib/imagens';
+import type { Link } from '@/lib/navegacao';
+import type { OpcoesDadosEstruturados } from '@/lib/schema';
+import { descricaoComReservas } from '@/lib/seo';
+import { site } from '@/site.config';
+
+export interface Props {
+  /** Título da página (entra no modelo "%s | nome do site"). */
+  titulo: string;
+  /** Usa `titulo` como está, sem o modelo (ex.: home). */
+  tituloAbsoluto?: boolean;
+  descricao: string;
+  /** Página fora do índice dos buscadores. */
+  semIndice?: boolean;
+  /** Imagem de compartilhamento (padrão: vista aérea do resort). */
+  imagemSocial?: ImagemResolvida;
+  tipoOg?: 'website' | 'article';
+  atualizadoEm?: Date;
+  /** Caminho canônico, quando diferente da URL atual. */
+  caminhoCanonico?: string;
+  /** Rota fixa da página (define tipo e assunto no JSON-LD). */
+  rota?: RotaChave;
+  /** Trilha de breadcrumbs (BreadcrumbList no JSON-LD). */
+  trilha?: readonly Link[];
+  /** Entidade principal e perguntas do JSON-LD. */
+  dadosEstruturados?: OpcoesDadosEstruturados;
+}
+
+const {
+  titulo,
+  tituloAbsoluto = false,
+  descricao,
+  semIndice = false,
+  imagemSocial,
+  tipoOg,
+  atualizadoEm,
+  caminhoCanonico,
+  rota,
+  trilha,
+  dadosEstruturados,
+} = Astro.props;
+const tituloCompleto = tituloAbsoluto ? titulo : site.modeloTitulo.replace('%s', titulo);
+// Toda descrição termina com a central de reservas ("... Reservas 0800 737 6787").
+const descricaoCompleta = descricaoComReservas(descricao, site.fimDescricao);
+---
+
+<!doctype html>
+<html lang={site.idioma}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script is:inline>
+      // .js: há JavaScript. .movimento: animações de entrada ao rolar (src/scripts/movimento.ts),
+      // só se o sistema não pede menos movimento.
+      document.documentElement.classList.add('js');
+      if (
+        'IntersectionObserver' in window &&
+        !matchMedia('(prefers-reduced-motion: reduce)').matches
+      ) {
+        document.documentElement.classList.add('movimento');
+      }
+    </script>
+    <SEO
+      titulo={tituloCompleto}
+      descricao={descricaoCompleta}
+      caminho={caminhoCanonico}
+      imagem={imagemSocial}
+      tipo={tipoOg}
+      semIndice={semIndice}
+      atualizadoEm={atualizadoEm}
+    />
+    {!semIndice && (
+      <JsonLd
+        caminho={caminhoCanonico ?? Astro.url.pathname}
+        titulo={tituloCompleto}
+        descricao={descricaoCompleta}
+        atualizadoEm={atualizadoEm}
+        imagem={imagemSocial}
+        rota={rota}
+        trilha={trilha}
+        {...dadosEstruturados}
+      />
+    )}
+    <meta name="theme-color" content="#ffffff" />
+    <link rel="icon" href="/favicon.ico" sizes="32x32" />
+    <link rel="icon" href="/favicon-96.png" type="image/png" sizes="96x96" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <Font cssVariable="--font-poppins" preload={[{ weight: 300 }, { weight: 700 }]} />
+    <Font cssVariable="--font-marca" preload />
+    <slot name="head" />
+  </head>
+  <body
+    id="topo"
+    class="flex min-h-dvh flex-col pb-[calc(var(--altura-barra-mobile)+env(safe-area-inset-bottom)+var(--altura-aviso-cookies,0px))] lg:pb-[var(--altura-aviso-cookies,0px)]"
+  >
+    <a
+      href="#conteudo"
+      class="bg-mar-900 sr-only z-50 rounded-full px-5 py-3 font-semibold text-white focus:not-sr-only focus:fixed focus:top-3 focus:left-3"
+    >
+      Pular para o conteúdo
+    </a>
+    {analytics.ativo && <AvisoCookies provedor={analytics.provedor} id={analytics.id} />}
+    <FaixaModelo />
+    <Header />
+    <main id="conteudo" tabindex="-1" class="flex-1 overflow-x-clip focus:outline-none">
+      <slot />
+    </main>
+    <Footer />
+    <BarraAcoesMobile />
+    <WhatsAppFlutuante />
+    <VoltarTopo />
+    <script>
+      import '@/scripts/movimento';
+    </script>
+  </body>
+</html>

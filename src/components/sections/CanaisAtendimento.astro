@@ -1,0 +1,66 @@
+---
+/**
+ * Canais de atendimento do operador ativo (telefones, WhatsApp, e-mail), lidos do site.config.
+ * `mensagem` personaliza o texto pré-preenchido do WhatsApp.
+ */
+import Icone from '@/components/ui/Icone.astro';
+import { linkTelefone, linkWhatsApp, operador } from '@/site.config';
+
+interface Props {
+  mensagem?: string;
+  class?: string;
+}
+
+const { mensagem, class: classe } = Astro.props;
+// Sem caixas: ícone e texto em linha, do tamanho do conteúdo; o valor sublinha no hover.
+const classeItem =
+  'group/canal flex min-h-11 items-center gap-3 py-1 no-underline [&_.valor]:group-hover/canal:underline';
+---
+
+{/* data-curto: a Secao trata a lista como conteúdo curto e a põe ao lado da foto. */}
+<ul class:list={['flex flex-wrap items-center gap-x-10 gap-y-4', classe]} data-curto>
+  <li>
+    <a
+      href={linkWhatsApp(mensagem)}
+      class={classeItem}
+      target="_blank"
+      rel="noopener noreferrer"
+      data-evento="clique_whatsapp"
+    >
+      <span class="text-verde-800 flex shrink-0">
+        <Icone nome="whatsapp" class="size-6" />
+      </span>
+      <span>
+        <span class="text-tinta-suave block text-xs">{operador.whatsapp.rotulo}</span>
+        <span class="valor text-mar-950 text-sm font-semibold">Falar no WhatsApp</span>
+        <span class="sr-only"> (abre em nova aba)</span>
+      </span>
+    </a>
+  </li>
+  {operador.telefones.map((telefone) => (
+    <li>
+      <a href={linkTelefone(telefone)} class={classeItem} data-evento="clique_telefone">
+        <span class="text-mar-700 flex shrink-0">
+          <Icone nome="telefone" class="size-6" />
+        </span>
+        <span>
+          <span class="text-tinta-suave block text-xs">{telefone.rotulo}</span>
+          <span class="valor text-mar-950 text-sm font-semibold">{telefone.exibicao}</span>
+        </span>
+      </a>
+    </li>
+  ))}
+  {operador.email && (
+    <li>
+      <a href={`mailto:${operador.email}`} class={classeItem}>
+        <span class="text-mar-700 flex shrink-0">
+          <Icone nome="email" class="size-6" />
+        </span>
+        <span>
+          <span class="text-tinta-suave block text-xs">E-mail</span>
+          <span class="valor text-mar-950 text-sm font-semibold">{operador.email}</span>
+        </span>
+      </a>
+    </li>
+  )}
+</ul>

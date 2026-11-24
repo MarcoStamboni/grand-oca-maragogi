@@ -1,0 +1,132 @@
+---
+/**
+ * Cartão de navegação hub → detalhe, no padrão do Grand Oca: foto no topo, sobretítulo azul em
+ * caixa alta (ex.: a data de um feriado), título, texto curto e "Ver mais informações →" em
+ * laranja. O cartão inteiro é clicável por um único link (o título), sem links duplicados para
+ * leitores de tela. `selo` aparece sobre a foto (ex.: "Premium", "a partir de R$ 1.990").
+ * A entrada ao rolar fica no invólucro (data-revelar), separada das transições de hover.
+ */
+import type { ImageMetadata } from 'astro';
+
+import Icone from '@/components/ui/Icone.astro';
+import Imagem from '@/components/ui/Imagem.astro';
+import ImagemIndisponivel from '@/components/ui/ImagemIndisponivel.astro';
+import { iconeDoTexto } from '@/lib/icone-do-texto';
+import type { NomeIcone } from '@/lib/icones';
+
+interface Props {
+  titulo: string;
+  href: string;
+  descricao?: string;
+  /** Texto curto acima do título (ex.: "25 de dezembro", "Restaurante principal"). */
+  sobretitulo?: string;
+  /** Imagem de capa; sem ela, mostra a ilustração neutra. `false` = cartão sem mídia. */
+  imagem?: { src: ImageMetadata; alt: string } | false;
+  /** Fatos curtos exibidos sobre a foto (ex.: "36 m²", "até 4 pessoas"). */
+  fatos?: readonly string[];
+  /** Selo de destaque no canto da foto. */
+  selo?: string;
+  /** Texto visual da chamada (o link acessível é o título). */
+  chamada?: string;
+  /** Ícone da ilustração quando não há foto. */
+  iconeSemFoto?: NomeIcone;
+  /** Ícone ao lado do título (ex.: o do feriado). Sem ele, sai do próprio título (iconeDoTexto); `false` desliga. */
+  iconeTitulo?: NomeIcone | false | undefined;
+  /** Link externo (abre em nova aba). */
+  externo?: boolean;
+  nivelTitulo?: 2 | 3;
+  class?: string;
+}
+
+const {
+  titulo,
+  href,
+  descricao,
+  sobretitulo,
+  imagem,
+  fatos = [],
+  selo,
+  chamada = 'Ver mais informações',
+  iconeSemFoto,
+  iconeTitulo,
+  externo = false,
+  nivelTitulo = 3,
+  class: classe,
+} = Astro.props;
+const Titulo = `h${nivelTitulo}` as const;
+const icone = iconeTitulo === false ? null : (iconeTitulo ?? iconeDoTexto(titulo, null));
+const fatosNaFoto = imagem !== false && fatos.length > 0;
+---
+
+<div class:list={['h-full', classe]} data-revelar>
+  <article class="group focus-within:ring-mar-700 ease-suave relative flex h-full flex-col overflow-hidden rounded-cartao bg-white shadow-cartao ring-1 ring-black/8 transition duration-500 focus-within:ring-3 hover:-translate-y-1 hover:shadow-flutuante">
+    {imagem !== false && (
+      <div class="relative aspect-4/3 overflow-hidden">
+        {imagem ? (
+          <Imagem
+            src={imagem.src}
+            alt={imagem.alt}
+            sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+            class="ease-suave transition-transform duration-700 group-hover:scale-[1.05]"
+          />
+        ) : (
+          <ImagemIndisponivel referencia={href} icone={iconeSemFoto} />
+        )}
+        {selo && (
+          <span class="bg-coral-700 absolute top-3 left-3 rounded-full px-3 py-1 text-xs font-bold text-white shadow-sm">
+            {selo}
+          </span>
+        )}
+        {fatosNaFoto && (
+          <>
+            <div
+              class="pointer-events-none absolute inset-x-0 bottom-0 h-1/2 bg-linear-to-t from-black/55 to-transparent"
+              aria-hidden="true"
+            />
+            <ul class="absolute bottom-3 left-3 flex flex-wrap gap-1.5">
+              {fatos.map((fato) => (
+                <li class="text-mar-900 rounded-full bg-white/95 px-3 py-1 text-xs font-semibold shadow-sm backdrop-blur">
+                  {fato}
+                </li>
+              ))}
+            </ul>
+          </>
+        )}
+      </div>
+    )}
+    <div class="flex flex-1 flex-col gap-2 p-5 sm:p-6">
+      {sobretitulo && (
+        <p class="text-mar-500 text-xs font-bold tracking-wider uppercase">{sobretitulo}</p>
+      )}
+      <Titulo class:list={[' leading-snug', icone && 'flex items-start gap-2']}>
+        {icone && <Icone nome={icone} class="text-coral-700 mt-0.5 size-5 shrink-0" />}
+        <a
+          href={href}
+          class="text-mar-800 link-esticado no-underline focus-visible:outline-none"
+          {...(externo ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+        >
+          {titulo}
+          {externo && <span class="sr-only"> (abre em nova aba)</span>}
+        </a>
+      </Titulo>
+      {!fatosNaFoto && fatos.length > 0 && (
+        <ul class="text-tinta-suave flex flex-wrap gap-x-3 gap-y-1 text-sm">
+          {fatos.map((fato) => (
+            <li>{fato}</li>
+          ))}
+        </ul>
+      )}
+      {descricao && <p class="text-tinta-suave text-[0.9375rem] leading-relaxed">{descricao}</p>}
+      <span
+        class="text-coral-700 mt-auto inline-flex items-center gap-1.5 pt-3 text-sm font-bold"
+        aria-hidden="true"
+      >
+        {chamada}
+        <Icone
+          nome={externo ? 'link-externo' : 'seta-direita'}
+          class="ease-suave size-4 transition-transform duration-300 group-hover:translate-x-1"
+        />
+      </span>
+    </div>
+  </article>
+</div>

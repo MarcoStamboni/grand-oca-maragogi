@@ -1,0 +1,75 @@
+---
+/**
+ * Mapa do Google carregado só quando a pessoa pede (não pesa no carregamento inicial e
+ * não aciona o Google antes do clique). Sem JavaScript, fica o link para abrir o mapa.
+ * `rotaDoAeroporto` (página Como chegar): o mapa e o link já mostram a rota de carro do aeroporto
+ * principal até o resort.
+ */
+import Icone from '@/components/ui/Icone.astro';
+import { incorporacaoRotaAeroporto, linkMapa, linkRotaAeroporto, resort } from '@/site.config';
+
+interface Props {
+  rotaDoAeroporto?: boolean;
+  class?: string;
+}
+
+const { rotaDoAeroporto = false, class: classe } = Astro.props;
+const { latitude, longitude } = resort.geo;
+const urlIncorporacao = rotaDoAeroporto
+  ? incorporacaoRotaAeroporto
+  : `https://www.google.com/maps?q=${latitude},${longitude}&z=15&output=embed`;
+const titulo = rotaDoAeroporto
+  ? `Mapa com a rota do aeroporto de ${resort.aeroporto.cidade} até o ${resort.nome}`
+  : `Mapa com a localização do ${resort.nome}`;
+---
+
+<div
+  class:list={[
+    'bg-mar-50 ring-areia-200 relative aspect-4/3 overflow-hidden rounded-cartao ring-1 sm:aspect-video',
+    classe,
+  ]}
+  data-mapa={urlIncorporacao}
+  data-mapa-titulo={titulo}
+>
+  <div class="absolute inset-0 flex flex-col items-center justify-center gap-4 p-6 text-center">
+    <Icone nome="local" class="text-mar-700 size-9" />
+    <p class="text-tinta-suave max-w-sm text-sm">
+      O mapa é carregado do Google Maps só quando você pedir. Ao carregá-lo, o Google pode usar
+      cookies.
+    </p>
+    <div class="flex flex-wrap justify-center gap-3">
+      <button
+        type="button"
+        class="bg-mar-700 hover:bg-mar-900 js:inline-flex hidden min-h-11 items-center gap-2 rounded-full px-5 text-sm font-semibold text-white"
+        data-mapa-carregar
+      >
+        <Icone nome="local" class="size-4" />
+        Mostrar mapa
+      </button>
+      <a
+        href={rotaDoAeroporto ? linkRotaAeroporto : linkMapa}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="border-mar-700 text-mar-700 hover:bg-mar-50 inline-flex min-h-11 items-center gap-2 rounded-full border-2 px-5 text-sm font-semibold no-underline"
+      >
+        {rotaDoAeroporto ? 'Rota do aeroporto no Google Maps' : 'Abrir no Google Maps'}
+        <span class="sr-only"> (abre em nova aba)</span>
+      </a>
+    </div>
+  </div>
+</div>
+
+<script>
+  for (const mapa of document.querySelectorAll<HTMLElement>('[data-mapa]')) {
+    mapa.querySelector('[data-mapa-carregar]')?.addEventListener('click', () => {
+      const quadro = document.createElement('iframe');
+      quadro.src = mapa.dataset.mapa ?? '';
+      quadro.title = mapa.dataset.mapaTitulo ?? 'Mapa';
+      quadro.loading = 'lazy';
+      quadro.referrerPolicy = 'no-referrer-when-downgrade';
+      quadro.className = 'absolute inset-0 h-full w-full border-0';
+      mapa.replaceChildren(quadro);
+      quadro.focus();
+    });
+  }
+</script>

@@ -1,0 +1,125 @@
+---
+/**
+ * Hub de acomodações: cartões de todas as categorias (a tabela fica só em /acomodacoes/comparativo/), perfil indicado de cada
+ * uma e o que todas têm. Textos: src/data/paginas.ts; categorias: src/content/acomodacoes/.
+ */
+import Botao from '@/components/ui/Botao.astro';
+import Card from '@/components/ui/Card.astro';
+import CartaoDestaque from '@/components/ui/CartaoDestaque.astro';
+import ChipsFatos from '@/components/ui/ChipsFatos.astro';
+import Secao from '@/components/ui/Secao.astro';
+import { caminhoAcomodacao, rotas } from '@/data/rotas';
+import PaginaLayout from '@/layouts/PaginaLayout.astro';
+import { reservarHospedagem } from '@/lib/acoes';
+import { acomodacoesComCapa, fatosCurtos } from '@/lib/acomodacoes';
+import { DATA_CONTEUDO } from '@/lib/datas';
+import { formatarArea } from '@/lib/formatar';
+import { obterImagem } from '@/lib/imagens';
+import { resort } from '@/site.config';
+
+const [topo, acomodacoes] = await Promise.all([
+  obterImagem('grand-oca/acomodacoes/bangalo-fachada.jpg'),
+  acomodacoesComCapa(),
+]);
+// Fotos dos perfis: a segunda foto de cada categoria (a capa já aparece na lista de cima).
+const fotosPerfil = await Promise.all(
+  acomodacoes.map(({ entrada, capa }) =>
+    entrada.data.fotos[1] ? obterImagem(entrada.data.fotos[1]) : capa,
+  ),
+);
+const areas = acomodacoes.flatMap(({ entrada }) =>
+  entrada.data.areaM2 === undefined ? [] : [entrada.data.areaM2],
+);
+const faixaArea = `${formatarArea(Math.min(...areas))} a ${formatarArea(Math.max(...areas))}`;
+---
+
+<PaginaLayout rota="acomodacoes" imagem={topo} atualizadoEm={DATA_CONTEUDO}>
+  <Fragment slot="acoes">
+    <Botao
+      variante="verde"
+      href={reservarHospedagem.href}
+      icone={reservarHospedagem.icone}
+      evento={reservarHospedagem.evento}
+      externo={reservarHospedagem.externo}
+      tamanho="lg"
+    >
+      Ver tarifas
+    </Botao>
+    <Botao
+      href={rotas.comparativo.caminho}
+      variante="contorno"
+      iconeFim="seta-direita"
+      tamanho="lg"
+    >
+      Comparar acomodações
+    </Botao>
+  </Fragment>
+  <ChipsFatos
+    slot="fatos"
+    itens={[
+      {
+        rotulo: 'Unidades',
+        valor: resort.unidades === null ? 'Ver com a central' : String(resort.unidades),
+        icone: 'cama',
+      },
+      { rotulo: 'Categorias', valor: String(resort.categoriasAcomodacao), icone: 'estrela' },
+      { rotulo: 'Área', valor: faixaArea, icone: 'area' },
+      ...(resort.naoFumantes
+        ? [{ rotulo: 'Fumo', valor: 'Todas para não fumantes', icone: 'info' as const }]
+        : []),
+    ]}
+  />
+
+  <Secao
+    titulo={`Quais são as acomodações do ${resort.nome}?`}
+    sobretitulo="Categorias"
+    introducao={`As acomodações do ${resort.nome} vão do Apartamento Standard e dos bangalôs à Suíte Deluxe, de 72 m², a maior do resort. Cada categoria tem a sua página, com ficha, fotos e perguntas frequentes, para ajudar a escolher antes de consultar a disponibilidade.`}
+  >
+    <ul class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      {acomodacoes.map(({ entrada, capa }) => (
+        <li>
+          <Card
+            titulo={entrada.data.nome}
+            href={caminhoAcomodacao(entrada.id)}
+            iconeSemFoto="cama"
+            iconeTitulo="cama"
+            descricao={entrada.data.resumo}
+            fatos={fatosCurtos(entrada)}
+            imagem={capa}
+            {...(entrada.data.premium ? { selo: 'Premium' } : {})}
+          />
+        </li>
+      ))}
+    </ul>
+  </Secao>
+
+  <Secao
+    introducao={`Cada acomodação foi pensada para um tipo de hóspede. Veja as indicações para casais, famílias com crianças e quem busca mais espaço ou privacidade.`}
+    foto="grand-oca/acomodacoes/comunicante-varanda.jpg"
+    titulo={`Qual acomodação do ${resort.nomeCurto} combina com a sua viagem?`}
+    sobretitulo="Perfis"
+  >
+    <ul class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+      {acomodacoes.map(({ entrada }, indice) => (
+        <li>
+          <CartaoDestaque
+            sobretitulo={entrada.data.indicadoPara}
+            foto={fotosPerfil[indice]}
+            titulo={entrada.data.nome}
+            href={caminhoAcomodacao(entrada.id)}
+          >
+            <p>{entrada.data.diferenciais.slice(0, 2).join(' · ')}</p>
+          </CartaoDestaque>
+        </li>
+      ))}
+    </ul>
+  </Secao>
+
+  <Secao
+    introducao={`Todas as acomodações do ${resort.nomeCurto} entram no regime all inclusive, com refeições e bebidas incluídas na diária.`}
+    foto="grand-oca/acomodacoes/suite-deluxe-varanda.jpg"
+    titulo={`O que todas as acomodações do ${resort.nomeCurto} têm?`}
+    sobretitulo="Comodidades"
+    fundo="areia"
+  />
+</PaginaLayout>

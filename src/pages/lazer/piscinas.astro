@@ -1,0 +1,133 @@
+---
+/**
+ * Piscinas: complexo aquático (características e áreas), piscinas e áreas de água e fotos.
+ * Dados: src/data/piscina.ts e coleção `atividades` (categoria `piscina` e piscina infantil).
+ */
+import CartaoAtividade from '@/components/sections/CartaoAtividade.astro';
+import GrupoAtividades from '@/components/sections/GrupoAtividades.astro';
+import Botao from '@/components/ui/Botao.astro';
+import ChipsFatos from '@/components/ui/ChipsFatos.astro';
+import Icone from '@/components/ui/Icone.astro';
+import Secao from '@/components/ui/Secao.astro';
+import { fotosPiscina, piscinaPrincipal } from '@/data/piscina';
+import { rotas } from '@/data/rotas';
+import PaginaLayout from '@/layouts/PaginaLayout.astro';
+import { atividadesPublicadas } from '@/lib/atividades';
+import { DATA_CONTEUDO } from '@/lib/datas';
+import { formatarListaFrase } from '@/lib/formatar';
+import type { NomeIcone } from '@/lib/icones';
+import { obterImagem, obterImagens } from '@/lib/imagens';
+import { resort } from '@/site.config';
+
+const [fotos, atividades] = await Promise.all([obterImagens(fotosPiscina), atividadesPublicadas()]);
+const [topo] = fotos;
+const iconeCaracteristica: Record<string, NomeIcone> = {
+  'Várias piscinas em frente aos bangalôs, com diferentes profundidades': 'piscina',
+  'Nova área D’Água, com solário e borda infinita': 'ondas',
+  'Parque aquático infantil com toboágua e áreas rasas': 'brinquedo',
+  'Bar Galés, dentro da piscina principal': 'drink',
+  'Bar da Piscina D’Água, com snacks, gelados e chá da tarde': 'guarda-sol',
+  'Hidro, hidro fitness e recreação na água': 'pessoas',
+};
+const naAgua = atividades.filter(
+  ({ id, data }) => data.categoria === 'piscina' || id.startsWith('piscina'),
+);
+// Foto de cada área de água: a primeira imagem registrada na própria atividade (coleção).
+const fotosNaAgua = new Map(
+  await Promise.all(
+    naAgua.map(
+      async ({ id, data }) =>
+        [id, data.fotos[0] ? await obterImagem(data.fotos[0]) : undefined] as const,
+    ),
+  ),
+);
+const comFotoAgua = naAgua.filter(({ id }) => fotosNaAgua.get(id));
+const semFotoAgua = naAgua.filter(({ id }) => !fotosNaAgua.get(id));
+const fotoGrupoAgua = await obterImagem('grand-oca/piscinas/piscina-lagoa-coqueiros.jpg');
+---
+
+<PaginaLayout rota="piscinas" imagem={topo} atualizadoEm={DATA_CONTEUDO}>
+  <Fragment slot="acoes">
+    <Botao href={rotas.criancas.caminho} variante="contorno" tamanho="lg" iconeFim="seta-direita">
+      Lazer das crianças
+    </Botao>
+  </Fragment>
+  <ChipsFatos
+    slot="fatos"
+    itens={[
+      {
+        rotulo: 'Complexo aquático',
+        valor: `Quase ${piscinaPrincipal.extensaoM} m de extensão`,
+        icone: 'piscina',
+      },
+      { rotulo: 'Áreas', valor: formatarListaFrase(piscinaPrincipal.zonas), icone: 'ondas' },
+    ]}
+  />
+
+  <Secao
+    introducao={`As piscinas do ${resort.nome} se estendem por quase 400 metros em frente aos bangalôs, com diferentes profundidades, a nova área D’Água e bares dentro e ao lado da água, para toda a família.`}
+    foto="grand-oca/piscinas/piscina-borda-infinita.jpg"
+    titulo={`Como são as piscinas do ${resort.nome}?`}
+    sobretitulo="Complexo aquático"
+  >
+    <div class="space-y-10">
+      <div class="conteudo max-w-3xl">
+        <p>
+          As piscinas formam uma sequência de ambientes entre os bangalôs e os jardins, com
+          diferentes profundidades para quem quer nadar, boiar ou só refrescar. A nova área D’Água
+          reúne solário, borda infinita e o parque aquático, com toboágua e áreas rasas para as
+          crianças.
+        </p>
+        <p>
+          Os bares ficam dentro e ao lado da água: o Galés, na piscina principal, o Coqueirais, ao
+          lado dela, e o bar da Piscina D’Água, que também serve snacks, gelados e o chá da tarde. A
+          programação inclui hidro, hidro fitness e recreação aquática.
+        </p>
+      </div>
+      {/* Características em blocos, cada uma com o ícone que a representa. */}
+      <ul class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        {piscinaPrincipal.caracteristicas.map((item) => (
+          <li class="ring-areia-200 flex items-center gap-3 rounded-cartao bg-white p-4 shadow-cartao ring-1">
+            <Icone
+              nome={iconeCaracteristica[item] ?? 'piscina'}
+              class="text-mar-700 size-6 shrink-0"
+            />
+            <span class="text-mar-950 text-sm leading-snug font-medium">{item}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </Secao>
+
+  {naAgua.length > 0 && (
+    <Secao
+      introducao={`O complexo aquático do ${resort.nomeCurto} se divide em áreas para cada momento do dia, da piscina principal e dos bangalôs à nova área D’Água, com a Praia de Ponta de Mangue a poucos passos.`}
+      foto="grand-oca/resort/praia-espreguicadeiras-aerea.jpg"
+      titulo={`Quais áreas de água o ${resort.nomeCurto} tem?`}
+      sobretitulo="Áreas de água"
+      fundo="areia"
+    >
+      <ul class="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+        {comFotoAgua.map((atividade) => (
+          <li>
+            <CartaoAtividade
+              atividade={atividade}
+              ilustracao={{ foto: fotosNaAgua.get(atividade.id), icone: 'piscina' }}
+            />
+          </li>
+        ))}
+        {semFotoAgua.length > 0 && (
+          <li>
+            <GrupoAtividades
+              titulo="Bares e atividades na água"
+              resumo="Bar dentro da piscina principal, hidro, hidro fitness e dinâmicas aquáticas."
+              icone="piscina"
+              foto={fotoGrupoAgua}
+              atividades={semFotoAgua}
+            />
+          </li>
+        )}
+      </ul>
+    </Secao>
+  )}
+</PaginaLayout>

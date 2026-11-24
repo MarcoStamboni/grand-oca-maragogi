@@ -1,0 +1,117 @@
+---
+/**
+ * Esportes e atividades: o que está na programação (areia, água, academia) e o centro de mergulho
+ * PADI. Coleção `atividades`, categoria `esportes`.
+ */
+import CartaoAtividade from '@/components/sections/CartaoAtividade.astro';
+import GrupoAtividades from '@/components/sections/GrupoAtividades.astro';
+import Botao from '@/components/ui/Botao.astro';
+import ChipsFatos from '@/components/ui/ChipsFatos.astro';
+import Secao from '@/components/ui/Secao.astro';
+import { rotas } from '@/data/rotas';
+import PaginaLayout from '@/layouts/PaginaLayout.astro';
+import { atividadesPublicadas } from '@/lib/atividades';
+import { DATA_CONTEUDO } from '@/lib/datas';
+import { obterImagem } from '@/lib/imagens';
+import { resort } from '@/site.config';
+
+const [topo, atividades, fotoAventura, fotoArLivre] = await Promise.all([
+  obterImagem('grand-oca/resort/praia-areia-ampla.jpg'),
+  atividadesPublicadas(),
+  obterImagem('grand-oca/resort/praia-espreguicadeiras-aerea.jpg'),
+  obterImagem('grand-oca/regiao/piscinas-naturais-aereo.jpg'),
+]);
+const esportes = atividades.filter(({ data }) => data.categoria === 'esportes');
+const todosInclusos = esportes.filter(({ data }) => data.cobranca !== 'pago');
+// Atividades sem foto própria entram em cartões de grupo, com "Ler mais".
+const GRUPOS = [
+  {
+    titulo: 'Na areia e na água',
+    icone: 'trofeu' as const,
+    foto: fotoAventura,
+    resumo: 'Caiaque, vôlei, beach tênis e futebol, na programação diurna de lazer.',
+    ids: ['caiaque', 'volei-e-beach-tenis', 'futebol'],
+  },
+  {
+    titulo: 'Mergulho e snorkel',
+    icone: 'ondas' as const,
+    foto: fotoArLivre,
+    resumo: 'Aulas e passeios às piscinas naturais com o centro de mergulho PADI do resort.',
+    ids: ['mergulho-padi'],
+  },
+].map((grupo) => ({
+  ...grupo,
+  atividades: todosInclusos.filter(({ id }) => grupo.ids.includes(id)),
+}));
+const agrupados = new Set(GRUPOS.flatMap(({ atividades: lista }) => lista.map(({ id }) => id)));
+const inclusos = todosInclusos.filter(({ id }) => !agrupados.has(id));
+const pagos = esportes.filter(({ data }) => data.cobranca === 'pago');
+// Foto de cada esporte: a primeira imagem registrada na própria atividade (coleção).
+const fotos = new Map(
+  await Promise.all(
+    esportes.map(
+      async ({ id, data }) =>
+        [id, data.fotos[0] ? await obterImagem(data.fotos[0]) : undefined] as const,
+    ),
+  ),
+);
+---
+
+<PaginaLayout rota="esportes" imagem={topo} atualizadoEm={DATA_CONTEUDO}>
+  <Fragment slot="acoes">
+    <Botao href={rotas.lazer.caminho} variante="contorno" tamanho="lg" iconeFim="seta-direita">
+      Todo o lazer do resort
+    </Botao>
+  </Fragment>
+  <ChipsFatos
+    slot="fatos"
+    itens={[
+      { rotulo: 'Atividades', valor: String(todosInclusos.length), icone: 'trofeu' },
+      { rotulo: 'Mergulho', valor: 'Centro PADI', icone: 'barco' },
+    ]}
+  />
+
+  <Secao
+    introducao={`Caiaque, vôlei, beach tênis, futebol, hidro, dança e aulas na academia fazem parte da programação do ${resort.nome}, para quem quer manter o treino, se divertir em grupo ou só movimentar as férias. Modalidades e horários podem mudar.`}
+    foto="grand-oca/resort/jardim-cabanas-coqueiral.jpg"
+    titulo={`Que esportes e atividades o ${resort.nomeCurto} oferece?`}
+    sobretitulo="Programação"
+  >
+    <ul class="grid items-start gap-5 sm:grid-cols-2 lg:grid-cols-3">
+      {GRUPOS.filter(({ atividades: lista }) => lista.length > 0).map((grupo) => (
+        <li>
+          <GrupoAtividades {...grupo} />
+        </li>
+      ))}
+      {inclusos.map((atividade) => (
+        <li>
+          <CartaoAtividade
+            atividade={atividade}
+            ilustracao={{ foto: fotos.get(atividade.id), icone: 'trofeu' }}
+          />
+        </li>
+      ))}
+    </ul>
+  </Secao>
+
+  {pagos.length > 0 && (
+    <Secao
+      introducao={`Algumas atividades do ${resort.nomeCurto} são cobradas à parte e contratadas no resort.`}
+      foto="grand-oca/resort/praia-areia-ampla.jpg"
+      titulo={`Quais esportes do ${resort.nomeCurto} são pagos à parte?`}
+      sobretitulo="Pagos à parte"
+      fundo="areia"
+    >
+      <ul class="grid items-start gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        {pagos.map((atividade) => (
+          <li>
+            <CartaoAtividade
+              atividade={atividade}
+              ilustracao={{ foto: fotos.get(atividade.id), icone: 'barco' }}
+            />
+          </li>
+        ))}
+      </ul>
+    </Secao>
+  )}
+</PaginaLayout>

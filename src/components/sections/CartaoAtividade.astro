@@ -1,0 +1,112 @@
+---
+/**
+ * Ficha curta de uma atividade de lazer (páginas /lazer/*): nome, resumo, público, local,
+ * horário e cobrança. A cobrança só aparece quando a fonte informa (incluso ou pago).
+ * `ilustracao` (opcional) põe uma faixa de imagem no topo do cartão: a foto real, quando houver
+ * uma foto da pasta do resort que mostre a atividade, ou uma ilustração da marca (degradê com o
+ * ícone da atividade), que não se passa por foto do lugar.
+ */
+import Icone from '@/components/ui/Icone.astro';
+import Imagem from '@/components/ui/Imagem.astro';
+import { type Atividade, textoCobranca, textoHorarioAtividade } from '@/lib/atividades';
+import type { NomeIcone } from '@/lib/icones';
+import type { ImagemResolvida } from '@/lib/imagens';
+
+export interface IlustracaoAtividade {
+  foto?: ImagemResolvida;
+  /** Ícone da ilustração (e do título). */
+  icone: NomeIcone;
+  tom?: 'mar' | 'coral' | 'verde' | 'sol';
+}
+
+interface Props {
+  atividade: Atividade;
+  icone?: NomeIcone;
+  nivelTitulo?: 3 | 4;
+  ilustracao?: IlustracaoAtividade;
+}
+
+const { atividade, nivelTitulo = 3, ilustracao } = Astro.props;
+const icone = ilustracao?.icone ?? Astro.props.icone ?? 'sol';
+const { data } = atividade;
+const Titulo = `h${nivelTitulo}` as const;
+const cobranca = textoCobranca(atividade);
+const horario = textoHorarioAtividade(atividade);
+const tons = {
+  mar: 'from-mar-500 to-mar-800',
+  coral: 'from-coral-400 to-coral-700',
+  verde: 'from-verde-400 to-verde-800',
+  sol: 'from-sol-400 to-coral-500',
+};
+
+const linhas = [
+  ...(data.publico ? [{ rotulo: 'Público', valor: data.publico }] : []),
+  ...(data.local ? [{ rotulo: 'Onde', valor: data.local }] : []),
+  ...(horario ? [{ rotulo: 'Horário', valor: horario }] : []),
+];
+---
+
+<article
+  id={atividade.id}
+  class="group ring-areia-200 ease-suave flex h-full flex-col overflow-hidden rounded-cartao bg-white ring-1 transition duration-500 hover:-translate-y-1 hover:shadow-flutuante"
+>
+  {ilustracao && (
+    <div class="relative aspect-[16/7] overflow-hidden">
+      {ilustracao.foto ? (
+        <Imagem
+          src={ilustracao.foto.src}
+          alt={ilustracao.foto.alt}
+          sizes="(min-width: 768px) 40vw, 100vw"
+          largura={800}
+          class="ease-suave h-full w-full object-cover transition-transform duration-[1.2s] group-hover:scale-105"
+        />
+      ) : (
+        <div
+          class:list={[
+            'absolute inset-0 flex items-center justify-center bg-linear-to-br',
+            tons[ilustracao.tom ?? 'mar'],
+          ]}
+          aria-hidden="true"
+        >
+          <span class="absolute -top-10 -right-10 size-36 rounded-full bg-white/15"></span>
+          <span class="absolute -bottom-14 -left-8 size-40 rounded-full bg-white/10"></span>
+          <Icone
+            nome={ilustracao.icone}
+            class="ease-suave relative size-16 text-white drop-shadow-sm transition-transform duration-500 group-hover:scale-110 group-hover:-rotate-6"
+          />
+        </div>
+      )}
+    </div>
+  )}
+  <div class="flex flex-1 flex-col gap-3 p-5">
+    <div class="flex items-start gap-3">
+      <span class="text-coral-700 flex shrink-0 pt-0.5">
+        <Icone nome={icone} class="size-6" />
+      </span>
+      <div class="space-y-1">
+        <Titulo class="">{data.nome}</Titulo>
+        {cobranca && (
+          <p
+            class:list={[
+              'inline-block rounded-full px-2.5 py-0.5 text-xs font-semibold',
+              data.cobranca === 'pago' ? 'bg-coral-100 text-coral-800' : 'bg-mar-50 text-mar-700',
+            ]}
+          >
+            {cobranca}
+          </p>
+        )}
+      </div>
+    </div>
+    <p class="text-tinta">{data.resumo}</p>
+    {linhas.length > 0 && (
+      <dl class="mt-auto grid gap-2 text-sm">
+        {linhas.map(({ rotulo, valor }) => (
+          <div class="flex flex-wrap gap-x-2">
+            <dt class="text-mar-950 font-semibold">{rotulo}:</dt>
+            <dd class="text-tinta-suave">{valor}</dd>
+          </div>
+        ))}
+      </dl>
+    )}
+  </div>
+</article>

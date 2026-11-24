@@ -1,0 +1,106 @@
+---
+/**
+ * Hub do guia do destino (rota dinâmica: o caminho vem de `resort.destino.slug`, ex.:
+ * /porto-de-galinhas/). Páginas do guia, onde fica o resort e o que contratar no resort.
+ * Textos: src/data/paginas.ts (destino); páginas: coleção `guia`.
+ */
+import { getCollection } from 'astro:content';
+
+import Botao from '@/components/ui/Botao.astro';
+import Card from '@/components/ui/Card.astro';
+import ChipsFatos from '@/components/ui/ChipsFatos.astro';
+import MapaSobDemanda from '@/components/ui/MapaSobDemanda.astro';
+import Secao from '@/components/ui/Secao.astro';
+import { caminhoGuia, rotas } from '@/data/rotas';
+import PaginaLayout from '@/layouts/PaginaLayout.astro';
+import { DATA_CONTEUDO } from '@/lib/datas';
+import { obterImagem } from '@/lib/imagens';
+import { resort } from '@/site.config';
+
+export function getStaticPaths() {
+  return [{ params: { destino: resort.destino.slug } }];
+}
+
+const [capa, paginas] = await Promise.all([
+  obterImagem('grand-oca/regiao/piscinas-naturais-aereo.jpg'),
+  getCollection('guia'),
+]);
+const cartoes = await Promise.all(
+  paginas
+    .sort((a, b) => a.data.ordem - b.data.ordem)
+    .map(async (pagina) => ({
+      pagina,
+      foto: pagina.data.fotos[0] ? await obterImagem(pagina.data.fotos[0]) : undefined,
+    })),
+);
+const { aeroporto, endereco } = resort;
+---
+
+<PaginaLayout rota="destino" imagem={capa} atualizadoEm={DATA_CONTEUDO}>
+  <Fragment slot="acoes">
+    <Botao href={rotas.comoChegar.caminho} tamanho="lg" iconeFim="seta-direita">
+      Como chegar
+    </Botao>
+    <Botao href={rotas.experiencias.caminho} variante="contorno" tamanho="lg">
+      Passeios no resort
+    </Botao>
+  </Fragment>
+  <ChipsFatos
+    slot="fatos"
+    itens={[
+      { rotulo: 'Cidade', valor: `${endereco.cidade} (${endereco.uf})`, icone: 'local' },
+      { rotulo: 'À beira do', valor: resort.praia, icone: 'ondas' },
+      {
+        rotulo: 'Aeroporto',
+        valor: `${aeroporto.cidade} (${aeroporto.iata}), ${aeroporto.distanciaKm} km`,
+        icone: 'aviao',
+      },
+    ]}
+  />
+
+  <Secao
+    titulo={`O que conhecer ${resort.destino.em} ${resort.destino.nome}?`}
+    sobretitulo="Guia"
+    introducao={`Recifes, piscinas naturais, praias de coqueirais e a vida da cidade de ${resort.destino.nome}, com o ${resort.nomeCurto} como ponto de partida para conhecer a Costa dos Corais.`}
+  >
+    <ul class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      {cartoes.map(({ pagina, foto }) => (
+        <li>
+          <Card
+            titulo={pagina.data.titulo}
+            href={caminhoGuia(pagina.id)}
+            descricao={pagina.data.resumo}
+            imagem={foto}
+            iconeSemFoto="bussola"
+          />
+        </li>
+      ))}
+    </ul>
+  </Secao>
+
+  <Secao
+    introducao={`O ${resort.nomeCurto} fica de frente para a ${resort.praia}, no município de ${resort.destino.nome}, no litoral norte de Alagoas, entre Recife e Maceió.`}
+    titulo={`Onde fica o ${resort.nomeCurto} ${resort.destino.em} ${resort.destino.nome}?`}
+    sobretitulo="Localização"
+    fundo="areia"
+  >
+    {/* Texto à esquerda e o mapa do Google com a localização do resort à direita. */}
+    <div class="grid items-center gap-10 lg:grid-cols-2">
+      <div>
+        <div class="conteudo">
+          <p>
+            O resort fica na {endereco.logradouro}, em {endereco.cidade} ({endereco.uf}), a cerca de{' '}
+            {aeroporto.distanciaKm} km de {aeroporto.cidade}. Daqui saem os passeios às piscinas
+            naturais e aos recifes da região, contratados à parte.
+          </p>
+        </div>
+        <p class="mt-6 flex flex-wrap gap-3">
+          <Botao href={rotas.comoChegar.caminho} variante="contorno" iconeFim="seta-direita">
+            Ver rotas e mapa
+          </Botao>
+        </p>
+      </div>
+      <MapaSobDemanda />
+    </div>
+  </Secao>
+</PaginaLayout>

@@ -1,0 +1,73 @@
+---
+/**
+ * Chamada final (CTA duplo): consultar tarifas + WhatsApp, lidos do operador ativo.
+ * Nunca aponta para a própria página (erro comum do site de referência).
+ * Visual (Grand Oca): foto de fundo decorativa com véu azul-marinho e entrada ao rolar.
+ */
+import Botao from '@/components/ui/Botao.astro';
+import Imagem from '@/components/ui/Imagem.astro';
+import { type Acao, acoes } from '@/lib/acoes';
+import { obterImagem } from '@/lib/imagens';
+
+interface Props {
+  titulo?: string;
+  texto?: string;
+  principal?: Acao;
+  secundaria?: Acao;
+}
+
+const {
+  titulo = 'Vamos planejar sua estadia?',
+  texto = 'Consulte datas e tarifas ou fale com a nossa equipe para tirar dúvidas antes de reservar.',
+  principal = acoes.consultarTarifas,
+  secundaria = acoes.whatsapp,
+} = Astro.props;
+
+const caminhoAtual = Astro.url.pathname;
+const lista = [principal, secundaria].filter((acao) => acao.href !== caminhoAtual);
+const fundo = await obterImagem('grand-oca/resort/praia-coqueiral.jpg');
+---
+
+<section
+  class="superficie-escura bg-carvao-950 group relative isolate overflow-hidden"
+  aria-labelledby="cta-titulo"
+>
+  <div class="ease-suave absolute inset-0 -z-20 transition-transform duration-[1.6s] group-hover:scale-105">
+    <Imagem src={fundo.src} alt="" layout="full-width" sizes="100vw" />
+  </div>
+  <div
+    class="absolute inset-0 -z-10 bg-linear-to-r from-black/80 via-black/50 to-transparent"
+    aria-hidden="true"
+  />
+  <div class="container-site py-24 sm:py-32" data-revelar>
+    <div class="max-w-xl space-y-5">
+      <p class="sobretitulo">Reservas</p>
+      <h2 id="cta-titulo" class="titulo-secao text-white">
+        {titulo}
+      </h2>
+      <p class="text-lg text-white/90">{texto}</p>
+      <div class="flex flex-wrap gap-3 pt-2">
+        {lista.map((acao, indice) => (
+          <Botao
+            href={acao.href}
+            variante={
+              acao === acoes.consultarTarifas
+                ? 'verde'
+                : indice === 0
+                  ? 'primario'
+                  : acao.icone === 'whatsapp'
+                    ? 'whatsapp'
+                    : 'claro'
+            }
+            tamanho="lg"
+            icone={acao.icone}
+            externo={acao.externo}
+            evento={acao.evento}
+          >
+            {acao.rotulo}
+          </Botao>
+        ))}
+      </div>
+    </div>
+  </div>
+</section>

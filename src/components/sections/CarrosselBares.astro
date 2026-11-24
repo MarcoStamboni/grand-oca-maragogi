@@ -1,0 +1,120 @@
+---
+/**
+ * Bares em carrossel (padrão das atividades do hoteisnoguaruja e do Club Med): cartões altos com
+ * a foto, o número, a área e o horário em selos e o nome sobre a foto. "Ver detalhes" abre uma
+ * janela (Popover API, src/components/ui/Janela.astro) com a ficha completa do bar.
+ * Setas rolam o carrossel (src/scripts/carrossel.ts); no celular, rola com o dedo.
+ * Funciona com um bar ou com vários, sem espaços vazios.
+ */
+import CartaoBar from '@/components/sections/CartaoBar.astro';
+import Icone from '@/components/ui/Icone.astro';
+import Imagem from '@/components/ui/Imagem.astro';
+import ImagemIndisponivel from '@/components/ui/ImagemIndisponivel.astro';
+import Janela from '@/components/ui/Janela.astro';
+import { formatarFaixaHorario } from '@/lib/formatar';
+import { areasBares, type Bar } from '@/lib/gastronomia';
+import { iconeDoTexto } from '@/lib/icone-do-texto';
+import type { ImagemResolvida } from '@/lib/imagens';
+
+interface Props {
+  fichas: readonly { bar: Bar; foto: ImagemResolvida | undefined }[];
+}
+
+const { fichas } = Astro.props;
+const selo =
+  'inline-flex items-center gap-1 rounded-full bg-black/50 px-2.5 py-1 text-[0.6875rem] font-semibold text-white backdrop-blur-sm';
+---
+
+<div class="relative" data-carrossel>
+  {fichas.length > 1 && (
+    <div class="mb-5 flex justify-end gap-2">
+      <button
+        type="button"
+        class="ring-areia-300 text-mar-800 hover:bg-mar-50 inline-flex size-11 items-center justify-center rounded-full bg-white ring-1"
+        data-carrossel-anterior
+      >
+        <Icone nome="anterior" class="size-5" />
+        <span class="sr-only">Bar anterior</span>
+      </button>
+      <button
+        type="button"
+        class="ring-areia-300 text-mar-800 hover:bg-mar-50 inline-flex size-11 items-center justify-center rounded-full bg-white ring-1"
+        data-carrossel-proximo
+      >
+        <Icone nome="proxima" class="size-5" />
+        <span class="sr-only">Próximo bar</span>
+      </button>
+    </div>
+  )}
+
+  <ul
+    class="-mx-4 flex snap-x snap-mandatory gap-5 overflow-x-auto px-4 pb-2 [scrollbar-width:none]"
+    data-carrossel-trilho
+  >
+    {fichas.map(({ bar, foto }, indice) => {
+      const [horario] = bar.data.horarios;
+      return (
+        <li id={bar.id} class="w-[78%] shrink-0 snap-start sm:w-72 lg:w-80">
+          <article class="group relative aspect-3/4 overflow-hidden rounded-grande shadow-cartao">
+            <div class="absolute inset-0 [&_img]:h-full [&_img]:w-full [&_img]:object-cover">
+              {foto ? (
+                <Imagem
+                  src={foto.src}
+                  alt={foto.alt}
+                  sizes="(min-width: 1024px) 20rem, 78vw"
+                  largura={800}
+                  class="ease-suave transition-transform duration-700 group-hover:scale-[1.05]"
+                />
+              ) : (
+                <ImagemIndisponivel referencia={`#${bar.id}`} icone="drink" />
+              )}
+            </div>
+            <div
+              class="absolute inset-0 bg-linear-to-t from-black/85 via-black/10 to-black/30"
+              aria-hidden="true"
+            ></div>
+            <div class="absolute inset-x-4 top-4 flex items-start justify-between gap-2">
+              <span class="text-sm font-bold text-white/90 tabular-nums">
+                {String(indice + 1).padStart(2, '0')}
+              </span>
+              <span class="flex flex-wrap justify-end gap-1.5">
+                <span class={selo}>
+                  <Icone nome={iconeDoTexto(areasBares[bar.data.area], 'drink')} class="size-3.5" />
+                  {areasBares[bar.data.area]}
+                </span>
+                {horario && (
+                  <span class={selo}>
+                    <Icone nome="relogio" class="size-3.5" />
+                    {formatarFaixaHorario(horario)}
+                  </span>
+                )}
+              </span>
+            </div>
+            <div class="absolute inset-x-5 bottom-5 space-y-2 text-white">
+              <h3 class="leading-tight font-bold text-white">{bar.data.nome}</h3>
+              <button
+                type="button"
+                popovertarget={`detalhes-${bar.id}`}
+                class="link-esticado inline-flex items-center gap-1.5 text-sm font-semibold text-white/90 hover:text-white"
+              >
+                Ver detalhes
+                <Icone nome="seta-direita" class="size-4" />
+                <span class="sr-only"> do {bar.data.nome}</span>
+              </button>
+            </div>
+          </article>
+        </li>
+      );
+    })}
+  </ul>
+
+  {fichas.map(({ bar, foto }) => (
+    <Janela id={`detalhes-${bar.id}`} titulo={bar.data.nome} subtitulo={areasBares[bar.data.area]}>
+      <CartaoBar bar={bar} foto={foto} semAncora />
+    </Janela>
+  ))}
+</div>
+
+<script>
+  import '@/scripts/carrossel';
+</script>

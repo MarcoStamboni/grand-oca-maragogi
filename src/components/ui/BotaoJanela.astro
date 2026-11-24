@@ -1,0 +1,25 @@
+---
+/** Botão que abre uma `<Janela>` pelo id (Popover API, sem JavaScript). */
+import Icone from '@/components/ui/Icone.astro';
+import { classesBotao, type TamanhoBotao, type VarianteBotao } from '@/lib/botoes';
+import type { NomeIcone } from '@/lib/icones';
+
+interface Props {
+  alvo: string;
+  variante?: VarianteBotao;
+  tamanho?: TamanhoBotao;
+  icone?: NomeIcone;
+  class?: string;
+}
+
+const { alvo, variante = 'contorno', tamanho = 'md', icone, class: classe } = Astro.props;
+---
+
+<button
+  type="button"
+  popovertarget={alvo}
+  class:list={[...classesBotao(variante, tamanho), classe]}
+>
+  {icone && <Icone nome={icone} class="size-5" />}
+  <slot />
+</button>

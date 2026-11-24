@@ -1,0 +1,115 @@
+---
+/**
+ * "Como é um dia no all inclusive?": cabeçalho com os números do regime (refeições, restaurantes e
+ * bares), linha do tempo de ponta a ponta com um cartão por horário (foto, hora em destaque,
+ * período e o que acontece) e o fechamento com as bebidas e as chamadas. Horários de exemplo
+ * divulgados pelo resort. Dados: src/data/home.ts (`umDia`, `allInclusive`).
+ */
+import { getCollection } from 'astro:content';
+
+import Botao from '@/components/ui/Botao.astro';
+import Icone from '@/components/ui/Icone.astro';
+import Imagem from '@/components/ui/Imagem.astro';
+import { textosHome } from '@/data/home';
+import { rotas } from '@/data/rotas';
+import { obterImagem } from '@/lib/imagens';
+import { resort } from '@/site.config';
+
+const [restaurantes, etapas] = await Promise.all([
+  getCollection('restaurantes'),
+  Promise.all(
+    textosHome.umDia.map(async (etapa) => ({ ...etapa, imagem: await obterImagem(etapa.foto) })),
+  ),
+]);
+const [gastronomia, bebidas] = textosHome.allInclusive;
+const numeros = [
+  { valor: '4', rotulo: 'refeições por dia' },
+  { valor: String(restaurantes.length), rotulo: 'restaurantes' },
+  { valor: '7', rotulo: 'bares' },
+];
+---
+
+<section class="py-16 sm:py-24" aria-labelledby="um-dia-titulo">
+  <div class="container-site">
+    <div class="grid items-end gap-8 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] lg:gap-16">
+      <div class="space-y-4" data-revelar>
+        <p class="sobretitulo">All inclusive</p>
+        <h2 id="um-dia-titulo" class="titulo-secao">
+          Como é um dia no all inclusive do {resort.nomeCurto} Resort?
+        </h2>
+        <p class="text-tinta-suave text-lg">{gastronomia}</p>
+      </div>
+      <dl class="divide-areia-200 grid grid-cols-3 divide-x" data-revelar="direita">
+        {numeros.map((item) => (
+          <div class="flex flex-col gap-1 px-3 first:pl-0 sm:px-6">
+            <dt class="text-tinta-suave order-2 text-sm leading-snug">{item.rotulo}</dt>
+            <dd class="text-mar-800 order-1 text-4xl font-bold tracking-tight sm:text-5xl">
+              {item.valor}
+            </dd>
+          </div>
+        ))}
+      </dl>
+    </div>
+
+    <div class="mt-12 sm:mt-14">
+      <ol class="grid gap-6 sm:grid-cols-2 lg:grid-cols-5 lg:gap-5">
+        {etapas.map((etapa, indice) => (
+          <li class="group flex flex-col" data-revelar style={`--atraso: ${indice * 110}ms`}>
+            <p class="mb-4 flex flex-wrap items-center gap-x-3 gap-y-1">
+              <span
+                class="bg-coral-500 ease-suave size-4 shrink-0 rounded-full transition-transform duration-300 group-hover:scale-125"
+                aria-hidden="true"
+              ></span>
+              <span class="text-coral-700 text-xl font-bold whitespace-nowrap tabular-nums xl:text-2xl">
+                {etapa.hora}
+              </span>
+              <span class="text-tinta-suave text-xs font-semibold tracking-[0.12em] uppercase">
+                {etapa.periodo}
+              </span>
+              {/* Linha até o próximo horário: começa depois do período, sem cruzar o texto. */}
+              <span class="bg-areia-300 hidden h-px flex-1 lg:block" aria-hidden="true"></span>
+            </p>
+            <article class="ring-areia-200 ease-suave flex flex-1 flex-col overflow-hidden rounded-grande bg-white shadow-cartao ring-1 transition duration-500 group-hover:-translate-y-1.5 group-hover:shadow-flutuante">
+              <div class="aspect-4/3 overflow-hidden">
+                <Imagem
+                  src={etapa.imagem.src}
+                  alt={etapa.imagem.alt}
+                  sizes="(min-width: 1024px) 20vw, (min-width: 640px) 50vw, 100vw"
+                  class="ease-suave transition-transform duration-[1.2s] group-hover:scale-110"
+                />
+              </div>
+              <div class="space-y-1.5 p-5">
+                <h3 class="text-mar-950 leading-snug">{etapa.titulo}</h3>
+                <p class="text-tinta-suave text-sm leading-relaxed">{etapa.texto}</p>
+              </div>
+            </article>
+          </li>
+        ))}
+      </ol>
+    </div>
+
+    <div
+      class="ring-areia-200 mt-12 grid items-center gap-6 rounded-grande bg-white p-6 shadow-cartao ring-1 sm:mt-14 sm:p-8 lg:grid-cols-[minmax(0,1fr)_auto] lg:gap-10"
+      data-revelar
+    >
+      <div class="flex gap-4">
+        <Icone nome="taca" class="text-coral-700 mt-1 size-8 shrink-0" />
+        <div class="space-y-2">
+          <p class="text-tinta-suave">{bebidas}</p>
+          <p class="text-tinta-suave text-xs">
+            Roteiro de exemplo; o resort não publica horários fixos, e a programação pode mudar sem
+            aviso prévio.
+          </p>
+        </div>
+      </div>
+      <div class="flex flex-wrap gap-3">
+        <Botao href={rotas.allInclusive.caminho} iconeFim="seta-direita">
+          O que está incluído
+        </Botao>
+        <Botao href={rotas.restaurantes.caminho} variante="contorno">
+          Restaurantes e bares
+        </Botao>
+      </div>
+    </div>
+  </div>
+</section>

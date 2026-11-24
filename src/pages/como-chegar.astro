@@ -1,0 +1,318 @@
+---
+/**
+ * Como chegar: endereço, mapa sob demanda com a rota, hora local, aeroportos (cada um com a
+ * âncora `#via-<iata>`, usada pelos botões da home), rotas de carro, transporte e dicas.
+ * Aeroportos e endereço: site.config.ts; rotas, transportes e dicas: src/data/como-chegar.ts.
+ */
+import Botao from '@/components/ui/Botao.astro';
+import CartaoDestaque from '@/components/ui/CartaoDestaque.astro';
+import ChipsFatos from '@/components/ui/ChipsFatos.astro';
+import HojeNoResort from '@/components/ui/HojeNoResort.astro';
+import Icone from '@/components/ui/Icone.astro';
+import MapaSobDemanda from '@/components/ui/MapaSobDemanda.astro';
+import Nota from '@/components/ui/Nota.astro';
+import Secao from '@/components/ui/Secao.astro';
+import {
+  dicasAntesDeViajar,
+  escolhaTransporte,
+  rotasDeAcesso,
+  transportes,
+} from '@/data/como-chegar';
+import { rotas } from '@/data/rotas';
+import PaginaLayout from '@/layouts/PaginaLayout.astro';
+import { acaoWhatsApp, pacoteComAereo } from '@/lib/acoes';
+import { DATA_CONTEUDO } from '@/lib/datas';
+import { formatarHora } from '@/lib/formatar';
+import { iconeDoTexto } from '@/lib/icone-do-texto';
+import { obterImagem } from '@/lib/imagens';
+import { linkRotaAeroporto, linkRotaDoAeroporto, resort } from '@/site.config';
+
+const topo = await obterImagem('grand-oca/resort/vista-aerea-resort.jpg');
+const { aeroporto, endereco } = resort;
+const aeroportos = [aeroporto, ...resort.aeroportosAlternativos];
+const linhaEndereco = [
+  endereco.logradouro,
+  endereco.bairro,
+  `${endereco.cidade} (${endereco.uf})`,
+  endereco.cep ? `CEP ${endereco.cep}` : null,
+]
+  .filter(Boolean)
+  .join(', ');
+// Do desembarque ao check-in: o caminho em etapas, ao lado do cartão do aeroporto principal.
+const etapasChegada = [
+  {
+    icone: 'aviao' as const,
+    titulo: `Desembarque em ${aeroporto.cidade} (${aeroporto.iata})`,
+    texto: `O ${aeroporto.nome} recebe voos de diversas capitais do país.`,
+  },
+  {
+    icone: 'carro' as const,
+    titulo: 'Transfer, táxi ou carro alugado',
+    texto:
+      'Ao sair do desembarque, siga com o transporte escolhido pelo litoral, em direção a Maragogi.',
+  },
+  {
+    icone: 'local' as const,
+    titulo: `Cerca de ${aeroporto.distanciaKm} km até Ponta de Mangue`,
+    texto: `O resort fica na Rodovia AL-101 Norte, de frente para a ${resort.praia}. Confira o tempo de estrada no mapa.`,
+  },
+  {
+    icone: 'cama' as const,
+    titulo: `Check-in a partir das ${formatarHora(resort.horarios.checkIn)}`,
+    texto: `Chegada ao ${resort.nomeCurto}, entre os coqueirais e a ${resort.praia}.`,
+  },
+];
+const transfer = acaoWhatsApp(
+  `Olá! Quero uma cotação de transfer entre o aeroporto e o ${resort.nomeCurto}.`,
+  'Cotar transfer pelo WhatsApp',
+);
+---
+
+<PaginaLayout rota="comoChegar" imagem={topo} atualizadoEm={DATA_CONTEUDO}>
+  <Fragment slot="acoes">
+    <Botao href={linkRotaAeroporto} icone="local" tamanho="lg" externo>
+      Abrir a rota no Google Maps
+    </Botao>
+    <Botao
+      href={transfer.href}
+      evento={transfer.evento}
+      icone="whatsapp"
+      variante="whatsapp"
+      tamanho="lg"
+      externo
+    >
+      {transfer.rotulo}
+    </Botao>
+  </Fragment>
+  <ChipsFatos
+    slot="fatos"
+    itens={[
+      { rotulo: 'Cidade', valor: `${endereco.cidade} (${endereco.uf})`, icone: 'local' },
+      {
+        rotulo: 'Aeroporto',
+        valor: `${aeroporto.iata}, ${aeroporto.distanciaKm} km`,
+        icone: 'aviao',
+      },
+      ...(aeroporto.tempoEstimado
+        ? [{ rotulo: 'De carro', valor: aeroporto.tempoEstimado, icone: 'relogio' as const }]
+        : []),
+      ...(resort.estacionamento
+        ? [{ rotulo: 'Estacionamento', valor: resort.estacionamento, icone: 'carro' as const }]
+        : []),
+    ]}
+  />
+
+  <Secao
+    introducao={`O ${resort.nomeCurto} fica de frente para a ${resort.praia}, em ${resort.endereco.cidade}, Alagoas. Veja o endereço, o mapa com a rota e a hora local antes de viajar.`}
+    titulo={`Qual é o endereço do ${resort.nomeCurto}?`}
+    sobretitulo="Endereço"
+  >
+    <div class="grid items-start gap-8 lg:grid-cols-[minmax(0,1fr)_22rem]">
+      <div class="space-y-6">
+        <address class="not-italic">
+          <strong class="text-mar-950 block">{resort.nome}</strong>
+          {linhaEndereco}
+        </address>
+        <p class="text-tinta-suave">
+          O resort fica de frente para a {resort.praia}, {resort.destino.em} {resort.destino.nome},
+          a cerca de {aeroporto.distanciaKm} km de {aeroporto.cidade}. O mapa abaixo já mostra a
+          rota de carro a partir do {aeroporto.nome}.
+        </p>
+        <MapaSobDemanda rotaDoAeroporto />
+      </div>
+      <HojeNoResort />
+    </div>
+  </Secao>
+
+  <Secao
+    titulo={
+      aeroportos.length > 1
+        ? `É melhor chegar por ${aeroportos.map((item) => item.cidade).join(' ou por ')}?`
+        : 'Qual é o aeroporto mais próximo?'
+    }
+    sobretitulo="Aeroportos"
+    introducao="Distância aproximada até o resort. O tempo de estrada depende do trânsito e das condições da rodovia: confira no mapa antes de sair."
+    fundo="areia"
+  >
+    <div class="grid items-start gap-8 lg:grid-cols-2">
+      <ul class="grid gap-6">
+        {aeroportos.map((item, indice) => (
+          <li id={`via-${item.iata.toLowerCase()}`}>
+            <article
+              class="ring-areia-200 flex h-full flex-col gap-5 rounded-grande bg-white p-6 shadow-cartao ring-1 sm:p-8"
+              data-revelar
+            >
+              <div class="flex items-start gap-4">
+                <span class="text-mar-700 flex shrink-0 pt-1" aria-hidden="true">
+                  <Icone nome="aviao" class="size-8" />
+                </span>
+                <div>
+                  <p class="sobretitulo">{indice === 0 ? 'Aeroporto principal' : 'Alternativa'}</p>
+                  <h3 class="">
+                    Via {item.cidade} ({item.iata})
+                  </h3>
+                </div>
+              </div>
+              <dl class="grid grid-cols-2 gap-4">
+                <div>
+                  <dt class="text-tinta-suave text-sm">Aeroporto</dt>
+                  <dd class="text-mar-950 font-medium">{item.nome}</dd>
+                </div>
+                <div>
+                  <dt class="text-tinta-suave text-sm">Cidade</dt>
+                  <dd class="text-mar-950 font-medium">
+                    {item.cidade} ({item.uf})
+                  </dd>
+                </div>
+                <div>
+                  <dt class="text-tinta-suave text-sm">Distância até o resort</dt>
+                  <dd class="text-mar-950 font-medium">{item.distanciaKm} km</dd>
+                </div>
+                <div>
+                  <dt class="text-tinta-suave text-sm">Tempo de carro</dt>
+                  <dd class="text-mar-950 font-medium">
+                    {item.tempoEstimado ?? 'Confira no mapa'}
+                  </dd>
+                </div>
+              </dl>
+              <p class="text-tinta-suave mt-auto">
+                {indice === 0
+                  ? `É o aeroporto mais perto do ${resort.nomeCurto} em distância rodoviária: o resort informa cerca de ${item.distanciaKm} km até ${item.cidade}.`
+                  : `Fica mais longe; vale a pena quando a passagem para ${item.cidade} compensa a viagem mais longa por terra.`}
+              </p>
+              <Botao
+                href={linkRotaDoAeroporto(item)}
+                variante="contorno"
+                icone="local"
+                larguraTotal
+                externo
+              >
+                Ver a rota a partir de {item.cidade}
+              </Botao>
+            </article>
+          </li>
+        ))}
+      </ul>
+      {/* Linha do tempo da chegada: do avião ao check-in. */}
+      <div class="ring-areia-200 rounded-grande bg-white p-6 shadow-cartao ring-1 sm:p-8">
+        <h3 class="">Do desembarque ao check-in</h3>
+        <ol class="mt-6 space-y-6">
+          {etapasChegada.map((etapa, indice) => (
+            <li class="relative flex gap-4">
+              {indice < etapasChegada.length - 1 && (
+                <span
+                  class="bg-areia-200 absolute top-11 left-5 h-[calc(100%-1.25rem)] w-px"
+                  aria-hidden="true"
+                />
+              )}
+              <span class="bg-mar-50 text-mar-700 flex size-10 shrink-0 items-center justify-center rounded-full">
+                <Icone nome={etapa.icone} class="size-5" />
+              </span>
+              <div>
+                <p class="text-mar-950 font-semibold">{etapa.titulo}</p>
+                <p class="text-tinta-suave mt-1">{etapa.texto}</p>
+              </div>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </div>
+  </Secao>
+
+  <Secao
+    introducao={`O trecho final até o ${resort.nomeCurto} é feito por estrada. Veja as rotas a partir de Recife e de Maceió.`}
+    foto="grand-oca/resort/praia-areia-ampla.jpg"
+    titulo={`Quais são as formas de chegar ao ${resort.nomeCurto}?`}
+    sobretitulo="Rotas de acesso"
+  >
+    <ol class="grid gap-5 md:grid-cols-2">
+      {rotasDeAcesso.map((rota, indice) => (
+        <li>
+          <CartaoDestaque
+            titulo={rota.titulo}
+            sobretitulo={indice === 0 ? 'Mais comum' : 'Alternativa'}
+            icone="carro"
+          >
+            <p>{rota.descricao}</p>
+          </CartaoDestaque>
+        </li>
+      ))}
+    </ol>
+  </Secao>
+
+  <Secao
+    foto="grand-oca/resort/praia-coqueiral.jpg"
+    introducao={`Transfer, táxi ou carro alugado: compare as opções para ir do aeroporto até o ${resort.nomeCurto}.`}
+    titulo={`Como ir do aeroporto até o ${resort.nomeCurto}?`}
+    sobretitulo="Transporte"
+    fundo="areia"
+  >
+    <ul class="grid gap-5 md:grid-cols-3">
+      {transportes.map((transporte) => (
+        <li>
+          <CartaoDestaque titulo={transporte.nome} icone={transporte.icone}>
+            <p>{transporte.descricao}</p>
+          </CartaoDestaque>
+        </li>
+      ))}
+    </ul>
+    <div class="ring-areia-200 mt-8 grid items-center gap-6 rounded-grande bg-white p-6 shadow-cartao ring-1 sm:p-8 lg:grid-cols-[minmax(0,1fr)_auto]">
+      <div>
+        <h3 class="">Qual opção escolher?</h3>
+        <p class="text-tinta-suave mt-2">{escolhaTransporte}</p>
+      </div>
+      <Botao
+        href={transfer.href}
+        evento={transfer.evento}
+        icone="whatsapp"
+        variante="whatsapp"
+        externo
+      >
+        Cotar transfer
+      </Botao>
+    </div>
+  </Secao>
+
+  <Secao
+    introducao={`Algumas dicas simples evitam imprevistos na chegada ao resort: documentos, horário do voo e reserva do transfer.`}
+    titulo={`O que conferir antes de viajar ao ${resort.nomeCurto}?`}
+    sobretitulo="Antes de viajar"
+  >
+    {/* Dicas, estacionamento e horários em blocos do mesmo tamanho, sem vãos. */}
+    <div class="space-y-6">
+      <ul class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {dicasAntesDeViajar.map((dica) => (
+          <li class="ring-areia-200 flex gap-3 rounded-cartao bg-white p-5 shadow-cartao ring-1">
+            <Icone nome={iconeDoTexto(dica)} class="text-mar-700 mt-0.5 size-5 shrink-0" />
+            <span class="text-tinta">{dica}</span>
+          </li>
+        ))}
+      </ul>
+      <div class="grid gap-4 md:grid-cols-2">
+        {resort.estacionamento && <Nota titulo="Estacionamento">{resort.estacionamento}.</Nota>}
+        <Nota titulo="Check-in e check-out">
+          Check-in a partir das {formatarHora(resort.horarios.checkIn)} e check-out até as{' '}
+          {formatarHora(resort.horarios.checkOut)}.
+          {resort.horarios.earlyLate && ` ${resort.horarios.earlyLate}`}
+        </Nota>
+      </div>
+      <div>
+        <p class="flex flex-wrap gap-3">
+          {pacoteComAereo && (
+            <Botao
+              href={pacoteComAereo.href}
+              evento={pacoteComAereo.evento}
+              icone="aviao"
+              variante="contorno"
+            >
+              Pacote com aéreo
+            </Botao>
+          )}
+          <Botao href={rotas.destino.caminho} variante="contorno" iconeFim="seta-direita">
+            Guia: {resort.destino.nome}
+          </Botao>
+        </p>
+      </div>
+    </div>
+  </Secao>
+</PaginaLayout>

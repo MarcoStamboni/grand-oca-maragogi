@@ -1,0 +1,45 @@
+---
+/**
+ * Quem é o responsável pelos dados (controlador, LGPD) e como falar com ele, a partir do
+ * operador ativo (site.config.ts). Campos ainda não informados ficam de fora.
+ * TODO: CNPJ e encarregado (DPO) do operador (ver site.config.ts).
+ */
+import TabelaFatos from '@/components/ui/TabelaFatos.astro';
+import { operador } from '@/site.config';
+
+interface Props {
+  legenda?: string;
+}
+
+const { legenda = 'Responsável pelo tratamento dos dados' } = Astro.props;
+const [telefone] = operador.telefones;
+const linhas = [
+  { rotulo: 'Controlador', valor: operador.nome },
+  ...(operador.razaoSocial ? [{ rotulo: 'Razão social', valor: operador.razaoSocial }] : []),
+  ...(operador.cnpj ? [{ rotulo: 'CNPJ', valor: operador.cnpj }] : []),
+  ...(operador.endereco
+    ? [
+        {
+          rotulo: 'Endereço',
+          valor: [
+            operador.endereco.logradouro,
+            operador.endereco.bairro,
+            `${operador.endereco.cidade} - ${operador.endereco.uf}`,
+          ]
+            .filter(Boolean)
+            .join(', '),
+        },
+      ]
+    : []),
+  ...(operador.email ? [{ rotulo: 'E-mail', valor: operador.email }] : []),
+  { rotulo: telefone.rotulo, valor: telefone.exibicao },
+  {
+    rotulo: 'Encarregado (DPO)',
+    valor: operador.encarregadoDados
+      ? `${operador.encarregadoDados.nome} · ${operador.encarregadoDados.email}`
+      : 'Atendimento pelos canais acima',
+  },
+];
+---
+
+<TabelaFatos legenda={legenda} linhas={linhas} />

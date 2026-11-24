@@ -1,0 +1,24 @@
+---
+/**
+ * Botão flutuante de WhatsApp (canto inferior direito, como no Grand Oca e no Enotel), com a
+ * mensagem padrão do operador. Só a partir de telas largas: no celular, a barra fixa de ações
+ * (BarraAcoesMobile) já tem o WhatsApp. Fica acima do aviso de cookies quando ele está aberto.
+ */
+import Icone from '@/components/ui/Icone.astro';
+import { acoes } from '@/lib/acoes';
+---
+
+<a
+  href={acoes.whatsapp.href}
+  class="bg-verde-800 hover:bg-verde-900 ease-suave fixed right-5 bottom-[calc(1.25rem+var(--altura-aviso-cookies,0px))] z-30 hidden size-14 items-center justify-center rounded-full text-white shadow-flutuante transition duration-300 hover:-translate-y-1 lg:inline-flex"
+  target="_blank"
+  rel="noopener noreferrer"
+  data-evento={acoes.whatsapp.evento}
+>
+  <span
+    class="bg-verde-500 animate-pulsar absolute inset-0 -z-10 rounded-full"
+    aria-hidden="true"
+  ></span>
+  <Icone nome="whatsapp" class="size-7" />
+  <span class="sr-only">{acoes.whatsapp.rotulo} (abre em nova aba)</span>
+</a>

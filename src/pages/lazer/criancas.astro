@@ -1,0 +1,140 @@
+---
+/**
+ * Crianças: faixas etárias, clubes e espaços infantis e programação.
+ * Dados: src/data/faixas-etarias.ts, coleção `atividades` (categoria `criancas`) e site.config.
+ */
+import CartaoAtividade, {
+  type IlustracaoAtividade,
+} from '@/components/sections/CartaoAtividade.astro';
+import GrupoAtividades from '@/components/sections/GrupoAtividades.astro';
+import Botao from '@/components/ui/Botao.astro';
+import ChipsFatos from '@/components/ui/ChipsFatos.astro';
+import Nota from '@/components/ui/Nota.astro';
+import Secao from '@/components/ui/Secao.astro';
+import { faixasEtarias } from '@/data/faixas-etarias';
+import { rotas } from '@/data/rotas';
+import PaginaLayout from '@/layouts/PaginaLayout.astro';
+import { atividadesPublicadas } from '@/lib/atividades';
+import { DATA_CONTEUDO } from '@/lib/datas';
+import { obterImagem } from '@/lib/imagens';
+import { resort } from '@/site.config';
+
+const [topo, atividades] = await Promise.all([
+  obterImagem('grand-oca/criancas/parque-aquatico-escorregadores.jpg'),
+  atividadesPublicadas(),
+]);
+const infantis = atividades.filter(({ data }) => data.categoria === 'criancas');
+
+/* Imagem de cada bloco (sem rosto de pessoas): o próprio espaço da atividade. */
+const fotoDe: Record<string, { foto: string; icone: IlustracaoAtividade['icone'] }> = {
+  'kids-club': { foto: 'grand-oca/criancas/parque-aquatico-escorregadores.jpg', icone: 'sorriso' },
+  playground: { foto: 'grand-oca/criancas/piscina-infantil-escorregador.jpg', icone: 'arvore' },
+  'parque-aquatico': { foto: 'grand-oca/criancas/parque-aquatico-torre.jpg', icone: 'piscina' },
+  'baby-area': { foto: 'grand-oca/criancas/play-zone.jpg', icone: 'bebe' },
+};
+const ilustracoes = new Map<string, IlustracaoAtividade>(
+  await Promise.all(
+    Object.entries(fotoDe).map(
+      async ([id, { foto, icone }]) =>
+        [id, { foto: await obterImagem(foto), icone }] as [string, IlustracaoAtividade],
+    ),
+  ),
+);
+const comFotoInf = infantis.filter(({ id }) => ilustracoes.has(id));
+const semFotoInf = infantis.filter(({ id }) => !ilustracoes.has(id));
+const fotoGrupoInf = await obterImagem('grand-oca/criancas/varanda-parque-aquatico.jpg');
+const ilustracaoPadrao: IlustracaoAtividade = { icone: 'sorriso', tom: 'mar' };
+const { criancas } = resort;
+const idade = (minima: number | null, maxima: number | null) =>
+  minima === null || maxima === null
+    ? 'Grupo próprio na programação'
+    : `${minima} a ${maxima} anos`;
+---
+
+<PaginaLayout rota="criancas" imagem={topo} atualizadoEm={DATA_CONTEUDO}>
+  <Fragment slot="acoes">
+    <Botao href={rotas.piscinas.caminho} tamanho="lg" iconeFim="seta-direita">
+      Piscinas e brinquedos aquáticos
+    </Botao>
+  </Fragment>
+  <ChipsFatos
+    slot="fatos"
+    itens={[
+      { rotulo: 'Faixas etárias', valor: String(faixasEtarias.length), icone: 'bebe' },
+      { rotulo: 'Kids Club', valor: 'De 4 a 12 anos', icone: 'pessoas' },
+      { rotulo: 'Recreação', valor: 'Kids Club', icone: 'sorriso' },
+    ]}
+  />
+
+  <Secao
+    introducao={`No ${resort.nome}, o Kids Club organiza atividades diárias para crianças de 4 a 12 anos, das 9h às 12h e das 14h às 18h, e a programação inclui momentos para a família inteira participar.`}
+    foto="grand-oca/criancas/parque-aquatico-torre.jpg"
+    titulo={`Como funciona o ${resort.nome} para crianças?`}
+    sobretitulo="Faixas etárias"
+  >
+    <div class="space-y-6">
+      {/* Faixas etárias em cartões lado a lado, na largura toda da seção. */}
+      <ul class="grid grid-cols-2 gap-3 lg:grid-cols-4" aria-label="Faixas etárias da recreação">
+        {faixasEtarias.map(({ nome, idadeMinima, idadeMaxima }) => (
+          <li class="ring-areia-200 rounded-cartao bg-white p-4 text-center shadow-cartao ring-1">
+            <p class="text-mar-800 font-semibold">{nome}</p>
+            <p class="text-tinta-suave mt-1 text-sm">{idade(idadeMinima, idadeMaxima)}</p>
+          </li>
+        ))}
+      </ul>
+      <Nota titulo="Idade das crianças na reserva" class="max-w-3xl">
+        {`Informe a idade de cada criança na data da viagem já na consulta: ela define a faixa da recreação e a tarifa da hospedagem. ${criancas.ressalva}`}
+      </Nota>
+    </div>
+  </Secao>
+
+  {infantis.length > 0 && (
+    <Secao
+      foto="grand-oca/criancas/piscina-infantil-escorregador.jpg"
+      introducao={`Além do Kids Club, as crianças têm o parque aquático com toboágua, o playground com cama elástica e escorregadores e a baby area para os menores. Oficinas, gincanas e shows completam a programação.`}
+      titulo={`O que o ${resort.nomeCurto} tem para cada idade?`}
+      sobretitulo="Clubes e espaços"
+      fundo="areia"
+    >
+      <ul class="grid gap-5 md:grid-cols-2">
+        {comFotoInf.map((atividade) => (
+          <li>
+            <CartaoAtividade
+              atividade={atividade}
+              ilustracao={ilustracoes.get(atividade.id) ?? ilustracaoPadrao}
+            />
+          </li>
+        ))}
+        {semFotoInf.length > 0 && (
+          <li>
+            <GrupoAtividades
+              titulo="Oficinas, gincanas e shows"
+              resumo="Oficinas, gincanas, shows infantis e o Family Oca, na programação do Kids Club."
+              icone="sorriso"
+              foto={fotoGrupoInf}
+              atividades={semFotoInf}
+            />
+          </li>
+        )}
+      </ul>
+    </Secao>
+  )}
+
+  <Secao
+    introducao={`Famílias com crianças costumam preferir acomodações com mais espaço. Veja as categorias indicadas para viajar em família.`}
+    foto="grand-oca/acomodacoes/duplo-deluxe-quarto.jpg"
+    titulo={`Que acomodação do ${resort.nomeCurto} escolher com crianças?`}
+    sobretitulo="Hospedagem"
+  >
+    <p class="text-tinta-suave max-w-3xl text-lg">
+      O Apartamento Standard e o Bangalô Triplo recebem até três hóspedes, e o Bangalô aceita um
+      bebê em berço. O Duplo Deluxe acomoda cinco pessoas; o Standard Comunicante e a Suíte Deluxe
+      recebem até seis. Veja os detalhes no comparativo.
+    </p>
+    <p class="mt-6">
+      <Botao href={rotas.comparativo.caminho} variante="contorno" iconeFim="seta-direita">
+        Comparar acomodações
+      </Botao>
+    </p>
+  </Secao>
+</PaginaLayout>

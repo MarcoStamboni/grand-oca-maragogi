@@ -1,0 +1,60 @@
+{
+  "name": "grand-oca-maragogi-resort",
+  "type": "module",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Site do Grand Oca Maragogi Resort (Ponta de Mangue, Maragogi, AL) vendido pela Resorts Online, a partir do site-modelo de resorts all inclusive.",
+  "engines": {
+    "node": ">=22.19.0"
+  },
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "zip": "node scripts/zip.ts",
+    "preview": "astro preview",
+    "astro": "astro",
+    "check": "astro check",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "verify": "npm run check && npm run lint && npm run format:check && npm run test && npm run build",
+    "test": "vitest run",
+    "imagens:baixar": "node scripts/imagens/baixar.ts",
+    "imagens:folhas": "node scripts/imagens/folhas.ts",
+    "imagens:preparar": "node scripts/imagens/preparar.ts",
+    "imagens:importar": "node scripts/imagens/importar-pasta.ts",
+    "imagens:modelo": "node scripts/imagens/modelo.ts",
+    "icones": "node scripts/icones.ts",
+    "formulario:mock": "node scripts/mock-formulario.ts",
+    "lighthouse": "node scripts/lighthouse.ts"
+  },
+  "dependencies": {
+    "@astrojs/sitemap": "^3.7.4",
+    "@fontsource/barlow-semi-condensed": "^5.1.0",
+    "@fontsource/poppins": "^5.3.0",
+    "@tailwindcss/vite": "^4.3.3",
+    "astro": "^7.3.5",
+    "sharp": "^0.35.5",
+    "tailwindcss": "^4.3.3"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.10",
+    "@eslint/js": "^10.0.1",
+    "@types/node": "^24.19.0",
+    "eslint": "^10.11.0",
+    "eslint-plugin-astro": "^3.2.1",
+    "eslint-plugin-jsx-a11y-x": "^0.2.0",
+    "globals": "^17.12.0",
+    "lighthouse": "^13.5.0",
+    "lucide-static": "^1.49.0",
+    "prettier": "^3.9.9",
+    "prettier-plugin-astro": "^1.1.0",
+    "prettier-plugin-tailwindcss": "^0.8.1",
+    "simple-icons": "^16.33.0",
+    "typescript": "~6.0.3",
+    "typescript-eslint": "^8.71.0",
+    "vitest": "^5.0.3",
+    "yaml": "^2.9.1"
+  }
+}
