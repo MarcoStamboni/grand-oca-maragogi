@@ -392,7 +392,7 @@ const agencia: Operador = {
     hospedagemUrl: 'https://motordereservas.app.br/motor/reservas/94' as string | null,
     hospedagemIncorporavel: true,
     // Motor do pacote hotel + aéreo: PENDENTE (id ainda não informado).
-    pacoteComAereoUrl: null as string | null,
+    pacoteComAereoUrl: 'https://motordereservas.app.br/motor/abas/reservas/28' as string | null,
     pacoteIncorporavel: true,
     // 10x sem juros no cartão de crédito ou 5% de desconto à vista no Pix (mesmas condições
     // dos demais sites da agência), para hospedagem e pacote com aéreo.

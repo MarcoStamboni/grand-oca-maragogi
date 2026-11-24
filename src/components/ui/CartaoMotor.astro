@@ -47,8 +47,9 @@ const infotravel = {
  * próximo em distância rodoviária) e o hotel é buscado na região do resort (destinationDiff). Mesmo visual da hospedagem.
  */
 const pacote = Boolean(url) && url === operador.reservas.pacoteComAereoUrl;
-// Hospedagem: iframe do motor (motordereservas.app.br), como no La Torre. A máscara só vale no pacote.
-const mascara = pacote;
+// Hospedagem e pacote com aéreo: iframe do motor (motordereservas.app.br), como no La Torre.
+// Cores do topo e do quadro iguais às configuradas em cada motor: hospedagem #cc4700, aéreo #cc7711.
+const mascara = false;
 /**
  * Janela "Antes de continuar a sua reserva" (contato, convite e perfil do viajante). Desligada a
  * pedido do cliente (21/10/2026) até a integração com o WhatsApp: "Reservar" abre direto a
@@ -153,7 +154,8 @@ const vitrine = mascara ? (await outrosResorts()).filter(({ foto }) => foto).sli
 {url && (
   <div
     class:list={[
-      'mx-auto w-full rounded-grande bg-[#f85000]',
+      'mx-auto w-full rounded-grande',
+      pacote ? 'bg-[#cc7711]' : 'bg-[#cc4700]',
       mascara ? 'relative z-30' : 'overflow-hidden',
       mascara ? 'max-w-[25rem]' : 'max-w-md',
       ' shadow-flutuante ring-1 ring-black/10',
@@ -308,7 +310,10 @@ const vitrine = mascara ? (await outrosResorts()).filter(({ foto }) => foto).sli
         allow="payment"
         scrolling="no"
         style="width:100%;border:0;min-height:400px;"
-        class="block h-[48rem] w-full border-0 bg-[#f85000] lg:h-[43rem]"
+        class:list={[
+          'block h-[48rem] w-full border-0 lg:h-[43rem]',
+          pacote ? 'bg-[#cc7711]' : 'bg-[#cc4700]',
+        ]}
         data-motor-quadro
       ></iframe>
     )}
