@@ -102,7 +102,7 @@ export const paginas: Readonly<Record<RotaComTexto, TextoPagina>> = {
     sobretitulo: 'Gastronomia',
     subtitulo: 'Da piscina à praia, sete bares com bebidas do all inclusive.',
     respostaDireta:
-      'O Grand Oca Maragogi Resort tem sete bares: Coqueirais, ao lado da piscina principal, Galés, dentro da piscina, Drink Parrot, de coquetéis, Ponta de Mangue, na praia, Tropical, junto aos shows, o bar da Piscina D’Água, com snacks e chá da tarde, e o SportBar, para acompanhar os jogos.',
+      'O Grand Oca Maragogi Resort tem sete bares: Coqueirais, ao lado da piscina principal, Galés, dentro da piscina, Drink Parrot, de coquetéis, Ponta de Mangue, na praia, Esplanada Tropical, junto aos shows, o bar da Piscina D’Água, com snacks e chá da tarde, e o SportBar, dos jogos.',
   },
   lazer: {
     titulo: 'Lazer',
@@ -150,7 +150,7 @@ export const paginas: Readonly<Record<RotaComTexto, TextoPagina>> = {
       'Bem-estar no Grand Oca Maragogi: Grand Oca Spa, Espaço Beleza, academia com aulas e hidro fitness em frente ao mar.',
     h1: 'Spa e bem-estar no Grand Oca Maragogi',
     sobretitulo: 'Bem-estar',
-    subtitulo: 'Spa, salão de beleza, academia e momentos de pausa à beira-mar.',
+    subtitulo: 'Spa, salão de beleza, academia e descanso à beira-mar.',
     respostaDireta:
       'O bem-estar no Grand Oca Maragogi Resort reúne o Grand Oca Spa, o Espaço Beleza, com manicure e cabeleireiro todos os dias, e a academia, com aulas como funcional, Pilates com bola, alongamento e hidro fitness. Os serviços do spa e do salão são contratados à parte, e a praia de Ponta de Mangue completa o descanso.',
   },

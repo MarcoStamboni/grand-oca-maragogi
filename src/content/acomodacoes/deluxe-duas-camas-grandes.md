@@ -6,7 +6,7 @@ resumo: Quarto amplo e iluminado na nova área D’Água, com duas camas extragr
 seo:
   titulo: Deluxe 2 Camas Grandes
   descricao: 'Deluxe com 2 Camas Grandes do Grand Oca Maragogi: área D’Água, varanda com vista para a piscina e capacidade para 4 hóspedes.'
-respostaDireta: O Deluxe com 2 Camas Grandes fica na nova área D’Água do Grand Oca Maragogi, em um quarto amplo e iluminado com duas camas extragrandes e varanda de frente para a piscina. Acomoda até quatro hóspedes e tem ar-condicionado, Smart TV, frigobar.
+respostaDireta: O Deluxe com 2 Camas Grandes fica na nova área D’Água do Grand Oca Maragogi, em um quarto amplo e iluminado com duas camas extragrandes e varanda de frente para a piscina. Acomoda até quatro hóspedes e tem ar-condicionado, Smart TV e frigobar.
 premium: true
 ambientes: 1
 capacidade:
@@ -23,7 +23,6 @@ diferenciais:
   - Varanda com vista para a piscina e o parque aquático
   - Duas camas extragrandes
   - Ar-condicionado, Smart TV, frigobar e cofre
-  - Duas camas extragrandes e Smart TV
 comparacao:
   diferenca: Reúne a vista para a piscina e o conforto da área D’Água em um quarto de duas camas extragrandes, com varanda, para até quatro hóspedes.
   fortes:

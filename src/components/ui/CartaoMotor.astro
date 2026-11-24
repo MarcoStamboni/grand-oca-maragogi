@@ -1,8 +1,10 @@
 ---
 /**
- * Motor de reservas embutido num cartão de bordas arredondadas (padrão do Enotel): cabeçalho
- * "Reserva online", e o motor (iframe), sem link para tela cheia. Usado na home (busca de
- * tarifas) e nas páginas de reserva. Só renderize quando houver `url` incorporável.
+ * Motor de reservas embutido num cartão de bordas arredondadas (padrão do Enotel): só o motor
+ * (iframe), sem cabeçalho e sem link para tela cheia. Usado na home (busca de tarifas) e nas
+ * páginas de reserva. Só renderize quando houver `url` incorporável.
+ * O cabeçalho com "Confirmação imediata", "Ambiente seguro" e as condições de pagamento saiu em
+ * 24/11/2026 (mesmo ajuste da série); essas informações continuam nas páginas, no SeloPagamento.
  *
  * Captura de contato para abandono de carrinho (EXEMPLO DE TESTE, sem banco de dados):
  * na primeira interação com o motor, abre uma janela pedindo nome, WhatsApp, e-mail e a forma
@@ -16,7 +18,6 @@ import Imagem from '@/components/ui/Imagem.astro';
 import type { NomeIcone } from '@/lib/icones';
 import { enderecoLeads } from '@/lib/ambiente';
 import { outrosResorts } from '@/lib/outros-resorts';
-import { condicoesPagamento } from '@/lib/pagamento';
 import { operador, resort } from '@/site.config';
 
 interface Props {
@@ -169,31 +170,6 @@ const vitrine = mascara ? (await outrosResorts()).filter(({ foto }) => foto).sli
     data-leads={mascara && enderecoLeads ? enderecoLeads : undefined}
     data-infotravel={mascara ? JSON.stringify(configMascara) : undefined}
   >
-    <div class:list={['space-y-2 px-6 py-4 text-white', mascara && 'hidden']}>
-      <p class="flex items-center gap-2 font-semibold">
-        <Icone nome="calendario" class="text-coral-400 size-5" />
-        {rotulo}
-      </p>
-      <div class="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-white/80">
-        <p class="flex items-center gap-1.5">
-          <Icone nome="check" class="text-verde-400 size-4" />
-          Confirmação imediata
-        </p>
-        <p class="flex items-center gap-1.5">
-          <Icone nome="escudo" class="size-4" />
-          Ambiente seguro
-        </p>
-        {condicoesPagamento.map((condicao) => (
-          <p class="flex items-center gap-1.5">
-            <Icone nome={condicao.icone} class="text-sol-400 size-4" />
-            <span>
-              <strong class="font-semibold text-white">{condicao.destaque}</strong>{' '}
-              {condicao.complemento}
-            </span>
-          </p>
-        ))}
-      </div>
-    </div>
     {mascara ? (
       /*
        * Máscara do motor de hospedagem (TESTE): busca no visual do site. Ao reservar, pede o
@@ -265,7 +241,7 @@ const vitrine = mascara ? (await outrosResorts()).filter(({ foto }) => foto).sli
             aria-expanded="false"
             data-hospedes-resumo
           >
-            1 Quarto(s), 2 Adulto(s)
+            1 quarto, 2 adultos
           </button>
           <div
             class="text-tinta absolute inset-x-0 top-full z-50 mt-2 flex max-h-[min(26rem,60vh)] flex-col rounded-xl bg-white shadow-flutuante ring-1 ring-black/5"
@@ -304,7 +280,7 @@ const vitrine = mascara ? (await outrosResorts()).filter(({ foto }) => foto).sli
       </form>
     ) : (
       <iframe
-        src={url}
+        data-src={url}
         title={`Motor de reservas do ${resort.nome}`}
         loading="lazy"
         allow="payment"
@@ -316,6 +292,21 @@ const vitrine = mascara ? (await outrosResorts()).filter(({ foto }) => foto).sli
         ]}
         data-motor-quadro
       ></iframe>
+    )}
+    {!mascara && url && (
+      <noscript>
+        <iframe
+          src={url}
+          title={`Motor de reservas do ${resort.nome}`}
+          allow="payment"
+          scrolling="no"
+          style="width:100%;border:0;min-height:400px;"
+          class:list={[
+            'block h-[48rem] w-full border-0 lg:h-[43rem]',
+            pacote ? 'bg-[#cc7711]' : 'bg-[#cc4700]',
+          ]}
+        ></iframe>
+      </noscript>
     )}
 
     {CAPTURA_ATIVA ? (
@@ -365,7 +356,7 @@ const vitrine = mascara ? (await outrosResorts()).filter(({ foto }) => foto).sli
           </label>
           <fieldset class="space-y-2">
             <legend class="text-mar-950 mb-1 text-sm font-semibold">
-              Como deseja ser contactado?
+              Como deseja ser contatado?
             </legend>
             <div class="flex gap-3">
               <label class="ring-areia-300 has-checked:ring-verde-700 has-checked:bg-verde-100 flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-xl px-3 py-2.5 text-sm font-semibold ring-1">
@@ -407,7 +398,7 @@ const vitrine = mascara ? (await outrosResorts()).filter(({ foto }) => foto).sli
             </span>
             <div class="space-y-2">
               <p class="text-mar-800 text-xl font-bold">
-                Temos dezenas de outras opções, quer conhecer?
+                Temos dezenas de outras opções. Quer conhecer?
               </p>
               <p class="text-tinta-suave text-sm">
                 Responda 6 perguntas rápidas e os nossos consultores enviam sugestões de resorts
@@ -482,8 +473,8 @@ const vitrine = mascara ? (await outrosResorts()).filter(({ foto }) => foto).sli
             <div class="space-y-1 pr-10">
               <p class="text-mar-800 text-xl font-bold">Encontre a viagem ideal para você</p>
               <p class="text-tinta-suave text-sm">
-                Responda rapidinho: nossos consultores vão sugerir as melhores opções para o seu
-                perfil.
+                Responda às perguntas: os nossos consultores vão sugerir as melhores opções para o
+                seu perfil.
               </p>
             </div>
             <div class="space-y-1.5">
@@ -805,7 +796,7 @@ const vitrine = mascara ? (await outrosResorts()).filter(({ foto }) => foto).sli
         const adt = quartos.reduce((s, q) => s + q.adultos, 0);
         const chd = quartos.reduce((s, q) => s + q.idades.length, 0);
         if (resumo) {
-          resumo.textContent = `${quartos.length} Quarto(s), ${adt} Adulto(s)${chd ? `, ${chd} Criança(s)` : ''}`;
+          resumo.textContent = `${quartos.length} ${quartos.length === 1 ? 'quarto' : 'quartos'}, ${adt} ${adt === 1 ? 'adulto' : 'adultos'}${chd ? `, ${chd} ${chd === 1 ? 'criança' : 'crianças'}` : ''}`;
         }
       }
 
@@ -1076,11 +1067,47 @@ const vitrine = mascara ? (await outrosResorts()).filter(({ foto }) => foto).sli
       guardar({
         ...Object.fromEntries(new FormData(contato).entries()),
         ...base,
-        motorUrl: quadro.src,
+        motorUrl: quadro.src || (quadro.dataset['src'] ?? ''),
         data: new Date().toISOString(),
       });
       quadro.focus();
     });
+  }
+</script>
+
+<script>
+  /**
+   * O motor é de outro domínio e traz o próprio JavaScript (centenas de kB). Para não disputar a
+   * banda e o processador com a primeira tela, o endereço fica em `data-src` e só vira `src`
+   * quando o quadro está perto de aparecer. Nas páginas de reserva, em que o motor já nasce
+   * visível, isso acontece no mesmo instante; na home, só quando a pessoa rola até a busca de
+   * tarifas. Sem JavaScript ou sem IntersectionObserver, o quadro carrega de imediato.
+   */
+  const quadros = document.querySelectorAll<HTMLIFrameElement>(
+    'iframe[data-motor-quadro][data-src]',
+  );
+
+  const carregar = (quadro: HTMLIFrameElement) => {
+    const endereco = quadro.dataset['src'];
+    if (!endereco || quadro.src) return;
+    quadro.src = endereco;
+  };
+
+  if ('IntersectionObserver' in window) {
+    const observador = new IntersectionObserver(
+      (entradas) => {
+        for (const entrada of entradas) {
+          if (!entrada.isIntersecting) continue;
+          carregar(entrada.target as HTMLIFrameElement);
+          observador.unobserve(entrada.target);
+        }
+      },
+      // Começa a carregar um pouco antes de entrar na tela, para o motor já estar pronto.
+      { rootMargin: '400px 0px' },
+    );
+    for (const quadro of quadros) observador.observe(quadro);
+  } else {
+    for (const quadro of quadros) carregar(quadro);
   }
 </script>
 

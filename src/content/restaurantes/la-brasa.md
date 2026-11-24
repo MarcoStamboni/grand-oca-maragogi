@@ -7,7 +7,7 @@ resumo: Churrasco informal no almoço, inclusive em traje de banho, e restaurant
 seo:
   titulo: Restaurante La Brasa
   descricao: 'Restaurante La Brasa, no Grand Oca Maragogi: churrasco informal no almoço e carnes na brasa no jantar, com reserva prévia.'
-respostaDireta: O La Brasa é o restaurante de carnes do Grand Oca Maragogi. No almoço, funciona como espaço de churrasco descontraído, em que dá para comer até em traje de banho, dentro do all inclusive. À noite, vira restaurante temático de carnes na brasa, com reserva prévia no Guest Service e número de jantares conforme as noites.
+respostaDireta: O La Brasa é o restaurante de carnes do Grand Oca Maragogi. No almoço, funciona como espaço de churrasco descontraído, em que é possível comer até em traje de banho, dentro do all inclusive. À noite, vira restaurante temático de carnes na brasa, com reserva prévia no Guest Service e número de jantares conforme as noites da hospedagem.
 cozinhas:
   - Churrasco
   - Carnes na brasa

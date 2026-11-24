@@ -2,8 +2,12 @@
  * Integração de build: grava no sitemap o `<lastmod>` de cada página com a data de atualização
  * dela (meta og:updated_time). Fica depois do @astrojs/sitemap. Página do sitemap sem data
  * derruba o build.
+ *
+ * Também grava uma cópia do índice em `/sitemap.xml`: é o endereço que o site anterior (Wix)
+ * publicava e que ficou cadastrado no Search Console. Sem ela, a referência antiga passaria a
+ * dar 404 depois da troca do site. O robots.txt continua apontando o `/sitemap-index.xml`.
  */
-import { readFile, writeFile } from 'node:fs/promises';
+import { copyFile, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 
 import type { AstroIntegration } from 'astro';
@@ -36,7 +40,16 @@ export default function lastmodSitemap(): AstroIntegration {
         if (semData.length > 0) {
           throw new Error(`Páginas do sitemap sem "Atualizado em":\n${semData.join('\n')}`);
         }
-        logger.info(`lastmod de ${datas.size} página(s) gravado em ${sitemaps.length} sitemap(s).`);
+
+        // Cópia do índice no endereço clássico, para a inscrição antiga do Search Console.
+        const indice = path.join(raiz, 'sitemap-index.xml');
+        if (arquivos.has('/sitemap-index.xml')) {
+          await copyFile(indice, path.join(raiz, 'sitemap.xml'));
+        }
+
+        logger.info(
+          `lastmod de ${datas.size} página(s) gravado em ${sitemaps.length} sitemap(s); sitemap.xml copiado do índice.`,
+        );
       },
     },
   };

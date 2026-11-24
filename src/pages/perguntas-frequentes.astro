@@ -1,8 +1,10 @@
 ---
 /**
- * FAQ central: todas as perguntas da coleção `faq`, agrupadas por tema, com índice e busca
- * (src/scripts/busca-faq.ts). É a única página marcada como FAQPage (JSON-LD), com as mesmas
- * perguntas exibidas: o Google pede que cada pergunta repetida no site seja marcada uma vez só.
+ * FAQ central: as principais perguntas de cada tema (`PERGUNTAS_POR_TEMA` em src/lib/faq.ts),
+ * com índice e busca (src/scripts/busca-faq.ts). As demais perguntas do site continuam
+ * publicadas na página do assunto de cada uma, e cada tema traz o link para ela.
+ * Como todas as páginas marcam as suas próprias perguntas em FAQPage (JSON-LD), aqui a marcação
+ * cobre só o que esta página mostra.
  */
 import CanaisAtendimento from '@/components/sections/CanaisAtendimento.astro';
 import Faq from '@/components/ui/Faq.astro';
@@ -84,6 +86,12 @@ const total = grupos.reduce((soma, grupo) => soma + grupo.itens.length, 0);
             id={`tema-${grupo.tema}`}
             foto={fotosPerguntas[indice % fotosPerguntas.length]}
           />
+          {grupo.total > grupo.itens.length && (
+            <p class="text-tinta-suave mt-4">
+              {`Mais ${grupo.total - grupo.itens.length} perguntas sobre ${grupo.rotulo} aparecem nas páginas do assunto. `}
+              <a href={grupo.pagina} class="font-semibold">{`Ver ${grupo.rotulo}`}</a>.
+            </p>
+          )}
         </div>
       ))}
       <p class="bg-areia-100 rounded-cartao p-6 text-lg" hidden data-busca-vazio>

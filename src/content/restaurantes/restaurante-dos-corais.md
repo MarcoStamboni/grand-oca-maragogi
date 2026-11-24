@@ -3,11 +3,11 @@ nome: Restaurante dos Corais
 ordem: 1
 tipo: principal
 servico: buffet
-resumo: Restaurante principal do resort, de frente para o mar, com janelas panorâmicas, buffet regional no café, almoço e jantar e show cooking.
+resumo: Restaurante principal do resort, de frente para o mar, com janelas panorâmicas, show cooking e buffet regional no café da manhã, no almoço e no jantar.
 seo:
   titulo: Restaurante dos Corais
   descricao: 'Restaurante dos Corais, no Grand Oca Maragogi: buffet regional de frente para o mar, com café da manhã, almoço e jantar.'
-respostaDireta: O Restaurante dos Corais é o principal do Grand Oca Maragogi. Fica de frente para o mar, com janelas panorâmicas e capacidade para 340 pessoas, e serve café da manhã, almoço e jantar em buffet de culinária regional, com show cooking. O café reúne mais de 70 itens, entre tapiocas, bolo de goma e doces regionais.
+respostaDireta: O Restaurante dos Corais é o principal do Grand Oca Maragogi. Fica de frente para o mar, com janelas panorâmicas e capacidade para 340 pessoas, e serve café da manhã, almoço e jantar em buffet de culinária regional, com show cooking. O café da manhã reúne mais de 70 itens, entre tapiocas, bolo de goma e doces regionais.
 cozinhas:
   - Regional brasileira
   - Buffet com show cooking

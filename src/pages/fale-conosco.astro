@@ -113,7 +113,7 @@ const atendimento = [
   </Secao>
 
   <Secao
-    introducao={`Durante a estada, os pedidos ao ${resort.nomeCurto}, como o agendamento do spa e da pizzaria, são feitos diretamente no resort.`}
+    introducao={`Durante a estadia, serviços como o agendamento do spa e da pizzaria são combinados no próprio ${resort.nomeCurto}.`}
     foto="grand-oca/piscinas/piscina-solario.jpg"
     titulo={`Já está hospedado no ${resort.nomeCurto}?`}
     sobretitulo="Durante a estadia"
@@ -121,7 +121,7 @@ const atendimento = [
   >
     <div class="conteudo">
       <p>
-        Pedidos durante a estada, como a reserva dos restaurantes temáticos no Guest Service, o
+        Pedidos durante a estadia, como a reserva dos restaurantes temáticos no Guest Service, o
         mergulho e os passeios, são feitos diretamente no {resort.nomeCurto}.
         {ehAgencia &&
           ' Para alterar datas ou acomodação de uma reserva feita conosco, fale com a nossa equipe pelos canais acima.'}
@@ -130,7 +130,7 @@ const atendimento = [
   </Secao>
 
   <Secao
-    introducao={`O ${resort.nomeCurto} fica às margens do ${resort.praia}, em ${resort.endereco.cidade} (MT). Veja o mapa e como chegar.`}
+    introducao={`O ${resort.nomeCurto} fica na ${resort.praia}, em ${resort.endereco.cidade} (${resort.endereco.uf}). Veja o mapa e como chegar.`}
     titulo={`Onde fica o ${resort.nomeCurto}?`}
     sobretitulo="Endereço"
     fundo={proximoFundo()}

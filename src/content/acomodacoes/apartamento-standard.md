@@ -6,7 +6,7 @@ resumo: Apartamento de estilo rústico e decoração aconchegante, com vista par
 seo:
   titulo: Apartamento Standard
   descricao: 'Apartamento Standard do Grand Oca Maragogi: decoração rústica, vista para o jardim e o coqueiral, para até 3 hóspedes.'
-respostaDireta: O Apartamento Standard do Grand Oca Maragogi tem estilo e decoração rústica e aconchegante e vista para os jardins e o coqueiral do resort. É a categoria mais numerosa, com 120 unidades, e recebe até três adultos ou dois adultos e uma criança de até 12 anos, com cama de casal e uma de solteiro ou três de solteiro.
+respostaDireta: O Apartamento Standard do Grand Oca Maragogi tem estilo rústico, decoração aconchegante e vista para os jardins e o coqueiral do resort. É a categoria mais numerosa, com 120 unidades, e recebe até três adultos ou dois adultos e uma criança de até 12 anos, em uma cama de casal e uma de solteiro ou em três camas de solteiro.
 quantidade: 120
 ambientes: 1
 capacidade:
@@ -20,7 +20,7 @@ camas:
 vistas:
   - jardim
 varanda: false
-indicadoPara: Casais, pequenos grupos e famílias com uma criança que passam o dia nas áreas do resort
+indicadoPara: Casais, pequenos grupos e famílias com uma criança que passam o dia nas áreas de lazer do resort
 diferenciais:
   - Categoria mais numerosa do resort, com 120 apartamentos
   - Decoração rústica e aconchegante

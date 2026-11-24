@@ -3,5 +3,6 @@ dist/
 node_modules/
 .cache/
 reports/
+publicar/
 package-lock.json
 docs/anexos/

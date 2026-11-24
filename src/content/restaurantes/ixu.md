@@ -7,7 +7,7 @@ resumo: Restaurante de cozinha fusion em ambiente lounge, à beira da praia, com
 seo:
   titulo: Restaurante Ix’U
   descricao: 'Ix’U, no Grand Oca Maragogi: cozinha fusion em ambiente lounge à beira da praia, com reserva no Guest Service.'
-respostaDireta: O Ix’U é o restaurante de cozinha fusion do Grand Oca Maragogi, em ambiente lounge às margens da praia, com espaço para até 70 pessoas e uma carta exclusiva de vinhos. Faz parte do all inclusive e exige reserva prévia no Guest Service, com o número de jantares incluídos variando conforme as noites da hospedagem.
+respostaDireta: O Ix’U é o restaurante de cozinha fusion do Grand Oca Maragogi, em ambiente lounge à beira da praia, com espaço para até 70 pessoas e uma carta exclusiva de vinhos. Faz parte do all inclusive e exige reserva prévia no Guest Service; o número de jantares incluídos varia conforme o número de noites da hospedagem.
 cozinhas:
   - Fusion
 destaques:

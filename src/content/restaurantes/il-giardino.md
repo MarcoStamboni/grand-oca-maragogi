@@ -3,11 +3,11 @@ nome: Il Giardino
 ordem: 3
 tipo: a-la-carte
 servico: buffet
-resumo: Restaurante italiano do resort, com buffet de comida italiana e massas tradicionais, dentro do all inclusive e com reserva prévia no Guest Service.
+resumo: Restaurante italiano do resort, com buffet de massas e pratos tradicionais da Itália, dentro do all inclusive e com reserva prévia no Guest Service.
 seo:
   titulo: Restaurante Il Giardino
-  descricao: 'Il Giardino, no Grand Oca Maragogi: buffet de comida italiana com massas, com reserva no Guest Service.'
-respostaDireta: O Il Giardino é o restaurante italiano do Grand Oca Maragogi, com um buffet de pratos tradicionais da Itália, como as massas, que encanta também os pequenos. Faz parte do all inclusive, exige reserva prévia no Guest Service, conforme as condições vigentes e o número de noites da estadia.
+  descricao: 'Il Giardino, no Grand Oca Maragogi: buffet de massas e pratos italianos, com reserva no Guest Service.'
+respostaDireta: O Il Giardino é o restaurante italiano do Grand Oca Maragogi, com um buffet de pratos tradicionais da Itália, como as massas, que também agradam às crianças. Faz parte do all inclusive e exige reserva prévia no Guest Service, conforme as condições vigentes e o número de noites da hospedagem.
 cozinhas:
   - Italiana
 destaques:

@@ -2,17 +2,17 @@
 nome: Bangalô Vista Piscina
 artigo: o
 ordem: 4
-resumo: Bangalô ao lado das piscinas, com vista para a piscina, cama de casal ou duas de solteiro e capacidade para 2 adultos e um bebê em berço.
+resumo: Bangalô ao lado das piscinas, com vista para a água, cama de casal ou duas de solteiro e capacidade para dois adultos e um bebê em berço.
 seo:
   titulo: Bangalô Vista Piscina
   descricao: 'Bangalô Vista Piscina do Grand Oca Maragogi: ao lado das piscinas, vista para a água, para 2 adultos e 1 bebê em berço.'
-respostaDireta: O Bangalô Vista Piscina é uma das 48 unidades do Grand Oca Maragogi ao lado das piscinas, com vista para a água. Tem cama de casal ou duas de solteiro, ar-condicionado split, TV LED de 32 polegadas, frigobar, telefone e banheiro com chuveiro e secador, e acomoda dois adultos ou dois adultos e um bebê em berço.
+respostaDireta: O Bangalô Vista Piscina é uma das 48 unidades do Grand Oca Maragogi ao lado das piscinas, com vista para a água. Tem cama de casal ou duas de solteiro, ar-condicionado split, TV LED de 32 polegadas, frigobar, telefone e banheiro com chuveiro e secador, e acomoda dois adultos, com a possibilidade de incluir um bebê em berço.
 quantidade: 48
 ambientes: 1
 capacidade:
   maxPessoas: 3
   adultos: 2
-  descricao: 2 adultos, ou 2 adultos e 1 bebê em berço
+  descricao: 2 adultos ou 2 adultos e 1 bebê em berço
 camas:
   - 1 cama de casal ou 2 camas de solteiro
 vistas:

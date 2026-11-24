@@ -15,7 +15,7 @@ destaques:
 seo:
   titulo: 7 de Setembro no Grand Oca
   descricao: '7 de Setembro no Grand Oca Maragogi: feriado em Maragogi com praia, piscinas, lazer e all inclusive.'
-respostaDireta: O feriado de 7 de Setembro é uma boa oportunidade para conhecer Maragogi e o Grand Oca Maragogi, no litoral norte de Alagoas. Dependendo do dia da semana, a data forma um feriadão, com praia, piscinas, restaurantes e lazer. Tarifas e disponibilidade variam conforme a data, a ocupação e a antecedência da reserva.
+respostaDireta: O feriado de 7 de Setembro é uma boa oportunidade para conhecer Maragogi e se hospedar no Grand Oca Maragogi, no litoral norte de Alagoas. Dependendo do dia da semana, a data forma um feriadão, com praia, piscinas, restaurantes e lazer. As tarifas e a disponibilidade variam conforme a data, a ocupação e a antecedência da reserva.
 fotos:
   - grand-oca/resort/jardim-cabanas-piscina.jpg
 fontes:

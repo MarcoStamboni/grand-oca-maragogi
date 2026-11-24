@@ -19,7 +19,7 @@ destaques:
 seo:
   titulo: Réveillon no Grand Oca
   descricao: 'Réveillon no Grand Oca Maragogi: virada do ano pé na areia em Maragogi, com piscinas, praia e all inclusive.'
-respostaDireta: O Réveillon é uma das épocas mais disputadas do Grand Oca Maragogi, em Maragogi, e combina praia, piscinas e all inclusive na virada do ano. O resort divulga uma programação própria de fim de ano, e tarifas, noites mínimas e categorias disponíveis variam. Quem planeja a data deve consultar a central com antecedência.
+respostaDireta: O Réveillon é uma das épocas mais disputadas do Grand Oca Maragogi e combina praia, piscinas e all inclusive na virada do ano. O resort divulga uma programação própria de fim de ano, e as tarifas, as noites mínimas e as categorias disponíveis variam. Quem planeja a data deve consultar a central de reservas com antecedência.
 fotos:
   - grand-oca/resort/vista-aerea-resort.jpg
 fontes:

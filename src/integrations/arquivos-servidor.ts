@@ -40,9 +40,13 @@ function escaparRegex(texto: string): string {
   return texto.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
-/** Regra de rewrite: aceita a URL antiga com ou sem barra final, sem criar laço. */
-function regraApache({ de, para }: Redirecionamento): string {
+/**
+ * Regra de rewrite: aceita a URL antiga com ou sem barra final, sem criar laço.
+ * Com `prefixo`, pega também tudo o que vier abaixo do caminho (ex.: `/post/qualquer-coisa`).
+ */
+function regraApache({ de, para, prefixo }: Redirecionamento): string {
   const caminho = escaparRegex(de.slice(1));
+  if (prefixo) return `  RewriteRule ^${caminho}(/.*)?$ ${para} [R=301,L,NC]`;
   const barraOpcional = para === `${de}/` ? '' : '/?';
   return `  RewriteRule ^${caminho}${barraOpcional}$ ${para} [R=301,L,NC]`;
 }
@@ -139,10 +143,10 @@ ${blocoValidacao(hostValidacao)}`;
 }
 
 export function gerarRedirects(redirecionamentos: readonly Redirecionamento[]): string {
-  const linhas = redirecionamentos.flatMap(({ de, para }) => {
+  const linhas = redirecionamentos.flatMap(({ de, para, prefixo }) => {
     const variantes = new Set([de, encodeURI(de)]);
     return [...variantes].flatMap((origem) =>
-      [origem, `${origem}/`]
+      [origem, prefixo ? `${origem}/*` : `${origem}/`]
         .filter((caminho) => caminho !== para)
         .map((caminho) => `${caminho}  ${para}  301`),
     );

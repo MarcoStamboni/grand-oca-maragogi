@@ -84,6 +84,19 @@ export function lerConsentimento(bruto: string | null): boolean | null {
   return null;
 }
 
+/**
+ * A medição só roda no site publicado. Numa prévia local, num endereço de homologação ou numa
+ * cópia do site, uma visita de teste iria para a propriedade do cliente e sujaria os relatórios
+ * dele — por isso o script não carrega o Google nem mostra o aviso de cookies fora do domínio.
+ * Sem `hostDoSite`, libera (site ainda sem domínio definido).
+ */
+export function medicaoPermitida(hostAtual: string, hostDoSite: string | undefined): boolean {
+  if (!hostDoSite) return true;
+  const atual = hostAtual.toLowerCase();
+  const esperado = hostDoSite.toLowerCase();
+  return atual === esperado || atual.endsWith(`.${esperado}`);
+}
+
 /** Evento interno do site (ex.: envio do formulário), repassado ao analytics se houver consentimento. */
 export const EVENTO_SITE = 'resort:evento';
 

@@ -25,7 +25,7 @@ AddCharset utf-8 .html .css .js .json .xml .txt .webmanifest
   RewriteCond %{HTTP:X-Forwarded-Proto} !=https
   RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
 
-  # URLs antigas → novas (40 regras)
+  # URLs antigas → novas (51 regras)
   RewriteRule ^contato/?$ /fale-conosco/ [R=301,L,NC]
   RewriteRule ^acomodacoes/apartamentos/?$ /acomodacoes/apartamento-standard/ [R=301,L,NC]
   RewriteRule ^acomodacoes/bangalo/?$ /acomodacoes/bangalo-vista-jardim/ [R=301,L,NC]
@@ -66,6 +66,17 @@ AddCharset utf-8 .html .css .js .json .xml .txt .webmanifest
   RewriteRule ^feriado-2-de-novembro/?$ /datas-especiais/finados/ [R=301,L,NC]
   RewriteRule ^feriado-15-de-novembro/?$ /datas-especiais/proclamacao-da-republica/ [R=301,L,NC]
   RewriteRule ^feriado-20-de-novembro/?$ /datas-especiais/consciencia-negra/ [R=301,L,NC]
+  RewriteRule ^1/?$ / [R=301,L,NC]
+  RewriteRule ^blog-feed\.xml/?$ /blog/ [R=301,L,NC]
+  RewriteRule ^_files/ugd/3966a2_13794a7b7052496786ea76cefa800698\.pdf/?$ /all-inclusive/ [R=301,L,NC]
+  RewriteRule ^_files/ugd/3966a2_2019ab2265ce404c8995d65d93c94e84\.pdf/?$ /all-inclusive/ [R=301,L,NC]
+  RewriteRule ^_files/ugd/3966a2_0d8d8b719ca7419abedbbc8accf60203\.pdf/?$ /lazer/criancas/ [R=301,L,NC]
+  RewriteRule ^_files/ugd/3966a2_8ad3f16bb4d94547a4a32e41c72ac749\.pdf/?$ /lazer/piscinas/ [R=301,L,NC]
+  RewriteRule ^_files/ugd/3966a2_0b790e891c0640e8a07e4eeea1c455e4\.pdf/?$ /lazer/esportes/ [R=301,L,NC]
+  RewriteRule ^_files(/.*)?$ /lazer/ [R=301,L,NC]
+  RewriteRule ^blog/tags(/.*)?$ /blog/ [R=301,L,NC]
+  RewriteRule ^blog/categories(/.*)?$ /blog/ [R=301,L,NC]
+  RewriteRule ^post(/.*)?$ /blog/ [R=301,L,NC]
 </IfModule>
 
 <IfModule mod_headers.c>

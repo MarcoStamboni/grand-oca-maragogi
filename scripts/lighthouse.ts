@@ -22,9 +22,9 @@ const minima = Number(minimaTexto);
 /** Uma página de cada modelo do site. */
 const paginas = [
   '/',
-  '/acomodacoes/bangalo/',
-  '/all-inclusive/restaurantes/mar-aberto/',
-  '/lazer/programacao/',
+  '/acomodacoes/bangalo-vista-jardim/',
+  '/all-inclusive/restaurantes/restaurante-dos-corais/',
+  '/lazer/',
   '/datas-especiais/natal/',
   '/fotos/',
   '/blog/como-escolher-acomodacao/',

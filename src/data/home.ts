@@ -17,7 +17,7 @@ export const textosHome = {
   ],
   /** Lista "Em resumo" do mesmo cartão, com o ícone (branco) de cada item. */
   emResumo: [
-    { texto: 'Dez categorias, de apartamentos a suítes', icone: 'cama' },
+    { texto: 'Nove categorias, de apartamentos a suítes', icone: 'cama' },
     { texto: 'Quatro restaurantes e sete bares', icone: 'talheres' },
     { texto: 'Kids Club para crianças de 4 a 12 anos', icone: 'bebe' },
     { texto: 'Piscinas por quase 400 metros', icone: 'piscina' },
@@ -139,10 +139,10 @@ export const textosHome = {
       rotulo: 'Família',
       titulo: 'Todos juntos',
       texto:
-        'A programação inclui o Family Oca, o parque aquático, o playground com cama elástica e escorregadores, os shows infantis e a praia de Ponta de Mangue.',
+        'A programação inclui o Family Oca, o parque aquático, o playground com cama elástica e escorregadores, os shows infantis e a Praia de Ponta de Mangue.',
     },
   ],
   /** Introdução da seção das crianças. */
   criancas:
-    'Quem viaja com crianças encontra o Kids Club, com atividades das 9h às 12h e das 14h às 18h para crianças de 4 a 12 anos, além de parque aquático com toboágua, playground, baby area, oficinas e shows infantis.',
+    'Quem viaja com crianças encontra o Kids Club, com atividades das 9h às 12h e das 14h às 18h para a faixa de 4 a 12 anos, além de parque aquático com toboágua, playground, baby area, oficinas e shows infantis.',
 } as const;

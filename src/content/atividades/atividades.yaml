@@ -9,7 +9,7 @@
 kids-club:
   nome: Kids Club
   categoria: criancas
-  resumo: Atividades diárias para crianças de 4 a 12 anos, com jogos, oficinas, shows e programação interna, na piscina e na praia, com a equipe de entretenimento infantil.
+  resumo: Atividades diárias para crianças de 4 a 12 anos, com jogos, oficinas, shows e programação interna, na piscina e na praia, conduzidas pela equipe de entretenimento infantil.
   publico: De 4 a 12 anos
   idadeMinima: 4
   idadeMaxima: 12
@@ -31,7 +31,7 @@ kids-club:
 oficinas-infantis:
   nome: Oficinas e brincadeiras
   categoria: criancas
-  resumo: Castelo de areia, pequenos pintores, oficinas de massinha, brigadeiro, cupcake e pizza e caça ao tesouro para as crianças de 4 a 7 anos.
+  resumo: Castelo de areia, pequenos pintores, oficinas de massinha, brigadeiro, cupcake e pizza, além de caça ao tesouro, para as crianças de 4 a 7 anos.
   publico: De 4 a 7 anos
   idadeMinima: 4
   idadeMaxima: 7
@@ -55,7 +55,7 @@ esportes-e-gincanas-infantis:
 parque-aquatico:
   nome: Parque aquático infantil
   categoria: criancas
-  resumo: Área aquática infantil com brinquedos, toboágua e espaços rasos, para as crianças brincarem com segurança.
+  resumo: Área aquática infantil com brinquedos, toboágua e espaços rasos para as crianças brincarem.
   local: Piscinas
   cobranca: incluso
   fotos:
@@ -66,7 +66,7 @@ parque-aquatico:
 playground:
   nome: Playground
   categoria: criancas
-  resumo: Área externa com cama elástica, escorregadores e outros brinquedos, para intercalar com a piscina e a praia.
+  resumo: Área externa com cama elástica, escorregadores e outros brinquedos, uma alternativa à piscina e à praia.
   cobranca: incluso
   fotos:
     - grand-oca/criancas/piscina-infantil-escorregador.jpg
@@ -182,7 +182,7 @@ futebol:
 mergulho-padi:
   nome: Centro de mergulho PADI
   categoria: esportes
-  resumo: Aulas de mergulho e passeios até as piscinas naturais em frente ao resort, com certificação PADI, em mergulho com cilindro ou snorkel.
+  resumo: Aulas e passeios de mergulho até as piscinas naturais em frente ao resort, com certificação PADI, de cilindro ou de snorkel.
   cobranca: nao-informado
   fotos: []
   fontes:

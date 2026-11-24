@@ -4,11 +4,35 @@ import {
   dominiosDoCookie,
   ehCookieAnalytics,
   lerConsentimento,
+  medicaoPermitida,
   registrarConsentimento,
   resolverAnalytics,
   urlScriptAnalytics,
   VERSAO_CONSENTIMENTO,
 } from './analytics';
+
+describe('medicaoPermitida', () => {
+  const site = 'grandocamaragogi.resortallinclusive.com.br';
+
+  it('libera no domínio do site e nos subdomínios dele', () => {
+    expect(medicaoPermitida(site, site)).toBe(true);
+    expect(medicaoPermitida(`www.${site}`, site)).toBe(true);
+    expect(medicaoPermitida(site.toUpperCase(), site)).toBe(true);
+  });
+
+  it('bloqueia prévia local, homologação e cópia do site', () => {
+    expect(medicaoPermitida('localhost', site)).toBe(false);
+    expect(medicaoPermitida('127.0.0.1', site)).toBe(false);
+    expect(medicaoPermitida('homologacao.outrodominio.com.br', site)).toBe(false);
+    // Nome que só termina parecido, sem o ponto: não é subdomínio.
+    expect(medicaoPermitida(`falso${site}`, site)).toBe(false);
+  });
+
+  it('libera quando o site ainda não tem domínio definido', () => {
+    expect(medicaoPermitida('localhost', undefined)).toBe(true);
+    expect(medicaoPermitida('localhost', '')).toBe(true);
+  });
+});
 
 describe('resolverAnalytics', () => {
   it('fica desligado por padrão, mesmo com IDs', () => {

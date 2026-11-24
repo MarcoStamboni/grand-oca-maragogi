@@ -83,7 +83,24 @@ function estrutura(html: string): string[] {
     if (vistos.has(id)) erros.push(`id repetido: ${id}`);
     vistos.add(id);
   }
+  erros.push(...preloadDaCapaConfere(html));
   return erros;
+}
+
+/**
+ * O `<link rel="preload" as="image">` da capa (BaseLayout) precisa trazer o mesmo `srcset` do
+ * `<img>` da foto: com listas diferentes, o navegador baixa um arquivo a mais e o preload passa a
+ * atrapalhar. Quebra quando alguém muda as opções do componente `Imagem` e esquece do preload.
+ */
+function preloadDaCapaConfere(html: string): string[] {
+  const preload = tags(html, 'link').find(
+    (tag) => atributo(tag, 'rel') === 'preload' && atributo(tag, 'as') === 'image',
+  );
+  if (!preload) return [];
+  const srcset = atributo(preload, 'imagesrcset');
+  if (!srcset) return ['preload da capa sem imagesrcset'];
+  const usado = tags(corpo(html), 'img').some((img) => atributo(img, 'srcset') === srcset);
+  return usado ? [] : ['preload da capa com srcset diferente do <img> da foto'];
 }
 
 /** Link interno quebrado (página, arquivo ou âncora inexistente). `null` quando está certo. */

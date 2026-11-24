@@ -2,17 +2,17 @@
 nome: Bangalô Vista Jardim
 artigo: o
 ordem: 3
-resumo: Bangalô ao lado das piscinas, com vista para o jardim, cama de casal ou duas de solteiro e capacidade para 2 adultos e um bebê em berço.
+resumo: Bangalô ao lado das piscinas, com vista para o jardim, cama de casal ou duas de solteiro e capacidade para dois adultos e um bebê em berço.
 seo:
   titulo: Bangalô Vista Jardim
   descricao: 'Bangalô Vista Jardim do Grand Oca Maragogi: ao lado das piscinas, vista para o jardim, para 2 adultos e 1 bebê em berço.'
-respostaDireta: O Bangalô Vista Jardim é uma das 49 unidades do Grand Oca Maragogi ao lado das piscinas, com vista para o jardim. Tem cama de casal ou duas de solteiro, ar-condicionado split, TV LED de 32 polegadas, frigobar, telefone e banheiro com chuveiro e secador, e acomoda dois adultos ou dois adultos e um bebê em berço.
+respostaDireta: O Bangalô Vista Jardim é uma das 49 unidades do Grand Oca Maragogi ao lado das piscinas, com vista para o jardim. Tem cama de casal ou duas de solteiro, ar-condicionado split, TV LED de 32 polegadas, frigobar, telefone e banheiro com chuveiro e secador, e acomoda dois adultos, com a possibilidade de incluir um bebê em berço.
 quantidade: 49
 ambientes: 1
 capacidade:
   maxPessoas: 3
   adultos: 2
-  descricao: 2 adultos, ou 2 adultos e 1 bebê em berço
+  descricao: 2 adultos ou 2 adultos e 1 bebê em berço
 camas:
   - 1 cama de casal ou 2 camas de solteiro
 vistas:

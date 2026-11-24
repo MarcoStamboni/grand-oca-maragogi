@@ -47,6 +47,7 @@ em qualquer página.
 | `npm run format`           | Formata o código com Prettier (`format:check` só confere)                                                            |
 | `npm run test`             | Testes unitários (Vitest)                                                                                            |
 | `npm run verify`           | Roda `check`, `lint`, `format:check`, `test` e `build`                                                               |
+| `npm run publicar`         | Monta `publicar/<domínio>/`, a pasta pronta para enviar à hospedagem (sem os arquivos de Netlify)                    |
 | `npm run imagens:modelo`   | Gera as ilustrações de demonstração (`--folha` monta uma folha de contato, `--forcar` regera tudo)                   |
 | `npm run imagens:baixar`   | Baixa as fotos do site anterior do resort (CSV em `docs/anexos/`) para `.cache/imagens/`                             |
 | `npm run imagens:folhas`   | Gera folhas de contato para revisar fotos e escrever os `alt`                                                        |
@@ -129,6 +130,28 @@ docs/                   Plano do modelo, guia de replicação e checklist de pub
 - **Auditoria no build**: um H1, títulos sem saltos, imagens com `alt`, ids únicos, links e âncoras
   válidos, title e description nas faixas e únicos, resposta direta e data de atualização. Erro derruba
   o build; o relatório fica em `reports/auditoria-paginas.md`.
+- **Perguntas frequentes**: cada página indexável mostra exatamente 15 perguntas, e pelo menos 10
+  delas são exclusivas daquela página (conferido por `src/lib/faq-paginas.test.ts` e pelo script de
+  análise). A página `/perguntas-frequentes/` reúne as principais de cada tema
+  (`PERGUNTAS_POR_TEMA` em `src/lib/faq.ts`) e aponta para a página do assunto.
+
+## Desempenho
+
+Medido com o Lighthouse contra um servidor local que imita a hospedagem (brotli e os mesmos
+cabeçalhos de cache do `.htaccess`); o `astro preview` não comprime, então mede pior que o ar.
+
+O que mantém as notas altas, além do que já vinha do modelo (WebP, CSS embutido, fontes locais):
+
+- **Motor de reservas sob demanda**: o iframe de outro domínio (centenas de kB de JavaScript) só
+  carrega quando o quadro está perto de aparecer (`data-src` + IntersectionObserver em
+  `CartaoMotor.astro`). Era ele que derrubava a home e as páginas de feriado.
+- **Preload da foto de capa** (`preloadDaCapa` em `src/lib/imagens.ts`, usado pelo `BaseLayout`):
+  o `<link rel="preload">` usa exatamente o mesmo `srcset` do `<img>`, senão o navegador baixaria
+  dois arquivos. Quem mexer nas opções do componente `Imagem` precisa mexer nas duas pontas.
+- **Renderização sob demanda** (`content-visibility`, no fim do `global.css`): seções abaixo da
+  primeira tela e itens fechados da FAQ.
+- A arte da campanha em `public/campanhas/` entra com `loading="lazy"` e já vem reduzida (o
+  original fica em `scripts/campanhas/`).
 
 ## Variáveis de ambiente
 
@@ -164,3 +187,21 @@ O `dist/` é 100% estático e sobe em qualquer host (Apache, Nginx, Netlify, Clo
    `src/integrations/arquivos-servidor.ts`.
 5. **Agende um rebuild diário ou semanal**: as datas dos feriados e as ofertas "a partir de" são
    calculadas no build.
+
+### HostGator (endereço deste site)
+
+`npm run publicar` monta `publicar/grandocamaragogi.resortallinclusive.com.br/` com exatamente o
+que vai para o ar: o mesmo nome da pasta do site no servidor, já que na HostGator cada site é uma
+pasta com o nome do domínio na home (fora de `public_html`).
+
+- **Antes de publicar, tire o site do modo de homologação** (`dominio.teste: false` em
+  `src/site.config.ts`) e gere de novo. Em 24/11/2026 o site está com `teste: true`: o build sai com
+  `noindex` e com o `robots.txt` bloqueando tudo.
+- Vai junto o **`.htaccess`**, que é quem faz os 301, o www → sem www, o HTTPS, a página 404, o
+  cache e a compressão. É um arquivo oculto: confira se o seu programa de FTP está mostrando
+  arquivos ocultos, senão ele fica para trás e os redirecionamentos não funcionam.
+- Ficam de fora `_redirects` e `_headers`, que só servem a Netlify e Cloudflare Pages.
+- São cerca de 1.300 arquivos e 166 MB, quase tudo fotos em `_astro/` (uma versão por tamanho de
+  tela). O envio demora; não interrompa no meio.
+- Depois de subir, confira os 301 e o sitemap como está em `docs/redirecionamentos-301.md`.
+- `npm run zip` continua disponível para quem prefere enviar um `.zip` pelo cPanel.

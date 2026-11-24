@@ -49,9 +49,9 @@ export const paginasRelacionadas: Partial<Record<RotaChave, readonly LinkRelacio
     ['piscinas', 'as piscinas com bar'],
   ],
   lazer: [
-    ['piscinas', 'as piscinas e a sauna'],
+    ['piscinas', 'as piscinas e o solário'],
     ['criancas', 'a recreação infantil'],
-    ['esportes', 'os esportes e a aventura'],
+    ['esportes', 'os esportes e a academia'],
   ],
   piscinas: [
     ['criancas', 'a recreação das crianças'],

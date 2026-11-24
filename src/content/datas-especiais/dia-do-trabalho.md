@@ -7,7 +7,7 @@ quando:
   tipo: fixa
   dia: 1
   mes: 5
-resumo: 'Feriado de 1º de maio em Maragogi: procura alta por resorts de praia, para descansar com piscinas e all inclusive.'
+resumo: 'Feriado de 1º de maio em Maragogi: procura alta por resorts de praia, com piscinas e all inclusive para descansar.'
 destaques:
   - Feriado nacional de 1º de maio
   - Piscinas, praia e lazer para todas as idades
@@ -15,7 +15,7 @@ destaques:
 seo:
   titulo: Dia do Trabalho no Grand Oca
   descricao: 'Dia do Trabalho no Grand Oca Maragogi: feriado de 1º de maio com praia, piscinas e all inclusive em Maragogi.'
-respostaDireta: O feriado de 1º de maio costuma elevar a procura por destinos de praia e resorts all inclusive, e o Grand Oca Maragogi, em Maragogi, é uma opção para quem quer descansar com piscinas, praia e refeições incluídas. As emendas com o fim de semana tornam as datas mais disputadas, por isso a antecedência ajuda.
+respostaDireta: O feriado de 1º de maio costuma elevar a procura por destinos de praia e resorts all inclusive, e o Grand Oca Maragogi é uma opção para quem quer descansar com piscinas, praia e refeições incluídas. As emendas com o fim de semana tornam as datas mais disputadas, por isso vale reservar com antecedência.
 fotos:
   - grand-oca/piscinas/piscina-lagoa-coqueiros.jpg
 fontes:

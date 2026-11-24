@@ -1,0 +1,155 @@
+---
+/**
+ * Pop-up da Black Friday: a arte da campanha (public/campanhas/, entregue pelo cliente) com o
+ * botão "Quero reservar" sobre a faixa vazia do meio da imagem — a arte é desenhada com esse
+ * espaço livre, de 68% a 90% da altura (`blackFriday.popup.botaoTopoPct`).
+ *
+ * Abre sozinho alguns segundos depois de a página carregar e, depois de fechado, volta a cada
+ * X segundos (`segundosParaAbrir` e `segundosParaReabrir`, em src/site.config.ts). Os dois
+ * gatilhos da faixa do topo ([data-bf-popup-abrir]) também abrem o pop-up, em vez de navegar.
+ *
+ * Usa a Popover API: fecha no X, no Esc e no clique fora. Nasce com `display:none` e só é
+ * liberado pelo script quando o navegador tem `showPopover`: sem JavaScript (ou sem suporte),
+ * nada aparece e a faixa do topo continua levando às hospedagens pelo link normal.
+ *
+ * O quadro é `fixed inset-0 m-auto h-fit`: fica centralizado na parte da página que a pessoa
+ * está vendo, não importa quanto ela já rolou. Sem o `fixed`, a classe `relative` sobrescrevia o
+ * `position: fixed` que o navegador dá a todo `[popover]` e o pop-up aparecia lá no topo do
+ * documento (relatado pelo cliente em 24/11/2026).
+ */
+import Icone from '@/components/ui/Icone.astro';
+import { classesBotao } from '@/lib/botoes';
+import { blackFriday } from '@/site.config';
+
+const { popup } = blackFriday;
+/** Mesma regra da faixa (FaixaBlackFriday): só entra no HTML enquanto a campanha não acabou. */
+const visivel =
+  blackFriday.ativo && popup.ativo && Date.now() < new Date(blackFriday.fim).getTime();
+const ID = 'popup-black-friday';
+---
+
+{visivel && (
+  <div
+    id={ID}
+    popover
+    class="shadow-flutuante backdrop:bg-black/70 backdrop:backdrop-blur-sm fixed inset-0 m-auto h-fit max-h-[calc(100dvh-2rem)] w-[min(26rem,calc(100vw-2rem),66dvh)] overflow-hidden rounded-grande bg-black p-0"
+    style="display:none"
+    data-bf-popup
+    data-abrir={popup.segundosParaAbrir}
+    data-reabrir={popup.segundosParaReabrir}
+  >
+    <img
+      src={popup.imagem}
+      alt={popup.alt}
+      width={popup.largura}
+      height={popup.altura}
+      loading="lazy"
+      fetchpriority="low"
+      decoding="async"
+      class="block h-auto w-full"
+    />
+
+    {/* Botão sobre a faixa vazia da arte: o invólucro posiciona, para o botão manter o hover. */}
+    <div
+      class="absolute inset-x-0 flex -translate-y-1/2 justify-center px-[12%]"
+      style={`top:${popup.botaoTopoPct}%`}
+    >
+      <a
+        href={popup.ctaHref}
+        class:list={[classesBotao('verde', 'lg'), 'w-full shadow-flutuante']}
+        data-evento="clique_popup_black_friday"
+      >
+        {popup.cta}
+        <span
+          class="inline-flex size-7 shrink-0 items-center justify-center rounded-full bg-white/20"
+          aria-hidden="true"
+        >
+          <Icone nome="seta-direita" class="size-4" />
+        </span>
+      </a>
+    </div>
+
+    <button
+      type="button"
+      popovertarget={ID}
+      popovertargetaction="hide"
+      class="absolute top-3 right-3 inline-flex size-10 items-center justify-center rounded-full bg-black/50 text-white ring-1 ring-white/50 backdrop-blur-sm hover:bg-black/75"
+    >
+      <svg viewBox="0 0 24 24" class="size-5" aria-hidden="true" focusable="false">
+        <path
+          d="M18 6 6 18M6 6l12 12"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+        />
+      </svg>
+      <span class="sr-only">Fechar</span>
+    </button>
+  </div>
+)}
+
+<script>
+  /**
+   * Abre o pop-up da campanha sozinho e, a cada vez que ele é fechado, marca a volta.
+   * Só roda onde a Popover API existe; nos demais navegadores o pop-up fica escondido.
+   */
+  const popup = document.querySelector<HTMLElement>('[data-bf-popup]');
+
+  if (popup && typeof popup.showPopover === 'function') {
+    // Liberado só agora: no HTML o pop-up nasce com display:none (ver comentário do componente).
+    popup.style.display = '';
+
+    /*
+     * A arte é `loading="lazy"` para não disputar banda com a primeira tela. Mas o pop-up abre
+     * poucos segundos depois, e sem isso a primeira abertura mostraria um retângulo preto até a
+     * imagem chegar. Então, assim que o resto da página termina de carregar, a arte é buscada em
+     * segundo plano: quando o pop-up abre, ela já está pronta.
+     */
+    const prepararArte = () => {
+      const arte = popup.querySelector('img');
+      if (arte && !arte.complete) arte.loading = 'eager';
+    };
+    if (document.readyState === 'complete') prepararArte();
+    else window.addEventListener('load', prepararArte, { once: true });
+
+    const segundos = (valor: string | undefined, padrao: number) => {
+      const numero = Number(valor);
+      return Number.isFinite(numero) && numero > 0 ? numero * 1000 : padrao * 1000;
+    };
+    const esperaInicial = segundos(popup.dataset['abrir'], 3);
+    const esperaVolta = segundos(popup.dataset['reabrir'], 20);
+    let temporizador = 0;
+
+    const abrirAgora = () => {
+      window.clearTimeout(temporizador);
+      if (popup.matches(':popover-open')) return;
+      try {
+        popup.showPopover();
+      } catch {
+        // Outra janela (popover) aberta na frente: tenta de novo no próximo intervalo.
+        temporizador = window.setTimeout(abrirAgora, esperaVolta);
+      }
+    };
+    const agendar = (espera: number) => {
+      window.clearTimeout(temporizador);
+      temporizador = window.setTimeout(abrirAgora, espera);
+    };
+
+    // Fechou (X, Esc ou clique fora): volta depois do intervalo.
+    popup.addEventListener('toggle', (evento) => {
+      const estado = (evento as Event & { newState?: string }).newState;
+      if (estado === 'closed') agendar(esperaVolta);
+    });
+
+    // Gatilhos da faixa do topo: abrem o pop-up em vez de ir para a página.
+    for (const gatilho of document.querySelectorAll('[data-bf-popup-abrir]')) {
+      gatilho.addEventListener('click', (evento) => {
+        evento.preventDefault();
+        abrirAgora();
+      });
+    }
+
+    agendar(esperaInicial);
+  }
+</script>

@@ -663,3 +663,29 @@
     min-height: 44px;
   }
 }
+
+/*
+ * Renderização sob demanda das seções (desempenho). O navegador só calcula estilo e layout das
+ * seções que estão perto da tela; as de baixo esperam a rolagem. Em páginas longas (home, FAQ,
+ * feriados), isso corta mais de um segundo do trabalho de renderização no celular.
+ *
+ * `contain-intrinsic-size: auto 600px` reserva uma altura estimada enquanto a seção está fora da
+ * tela e, depois que ela é renderizada uma vez, o navegador passa a usar a altura real: a barra
+ * de rolagem não dá saltos. A primeira seção (a capa) fica de fora, porque já nasce visível.
+ * Busca do navegador, âncoras e leitores de tela continuam alcançando o conteúdo.
+ */
+main > section:not(:first-of-type) {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 600px;
+}
+
+/*
+ * Mesma ideia nas perguntas frequentes: a página central reúne centenas de itens, e o navegador
+ * só precisa calcular os que estão perto da tela. `contain-intrinsic-size` usa a altura de um
+ * item fechado (cerca de 5,5 rem); ao abrir, o próprio item passa a valer a altura real.
+ * Vale só para o acordeão fechado: um item aberto (ou que a busca abriu) é renderizado normalmente.
+ */
+details[id^='pergunta-']:not([open]) {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 5.5rem;
+}

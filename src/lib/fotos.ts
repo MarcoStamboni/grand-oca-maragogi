@@ -37,7 +37,7 @@ export async function categoriasDeFotos(): Promise<CategoriaFotos[]> {
       .flatMap(({ data }) => data.fotos);
 
   const candidatas: CategoriaFotos[] = [
-    { id: 'resort', titulo: 'Resort e lago', icone: 'guarda-sol', chaves: [...fotosDoResort] },
+    { id: 'resort', titulo: 'Resort e praia', icone: 'guarda-sol', chaves: [...fotosDoResort] },
     {
       id: 'acomodacoes',
       titulo: 'Acomodações',

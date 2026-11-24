@@ -101,6 +101,7 @@ const segundaAcao = pacoteComAereo ?? {
   titulo={resort.nome}
   descricao="Grand Oca Maragogi Resort: all inclusive pé na areia em Maragogi, com piscinas, Kids Club e nove categorias de acomodação."
   imagemSocial={topo}
+  imagemCapa={topo}
   atualizadoEm={DATA_CONTEUDO}
   rota="home"
   dadosEstruturados={{ perguntas: faq }}
@@ -256,8 +257,7 @@ const segundaAcao = pacoteComAereo ?? {
     <div class="grid items-start gap-8 lg:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)] lg:gap-10">
       <div class="space-y-6" data-revelar="esquerda">
         <p class="text-tinta-suave text-lg">
-          O {resort.nomeCurto} fica às margens do {resort.praia}, {resort.destino.em}{' '}
-          {resort.destino.nome}.
+          O {resort.nomeCurto} fica na {resort.praia}, {resort.destino.em} {resort.destino.nome}.
           {aeroportosAlternativos.length > 0
             ? ` Para quem chega de avião, há ${aeroportos.length} aeroportos possíveis.`
             : ` O aeroporto mais próximo é o ${aeroporto.nome}.`}
@@ -374,9 +374,9 @@ const segundaAcao = pacoteComAereo ?? {
 
   {outros.length > 0 && (
     <Secao
-      titulo="Quais são outros Resorts All Inclusive que posso conhecer?"
+      titulo="Quais são os outros resorts all inclusive para conhecer?"
       sobretitulo="Rede Resort All Inclusive"
-      introducao={`A rede Resort All Inclusive reúne dezenas de resorts com tudo incluído pelo Brasil, das praias do Nordeste às serras de Minas Gerais e ao Sul, com a mesma qualidade em seu atendimento. Veja a prévia de outras opções de resorts all inclusive pelo país.`}
+      introducao={`A rede Resort All Inclusive reúne dezenas de resorts com tudo incluído pelo Brasil, das praias do Nordeste às serras de Minas Gerais e ao Sul, com a mesma qualidade de atendimento. Veja a prévia de outras opções pelo país.`}
       fundo="areia"
     >
       {/* Na home, só os destaques (os primeiros pela ordem); a lista completa fica em /outros-resorts/. */}

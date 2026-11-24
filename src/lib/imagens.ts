@@ -69,6 +69,43 @@ export async function fotoAmpliada({ src }: ImagemResolvida): Promise<FotoAmplia
   return { src: imagem.src, largura, altura: Math.round((src.height * largura) / src.width) };
 }
 
+/**
+ * Larguras da capa em tela cheia. Precisa ser igual à lista do componente Imagem
+ * (src/components/ui/Imagem.astro), senão o preload baixaria um arquivo que a página não usa.
+ */
+export const LARGURAS_CAPA = [640, 750, 828, 1080, 1280, 1668, 1920] as const;
+
+export interface PreloadImagem {
+  href: string;
+  srcset: string;
+  sizes: string;
+}
+
+/**
+ * Dados do `<link rel="preload" as="image">` da foto de capa (a candidata a LCP). Sem ele, o
+ * navegador só descobre a foto depois de ler o CSS embutido e o começo do corpo da página.
+ * As opções são as mesmas do componente Imagem com `prioridade`, para o arquivo baixado no
+ * preload ser exatamente o que o `<img>` vai usar.
+ */
+export async function preloadDaCapa(
+  imagem: ImagemResolvida | undefined,
+): Promise<PreloadImagem | undefined> {
+  if (!imagem) return undefined;
+  const gerada = await getImage({
+    src: imagem.src,
+    format: 'webp',
+    layout: 'full-width',
+    widths: LARGURAS_CAPA.filter((largura) => largura <= imagem.src.width),
+    sizes: '100vw',
+    quality: 70,
+    fit: 'cover',
+    position: 'center',
+  });
+  const srcset = gerada.srcSet?.attribute;
+  if (!srcset) return undefined;
+  return { href: gerada.src, srcset, sizes: '100vw' };
+}
+
 /** Imagem para o JSON-LD: URL absoluta da foto ampliada, dimensões e `alt` como legenda. */
 export async function imagemSchema(imagem: ImagemResolvida): Promise<ImagemSchema> {
   const { src, largura, altura } = await fotoAmpliada(imagem);

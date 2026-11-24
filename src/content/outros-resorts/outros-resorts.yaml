@@ -6,6 +6,10 @@
 # - `resumo`: só com fatos conferidos. Sem resumo, o site mostra um texto neutro com o destino.
 # - `destino`/`uf`: cidade ou região do resort (conferidas em 19/10/2026).
 # Fotos de outros resorts só com autorização de uso.
+# - `foto`: chave `rede/*` (arquivo em src/assets/imagens/rede/, alt em imagens.yaml). Em
+#   24/11/2026 entraram as capas dos sites da rede feitos pela agência (33 resorts). Sem foto, o
+#   cartão usa o fundo azul da marca (PENDENTE: Costeira Palace, Fazzenda Park, Parque das Fontes,
+#   os quatro Sauípe, Thermas, Transamerica Comandatuba e Vilage Inn).
 
 # --- Portais já publicados (aparecem primeiro) -------------------------------------------------
 
@@ -23,7 +27,7 @@ enotel-porto-de-galinhas:
   ordem: 2
   destino: Porto de Galinhas
   uf: PE
-  resumo: Resort à beira-mar com complexo aquático de cerca de 45 mil m², com piscina de ondas e rio lento.
+  resumo: Resort à beira-mar com complexo aquático de cerca de 45 mil m², piscina de ondas e rio lento.
   url: https://enotel.resortallinclusive.com.br/
   foto: rede/enotel-porto-de-galinhas.jpg
 
@@ -79,48 +83,56 @@ al-aram-imira-beach-resort:
   ordem: 10
   destino: Natal
   uf: RN
+  foto: rede/el-aram-imira-beach-resort.jpg
 
 asenza-beach-resort:
   nome: Asenza Beach Resort All Inclusive
   ordem: 11
   destino: Pitimbu
   uf: PB
+  foto: rede/asenza-beach-resort.jpg
 
 cana-brava-resort:
   nome: Cana Brava Resort All Inclusive
   ordem: 12
   destino: Ilhéus
   uf: BA
+  foto: rede/cana-brava-resort.jpg
 
 cassino-all-inclusive-pocos-de-caldas:
   nome: Cassino All Inclusive Resort Poços de Caldas
   ordem: 13
   destino: Poços de Caldas
   uf: MG
+  foto: rede/cassino-all-inclusive-pocos-de-caldas.jpg
 
 club-med-lake-paradise:
   nome: Club Med Lake Paradise All Inclusive
   ordem: 14
   destino: Mogi das Cruzes
   uf: SP
+  foto: rede/club-med-lake-paradise.jpg
 
 club-med-rio-das-pedras:
   nome: Club Med Rio das Pedras All Inclusive
   ordem: 15
   destino: Mangaratiba
   uf: RJ
+  foto: rede/club-med-rio-das-pedras.jpg
 
 club-med-trancoso:
   nome: Club Med Trancoso All Inclusive
   ordem: 16
   destino: Trancoso
   uf: BA
+  foto: rede/club-med-trancoso.jpg
 
 coliseum-beach-resort:
   nome: Coliseum Beach Resort All Inclusive
   ordem: 17
   destino: Beberibe
   uf: CE
+  foto: rede/coliseum-beach-resort.jpg
 
 costeira-palace-beach-resort:
   nome: Costeira Palace Beach Resort All Inclusive
@@ -133,6 +145,7 @@ costao-do-santinho:
   ordem: 19
   destino: Florianópolis
   uf: SC
+  foto: rede/costao-do-santinho.jpg
 
 fazzenda-park-resort:
   nome: Fazzenda Park Resort
@@ -145,6 +158,7 @@ grand-palladium-imbassai:
   ordem: 21
   destino: Imbassaí
   uf: BA
+  foto: rede/grand-palladium-imbassai.jpg
 
 hotel-parque-das-fontes:
   nome: Hotel Parque das Fontes All Inclusive
@@ -157,114 +171,133 @@ iberostar-grand-amazon:
   ordem: 23
   destino: Manaus
   uf: AM
+  foto: rede/iberostar-grand-amazon.jpg
 
 iberostar-selection-praia-do-forte:
   nome: Iberostar Selection Praia do Forte
   ordem: 24
   destino: Praia do Forte
   uf: BA
+  foto: rede/iberostar-selection-praia-do-forte.jpg
 
 iberostar-waves-bahia:
   nome: Iberostar Waves Bahia All Inclusive
   ordem: 25
   destino: Praia do Forte
   uf: BA
+  foto: rede/iberostar-waves-bahia.jpg
 
 japaratinga-lounge-resort:
   nome: Japaratinga Lounge Resort All Inclusive
   ordem: 26
   destino: Japaratinga
   uf: AL
+  foto: rede/japaratinga-lounge-resort.jpg
 
 la-torre-resort:
   nome: La Torre Resort All Inclusive
   ordem: 27
   destino: Porto Seguro
   uf: BA
+  foto: rede/la-torre-resort.jpg
 
 maceio-mar-resort:
   nome: Maceió Mar Resort All Inclusive
   ordem: 28
   destino: Maceió
   uf: AL
+  foto: rede/maceio-mar-resort.jpg
 
 makai-resort-aracaju:
   nome: Makai Resort All Inclusive Aracaju
   ordem: 29
   destino: Aracaju
   uf: SE
+  foto: rede/makai-resort-aracaju.jpg
 
 malai-manso-resort:
   nome: Malai Manso Resort All Inclusive
   ordem: 30
   destino: Chapada dos Guimarães
   uf: MT
+  foto: rede/malai-manso-resort.jpg
 
 marsol-beach-resort:
   nome: Marsol Beach Resort All Inclusive
   ordem: 31
   destino: Natal
   uf: RN
+  foto: rede/marsol-beach-resort.jpg
 
 marupiara-resort:
   nome: Marupiara Resort All Inclusive
   ordem: 32
   destino: Porto de Galinhas
   uf: PE
+  foto: rede/marupiara-resort.jpg
 
 mavsa-resort:
   nome: Mavsa Resort All Inclusive
   ordem: 33
   destino: Cesário Lange
   uf: SP
+  foto: rede/mavsa-resort.jpg
 
 nauticomar-resort:
   nome: Nauticomar Resort All Inclusive
   ordem: 34
   destino: Porto Seguro
   uf: BA
+  foto: rede/nauticomar-resort.jpg
 
 ocapora-hotel:
   nome: Ocaporã Hotel All Inclusive
   ordem: 35
   destino: Porto de Galinhas
   uf: PE
+  foto: rede/ocapora-hotel.jpg
 
 ocean-palace-beach-resort:
   nome: Ocean Palace Beach Resort All Inclusive
   ordem: 36
   destino: Natal
   uf: RN
+  foto: rede/ocean-palace-beach-resort.jpg
 
 porto-seguro-praia-resort:
   nome: Porto Seguro Praia Resort All Inclusive
   ordem: 37
   destino: Porto Seguro
   uf: BA
+  foto: rede/porto-seguro-praia-resort.jpg
 
 pratagy-beach-resort:
   nome: Pratagy Beach Resort All Inclusive
   ordem: 38
   destino: Maceió
   uf: AL
+  foto: rede/pratagy-beach-resort.jpg
 
 resort-recanto-do-teixeira:
   nome: Resort Recanto do Teixeira All Inclusive
   ordem: 39
   destino: Nazaré Paulista
   uf: SP
+  foto: rede/resort-recanto-do-teixeira.jpg
 
 salinas-maceio-beach-resort:
   nome: Salinas Maceió Beach Resort All Inclusive
   ordem: 40
   destino: Maceió
   uf: AL
+  foto: rede/salinas-maceio-beach-resort.jpg
 
 salinas-maragogi-resort:
   nome: Salinas Maragogi Resort
   ordem: 41
   destino: Maragogi
   uf: AL
+  foto: rede/salinas-maragogi-resort.jpg
 
 sauipe-brisa:
   nome: Sauipe Brisa Grand Premium All Inclusive
@@ -295,12 +328,14 @@ serhs-natal-grand-hotel:
   ordem: 46
   destino: Natal
   uf: RN
+  foto: rede/serhs-natal-grand-hotel.jpg
 
 the-westin-porto-de-galinhas:
   nome: The Westin Porto de Galinhas All Inclusive
   ordem: 47
   destino: Porto de Galinhas
   uf: PE
+  foto: rede/the-westin-porto-de-galinhas.jpg
 
 thermas-resort:
   nome: Thermas Resort All Inclusive
@@ -319,6 +354,7 @@ vila-gale-eco-resort-de-angra:
   ordem: 50
   destino: Angra dos Reis
   uf: RJ
+  foto: rede/vila-gale-eco-resort-de-angra.jpg
 
 vilage-inn-all-inclusive:
   nome: Vilage Inn All Inclusive
@@ -331,3 +367,4 @@ wish-natal-resort:
   ordem: 52
   destino: Natal
   uf: RN
+  foto: rede/wish-natal-resort.jpg

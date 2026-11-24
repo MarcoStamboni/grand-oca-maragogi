@@ -42,7 +42,7 @@ export const documentosCheckIn: readonly string[] = [
 export const regrasMenores: readonly string[] = [
   'Menores de 18 anos só se hospedam acompanhados dos pais ou de um responsável legal.',
   'Com outro adulto, é preciso autorização expressa dos pais ou do responsável legal. Confirme com a equipe o modelo exigido antes de viajar.',
-  'Toda criança apresenta documento que comprove a identidade e a filiação, como a certidão de nascimento ou o RG.',
+  'Toda criança deve apresentar documento que comprove a identidade e a filiação, como a certidão de nascimento ou o RG.',
   'Bebidas alcoólicas não são servidas a menores de 18 anos, como manda a lei.',
 ];
 
@@ -75,7 +75,7 @@ export const conferirAntesDeReservar: readonly { titulo: string; texto: string }
   {
     titulo: 'O que está incluso',
     texto:
-      'Refeições, bebidas, piscinas, aventura e recreação estão na diária; spa, esportes náuticos, passeios e traslado são pagos à parte.',
+      'Refeições, bebidas, piscinas e recreação estão na diária; spa, salão de beleza, mergulho, passeios e traslado são pagos à parte.',
   },
   {
     titulo: 'Documentos dos hóspedes',

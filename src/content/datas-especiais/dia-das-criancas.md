@@ -16,7 +16,7 @@ destaques:
 seo:
   titulo: Dia das Crianças no Grand Oca
   descricao: 'Dia das Crianças no Grand Oca Maragogi: Kids Club, parque aquático e programação infantil em Maragogi.'
-respostaDireta: 'O Dia das Crianças, em 12 de outubro, é um feriado muito procurado por famílias, e o Grand Oca Maragogi tem estrutura para isso: Kids Club para crianças de 4 a 12 anos, parque aquático com toboágua, playground e baby area. A procura sobe quando a data cai perto de um fim de semana.'
+respostaDireta: 'O Dia das Crianças, em 12 de outubro, é um feriado muito procurado por famílias, e o Grand Oca Maragogi tem estrutura para recebê-las: Kids Club para crianças de 4 a 12 anos, parque aquático com toboágua, playground e baby area. A procura sobe quando a data cai perto de um fim de semana.'
 fotos:
   - grand-oca/criancas/parque-aquatico-torre.jpg
 fontes:

@@ -20,7 +20,7 @@ export const rotasDeAcesso: readonly { titulo: string; descricao: string }[] = [
   {
     titulo: 'Saindo de Maceió',
     descricao:
-      'São cerca de 136 km pelo litoral norte de Alagoas até Ponta de Mangue. O aeroporto de Maceió (MCZ) pode ser a melhor escolha quando o voo ou o roteiro favorecem.',
+      'São cerca de 136 km pelo litoral norte de Alagoas até Ponta de Mangue. O aeroporto de Maceió (MCZ) pode ser a melhor escolha, dependendo dos horários de voo e do roteiro.',
   },
 ];
 
@@ -34,7 +34,7 @@ export const transportes: readonly { nome: string; descricao: string; icone: Nom
   {
     nome: 'Carro alugado ou táxi',
     descricao:
-      'Dá liberdade para conhecer as praias e as piscinas naturais de Maragogi. O resort fica a uma distância do centro que normalmente exige transporte.',
+      'Dá liberdade para conhecer as praias e as piscinas naturais de Maragogi. A distância entre o resort e o centro normalmente exige transporte.',
     icone: 'carro',
   },
 ];

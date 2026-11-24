@@ -44,6 +44,22 @@ describe.each(
     const invalidos = lista.filter((item) => !destinoExiste(item.para, operador));
     expect(invalidos).toEqual([]);
   });
+
+  it('deixam as regras de seção inteira (prefixo) depois das exatas', () => {
+    const primeiro = lista.findIndex((item) => item.prefixo);
+    if (primeiro < 0) return;
+    expect(lista.slice(primeiro).every((item) => item.prefixo === true)).toBe(true);
+  });
+
+  it('não têm prefixo que engula uma página do site novo', () => {
+    const prefixos = lista.filter((item) => item.prefixo).map((item) => item.de);
+    const engolidas = chavesRotas
+      .map((chave) => rotas[chave].caminho)
+      .filter((caminho) =>
+        prefixos.some((prefixo) => caminho === `${prefixo}/` || caminho.startsWith(`${prefixo}/`)),
+      );
+    expect(engolidas).toEqual([]);
+  });
 });
 
 describe('arquivos do servidor', () => {
@@ -60,5 +76,13 @@ describe('arquivos do servidor', () => {
     const redirects = gerarRedirects(exemplo);
     expect(redirects).not.toMatch(/^\/quem-somos\/\s+\/quem-somos\/\s+301$/m);
     expect(redirects).toContain('/pre%C3%A7os-resort  /reservas/  301');
+  });
+
+  it('geram regra de seção inteira quando o redirecionamento é de prefixo', () => {
+    const secao = [{ de: '/post', para: '/blog/', prefixo: true }] as const;
+    expect(gerarHtaccess(secao)).toContain('RewriteRule ^post(/.*)?$ /blog/ [R=301,L,NC]');
+    const redirects = gerarRedirects(secao);
+    expect(redirects).toContain('/post/*  /blog/  301');
+    expect(redirects).toContain('/post  /blog/  301');
   });
 });

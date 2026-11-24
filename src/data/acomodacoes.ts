@@ -1,6 +1,6 @@
 /**
  * Informações comuns às acomodações. Os dados de cada categoria ficam na coleção `acomodacoes`.
- * Só entram itens que a fonte confirma para todas as categorias (as 10 acomodações do Grand Oca Maragogi):
+ * Só entram itens que a fonte confirma para todas as categorias (as nove categorias de acomodação do Grand Oca Maragogi):
  * a fonte não lista comodidades comuns a todas, então as listas ficam vazias.
  */
 

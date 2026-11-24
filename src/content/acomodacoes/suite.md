@@ -2,11 +2,11 @@
 nome: Suíte
 artigo: a
 ordem: 6
-resumo: Suíte no andar superior, com sala, quarto e banheiro em mármore, cama king e vista para a piscina e parcial para a praia, uma das duas do resort.
+resumo: Suíte no andar superior, uma das duas unidades do resort, com sala, quarto e banheiro em mármore, cama king e vista para a piscina e parcial para a praia.
 seo:
   titulo: Suíte
-  descricao: 'Suíte do Grand Oca Maragogi: cama king, sala, quarto e banheiro e vista parcial para a Praia de Ponta de Mangue.'
-respostaDireta: A Suíte do Grand Oca Maragogi é uma das duas unidades do andar superior, perto da piscina central, com cama king size, sala, quarto e banheiro em mármore com chuveiro separado. Tem vista para a piscina e parcial para a Praia de Ponta de Mangue, Smart TV de 50 polegadas e frigobar com serviço premium.
+  descricao: 'Suíte do Grand Oca Maragogi: cama king, sala, quarto e banheiro, além de vista parcial para a Praia de Ponta de Mangue.'
+respostaDireta: A Suíte do Grand Oca Maragogi é uma das duas unidades do andar superior, perto da piscina central, com cama king size, sala, quarto e banheiro em mármore, com chuveiro separado. Tem vista para a piscina e parcial para a Praia de Ponta de Mangue, Smart TV de 50 polegadas e frigobar com serviço premium.
 premium: true
 quantidade: 2
 ambientes: 3

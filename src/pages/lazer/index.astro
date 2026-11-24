@@ -37,7 +37,9 @@ const atalhos: { rota: RotaChave; foto: string; descricao: string }[] = [
   },
   {
     rota: 'esportes',
-    foto: 'grand-oca/resort/jardim-cabanas-coqueiral.jpg',
+    // A academia, e não os jardins: esta página já usa a foto dos jardins na capa, e a mesma
+    // foto duas vezes pesa no carregamento sem acrescentar nada.
+    foto: 'grand-oca/lazer/academia.jpg',
     descricao:
       'Caiaque, vôlei, beach tênis, futebol, hidro, academia e mergulho na Costa dos Corais.',
   },

@@ -143,10 +143,11 @@ export const dominio = {
   /**
    * Endereço de teste (homologação): links e sitemap com o domínio real, mas fora dos buscadores
    * (robots.txt bloqueia e as páginas levam noindex). Use `false` no endereço definitivo.
-   * Em teste até a troca do site atual (Wix) por este: com `true`, o site fica fora dos buscadores.
-   * Ao publicar no endereço definitivo, mude para `false`.
+   * Liberado para os buscadores em 24/11/2026, com os 301 do site anterior (Wix) mapeados e
+   * conferidos — ver docs/redirecionamentos-301.md. A partir daqui, o que for enviado à
+   * hospedagem entra no Google: só suba quando for para trocar o site que está no ar.
    */
-  teste: true,
+  teste: false,
   /**
    * Endereço de validação do parceiro (sem https). O site abre nele, mas o .htaccess manda
    * "noindex" só para esse host; no domínio oficial nada muda. `null` = sem validação.
@@ -186,6 +187,32 @@ export const blackFriday = {
   cta: 'Ver hospedagens',
   /** Página de reserva de hospedagem (rota `reservasHospedagem`). */
   ctaHref: '/reservas/hospedagem/',
+  /**
+   * Pop-up da campanha (PopupBlackFriday.astro): a arte da Black Friday da agência, com o botão
+   * de reserva sobre a faixa vazia do meio. `botaoTopoPct` é a posição do centro do botão na
+   * arte, em % da altura: a faixa vazia vai de 68% a 90%. Tempos em segundos.
+   * O cupom PARTIUBLACK e os 7% no Pix da arte valem para o Grand Oca Maragogi (confirmado pelo
+   * cliente em 24/11/2026). São condições da campanha; fora dela, o site segue com os 5% no Pix
+   * de `operador.reservas.pagamento`.
+   */
+  popup: {
+    ativo: true,
+    /**
+     * Arte em public/ (900×1200): não passa pelo pipeline de imagens do site. Reduzida do
+     * original de 1086×1448 (237 kB → 104 kB) em 24/11/2026, para não pesar no PageSpeed; o
+     * original fica em scripts/campanhas/black-friday-original.webp.
+     */
+    imagem: '/campanhas/black-friday.webp',
+    largura: 900,
+    altura: 1200,
+    alt: 'Black Friday no Grand Oca Maragogi Resort: cupom PARTIUBLACK, Pix com 7% de desconto e parcelamento em até 10x sem juros. Oferta válida até 30/11 ou enquanto houver disponibilidade.',
+    cta: 'Quero reservar',
+    /** Hub de reservas, na âncora das modalidades (rota `reservas`). */
+    ctaHref: '/reservas/#modalidades',
+    botaoTopoPct: 78,
+    segundosParaAbrir: 3,
+    segundosParaReabrir: 20,
+  },
 } as const;
 
 /** Indexação liberada só com o domínio definido, fora do teste e fora do modo modelo. */

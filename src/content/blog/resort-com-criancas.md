@@ -27,7 +27,7 @@ O parque aquático tem toboágua e áreas rasas, e as piscinas do resort variam 
 
 ## Que acomodação escolher para a família?
 
-Para quem viaja em três, o Apartamento Standard e o Bangalô Triplo funcionam bem. Para quatro ou cinco pessoas, o Duplo Deluxe com Sofá-cama acomoda até cinco. Famílias maiores encontram o Standard Comunicante, para até seis hóspedes em dois quartos, e a Suíte Deluxe. Informe a idade de cada criança na cotação, porque ela muda a tarifa.
+Para quem viaja em três, o Apartamento Standard e o Bangalô Triplo funcionam bem. Para quatro ou cinco pessoas, há o Duplo Deluxe com Sofá-cama. Famílias maiores encontram o Standard Comunicante, para até seis hóspedes em dois quartos, e a Suíte Deluxe. Informe a idade de cada criança na cotação, porque a idade muda a tarifa.
 
 ## Há estrutura para bebês?
 

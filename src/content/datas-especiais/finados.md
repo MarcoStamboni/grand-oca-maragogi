@@ -15,7 +15,7 @@ destaques:
 seo:
   titulo: Finados no Grand Oca
   descricao: 'Finados no Grand Oca Maragogi: feriado de 2 de novembro com praia, piscinas e all inclusive em Maragogi.'
-respostaDireta: O feriado de Finados, em 2 de novembro, costuma formar boas pontes com o fim de semana, e o Grand Oca Maragogi, em Maragogi, é uma opção para descansar na praia de Ponta de Mangue e nas piscinas. As tarifas e a disponibilidade mudam conforme a data e a antecedência da reserva.
+respostaDireta: O feriado de Finados, em 2 de novembro, costuma formar boas pontes com o fim de semana, e o Grand Oca Maragogi é uma opção para descansar na praia de Ponta de Mangue e nas piscinas. As tarifas e a disponibilidade mudam conforme a data e a antecedência da reserva.
 fotos:
   - grand-oca/resort/cabana-gramado.jpg
 fontes:

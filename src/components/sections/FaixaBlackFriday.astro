@@ -1,7 +1,9 @@
 ---
 /**
  * Faixa preta da Black Friday no topo do cabeçalho (padrão do site hoteisemolimpia.com.br):
- * selo amarelo, chamada, relógio d/h/m/s e o link "Ver hospedagens" à direita. Antes do início,
+ * selo amarelo, chamada, relógio d/h/m/s e o link "Ver hospedagens" à direita. O selo e o link
+ * abrem o pop-up da campanha (PopupBlackFriday, pelo atributo `data-bf-popup-abrir`); sem
+ * JavaScript, os dois continuam levando à página de hospedagem. Antes do início,
  * conta até o começo das ofertas; durante a campanha, mostra a frase `depois` e conta até o fim;
  * depois do fim, some. Enquanto a faixa está visível, o cabeçalho, os submenus e o menu do
  * celular ficam pretos (#0B0B0B), com letras e logos brancas (estilos abaixo).
@@ -32,7 +34,9 @@ const unidades = ['d', 'h', 'm', 's'] as const;
     data-chamada-fim={blackFriday.chamadaFim}
   >
     <div class="container-site bf-in">
-      <span class="bf-selo">{blackFriday.rotulo}</span>
+      <a class="bf-selo" href={blackFriday.ctaHref} data-bf-popup-abrir>
+        {blackFriday.rotulo}
+      </a>
       <p class="sr-only">
         {`Black Friday: as ofertas começam em ${dataInicio} e vão até ${dataFim}.`}
       </p>
@@ -54,7 +58,7 @@ const unidades = ['d', 'h', 'm', 's'] as const;
           </>
         ))}
       </span>
-      <a class="bf-cta" href={blackFriday.ctaHref}>
+      <a class="bf-cta" href={blackFriday.ctaHref} data-bf-popup-abrir>
         {blackFriday.cta}
       </a>
     </div>
@@ -107,6 +111,12 @@ const unidades = ['d', 'h', 'm', 's'] as const;
     font-weight: 700;
     letter-spacing: 0.1em;
     text-transform: uppercase;
+    text-decoration: none;
+  }
+  .bf-selo:hover {
+    background: #fff;
+    color: #111;
+    text-decoration: none;
   }
   .bf-txt {
     opacity: 0.8;

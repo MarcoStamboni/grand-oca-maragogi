@@ -15,6 +15,16 @@ O site tem 72 fotos reais, sem pessoas, com o filtro Vibrance (0,8) aplicado em
   restaurantes (Corais, Il Giardino, La Brasa), bar noturno, academia, parque aquático e paisagens.
 - A pasta `_Com_Humanos` (46 fotos) não foi usada.
 
+## Fotos dos outros resorts (`rede/*`)
+
+Não são fotos do Grand Oca: ilustram só os cartões da página Outros resorts e o carrossel da home.
+São 40 (`src/assets/imagens/rede/`, com o alt em `imagens.yaml` e a chave `foto:` em
+`src/content/outros-resorts/outros-resorts.yaml`). As 33 que entraram em 24/11/2026 são as capas dos
+sites da rede feitos pela agência, reduzidas para 1600 px; ficam direto na pasta `rede/` e não passam
+pelo `imagens:preparar`. Continuam sem foto (cartão com o fundo azul da marca): Costeira Palace,
+Fazzenda Park, Hotel Parque das Fontes, os quatro Sauípe, Thermas, Transamerica Comandatuba e
+Vilage Inn.
+
 ## Acomodações por categoria
 
 | Categoria            | Fotos                                                    |

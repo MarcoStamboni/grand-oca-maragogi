@@ -55,10 +55,58 @@ export async function faqDaPagina(chave: string): Promise<ItemFaq[]> {
   return [...proprias, ...gerais].map(paraItem);
 }
 
-/** Todas as perguntas, agrupadas por tema (na ordem de `titulosTemas`). */
-export async function faqPorTema(): Promise<
-  { tema: TemaFaq; titulo: string; introducao: string; itens: ItemFaq[] }[]
-> {
+/**
+ * Quantas perguntas cada tema mostra na página central. As demais continuam publicadas na página
+ * do assunto de cada uma (toda pergunta pertence a uma página do site). Sem esse limite, a página
+ * central juntaria as centenas de perguntas do site inteiro num documento só: pesado de carregar
+ * no celular e difícil de percorrer.
+ */
+export const PERGUNTAS_POR_TEMA = 20;
+
+/** Página que reúne o assunto de cada tema ("ver todas as perguntas sobre..."). */
+export const paginaDoTema: Record<TemaFaq, string> = {
+  resort: '/o-resort/',
+  localizacao: '/como-chegar/',
+  hospedagem: '/acomodacoes/',
+  'all-inclusive': '/all-inclusive/',
+  lazer: '/lazer/',
+  reservas: '/reservas/',
+  destino: `/${resort.destino.slug}/`,
+};
+
+/**
+ * O tema no meio da frase ("mais 32 perguntas sobre o resort"). É escrito à mão, e não derivado
+ * do título: o do destino é nome próprio e mantém a maiúscula.
+ */
+export const rotuloDoTema: Record<TemaFaq, string> = {
+  resort: 'o resort',
+  localizacao: 'localização e como chegar',
+  hospedagem: 'hospedagem e acomodações',
+  'all-inclusive': 'all inclusive e gastronomia',
+  lazer: 'lazer e crianças',
+  reservas: 'reservas e políticas',
+  destino: resort.destino.nome,
+};
+
+export interface GrupoFaq {
+  tema: TemaFaq;
+  titulo: string;
+  introducao: string;
+  itens: ItemFaq[];
+  /** Quantas perguntas o tema tem no site inteiro (pode ser mais do que as exibidas aqui). */
+  total: number;
+  /** Página do assunto, para quem quiser as outras perguntas do tema. */
+  pagina: string;
+  /** O tema no meio da frase ("perguntas sobre o resort"). */
+  rotulo: string;
+}
+
+/**
+ * Perguntas da página central, agrupadas por tema (na ordem de `titulosTemas`) e limitadas a
+ * `PERGUNTAS_POR_TEMA`. Vêm primeiro as que não aparecem em nenhuma outra página do site, para
+ * nenhuma resposta ficar fora do ar.
+ */
+export async function faqPorTema(): Promise<GrupoFaq[]> {
   // Sem repetir a mesma pergunta (o mesmo texto pode servir a páginas diferentes).
   const vistas = new Set<string>();
   const todas = (await getCollection('faq')).sort(porOrdem).filter(({ data }) => {
@@ -67,12 +115,22 @@ export async function faqPorTema(): Promise<
     vistas.add(chave);
     return true;
   });
+  /** Só na página central: não entra em nenhuma página de assunto. */
+  const soNaCentral = ({ data }: CollectionEntry<'faq'>) =>
+    data.paginas.length === 1 && data.paginas[0] === 'perguntasFrequentes';
   return (Object.keys(titulosTemas) as TemaFaq[])
-    .map((tema) => ({
-      tema,
-      titulo: titulosTemas[tema],
-      introducao: introducoesTemas[tema],
-      itens: todas.filter((item) => item.data.tema === tema).map(paraItem),
-    }))
+    .map((tema) => {
+      const doTema = todas.filter((item) => item.data.tema === tema);
+      const ordenadas = [...doTema.filter(soNaCentral), ...doTema.filter((i) => !soNaCentral(i))];
+      return {
+        tema,
+        titulo: titulosTemas[tema],
+        introducao: introducoesTemas[tema],
+        itens: ordenadas.slice(0, PERGUNTAS_POR_TEMA).map(paraItem),
+        total: doTema.length,
+        pagina: paginaDoTema[tema],
+        rotulo: rotuloDoTema[tema],
+      };
+    })
     .filter((grupo) => grupo.itens.length > 0);
 }

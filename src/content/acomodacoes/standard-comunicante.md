@@ -2,7 +2,7 @@
 nome: Standard Comunicante
 artigo: o
 ordem: 2
-resumo: Dois quartos interligados, com duas varandas e dois banheiros, para grupos grandes e famílias numerosas que querem ficar juntas, com privacidade.
+resumo: Dois quartos interligados, com duas varandas e dois banheiros, para grupos e famílias numerosas que querem ficar juntos, com privacidade.
 seo:
   titulo: Standard Comunicante
   descricao: 'Standard Comunicante do Grand Oca Maragogi: dois quartos interligados, duas varandas e dois banheiros, para até 6 hóspedes.'

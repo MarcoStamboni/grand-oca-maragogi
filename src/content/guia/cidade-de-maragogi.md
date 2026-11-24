@@ -10,7 +10,7 @@ secoes:
   - tema: História
     pergunta: Como era Maragogi antes do turismo?
     fatos:
-      - texto: Maragogi era uma vila de pescadores, com a pesca e a agricultura, em especial a cana-de-açúcar, como principais fontes de recursos.
+      - texto: Maragogi era uma vila de pescadores, com a pesca e a agricultura, em especial a cana-de-açúcar, como as principais fontes de recursos.
         fonte: /pt/hoteis/hotel-grand-oca-maragogi-beach-leisure-resort/entorno
       - texto: Hoje o turismo é a principal atividade da região, e a cidade é a segunda mais turística de Alagoas, atrás de Maceió.
         fonte: /pt/hoteis/hotel-grand-oca-maragogi-beach-leisure-resort/entorno
@@ -27,11 +27,11 @@ secoes:
       - texto: O Carnaval é a festa mais importante da cidade, com bailes, frevo e desfiles pelas ruas de Maragogi.
         fonte: /pt/hoteis/hotel-grand-oca-maragogi-beach-leisure-resort/entorno
   - tema: Distâncias
-    pergunta: Qual a distância de Maragogi até as capitais próximas?
+    pergunta: Qual é a distância de Maragogi até as capitais próximas?
     fatos:
       - texto: O resort informa Recife a 126 km, Maceió a 136 km e Caruaru a 153 km.
         fonte: /pt/hoteis/hotel-grand-oca-maragogi-beach-leisure-resort
-      - texto: O Grand Oca Maragogi fica em Ponta de Mangue, ao norte do centro da cidade, e normalmente é preciso usar algum transporte para ir até lá.
+      - texto: O Grand Oca Maragogi fica em Ponta de Mangue, ao norte do centro da cidade, e normalmente é preciso usar algum transporte para ir até o centro.
         fonte: /pt/hoteis/hotel-grand-oca-maragogi-beach-leisure-resort
 fotos:
   - grand-oca/resort/praia-areia-ampla.jpg

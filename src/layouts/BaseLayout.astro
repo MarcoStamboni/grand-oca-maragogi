@@ -15,6 +15,7 @@ import AvisoCookies from '@/components/sections/AvisoCookies.astro';
 import BarraAcoesMobile from '@/components/sections/BarraAcoesMobile.astro';
 import Footer from '@/components/sections/Footer.astro';
 import Header from '@/components/sections/Header.astro';
+import PopupBlackFriday from '@/components/sections/PopupBlackFriday.astro';
 import JsonLd from '@/components/seo/JsonLd.astro';
 import SEO from '@/components/seo/SEO.astro';
 import FaixaModelo from '@/components/ui/FaixaModelo.astro';
@@ -22,7 +23,7 @@ import VoltarTopo from '@/components/ui/VoltarTopo.astro';
 import WhatsAppFlutuante from '@/components/ui/WhatsAppFlutuante.astro';
 import type { RotaChave } from '@/data/rotas';
 import { analytics } from '@/lib/ambiente';
-import type { ImagemResolvida } from '@/lib/imagens';
+import { type ImagemResolvida, preloadDaCapa } from '@/lib/imagens';
 import type { Link } from '@/lib/navegacao';
 import type { OpcoesDadosEstruturados } from '@/lib/schema';
 import { descricaoComReservas } from '@/lib/seo';
@@ -38,6 +39,11 @@ export interface Props {
   semIndice?: boolean;
   /** Imagem de compartilhamento (padrão: vista aérea do resort). */
   imagemSocial?: ImagemResolvida;
+  /**
+   * Foto de capa da página (topo em tela cheia). Entra num `<link rel="preload">`: é ela que
+   * costuma ser o maior elemento da primeira tela (LCP). `undefined` = página sem capa.
+   */
+  imagemCapa?: ImagemResolvida;
   tipoOg?: 'website' | 'article';
   atualizadoEm?: Date;
   /** Caminho canônico, quando diferente da URL atual. */
@@ -56,6 +62,7 @@ const {
   descricao,
   semIndice = false,
   imagemSocial,
+  imagemCapa,
   tipoOg,
   atualizadoEm,
   caminhoCanonico,
@@ -66,6 +73,7 @@ const {
 const tituloCompleto = tituloAbsoluto ? titulo : site.modeloTitulo.replace('%s', titulo);
 // Toda descrição termina com a central de reservas ("... Reservas 0800 737 6787").
 const descricaoCompleta = descricaoComReservas(descricao, site.fimDescricao);
+const preloadCapa = await preloadDaCapa(imagemCapa);
 ---
 
 <!doctype html>
@@ -112,6 +120,16 @@ const descricaoCompleta = descricaoComReservas(descricao, site.fimDescricao);
     <link rel="manifest" href="/site.webmanifest" />
     <Font cssVariable="--font-poppins" preload={[{ weight: 300 }, { weight: 700 }]} />
     <Font cssVariable="--font-marca" preload />
+    {preloadCapa && (
+      <link
+        rel="preload"
+        as="image"
+        href={preloadCapa.href}
+        imagesrcset={preloadCapa.srcset}
+        imagesizes={preloadCapa.sizes}
+        fetchpriority="high"
+      />
+    )}
     <slot name="head" />
   </head>
   <body
@@ -134,6 +152,7 @@ const descricaoCompleta = descricaoComReservas(descricao, site.fimDescricao);
     <BarraAcoesMobile />
     <WhatsAppFlutuante />
     <VoltarTopo />
+    <PopupBlackFriday />
     <script>
       import '@/scripts/movimento';
     </script>

@@ -15,7 +15,7 @@ destaques:
 seo:
   titulo: Tiradentes no Grand Oca
   descricao: 'Tiradentes no Grand Oca Maragogi: escapada curta de feriado em Maragogi, com praia, piscinas e all inclusive.'
-respostaDireta: O feriado de Tiradentes, em 21 de abril, pode render uma escapada curta ao Grand Oca Maragogi, em Maragogi. Quando a data cai perto de um fim de semana, o período forma um feriado prolongado, com praia, piscinas e all inclusive em um só lugar. Vale conferir a disponibilidade com antecedência.
+respostaDireta: O feriado de Tiradentes, em 21 de abril, pode render uma escapada curta ao Grand Oca Maragogi. Quando a data cai perto de um fim de semana, o período forma um feriado prolongado, com praia, piscinas e all inclusive em um só lugar. Vale conferir a disponibilidade com antecedência.
 fotos:
   - grand-oca/resort/praia-coqueiral.jpg
 fontes:

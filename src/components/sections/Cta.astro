@@ -2,7 +2,8 @@
 /**
  * Chamada final (CTA duplo): consultar tarifas + WhatsApp, lidos do operador ativo.
  * Nunca aponta para a própria página (erro comum do site de referência).
- * Visual (Grand Oca): foto de fundo decorativa com véu azul-marinho e entrada ao rolar.
+ * Visual (Grand Oca): foto de fundo decorativa com véu azul-marinho e entrada ao rolar. Embaixo,
+ * a foto se dissolve em degradê na cor do rodapé, que vem logo depois (PaginaLayout).
  */
 import Botao from '@/components/ui/Botao.astro';
 import Imagem from '@/components/ui/Imagem.astro';
@@ -37,6 +38,12 @@ const fundo = await obterImagem('grand-oca/resort/praia-coqueiral.jpg');
   </div>
   <div
     class="absolute inset-0 -z-10 bg-linear-to-r from-black/80 via-black/50 to-transparent"
+    aria-hidden="true"
+  />
+  {/* Degradê para o rodapé: a foto se dissolve no azul-marinho do rodapé (bg-mar-950, em
+       Footer.astro), sem linha de corte entre a chamada e o rodapé. */}
+  <div
+    class="from-mar-950 via-mar-950/60 absolute inset-x-0 bottom-0 -z-10 h-3/5 bg-linear-to-t to-transparent"
     aria-hidden="true"
   />
   <div class="container-site py-24 sm:py-32" data-revelar>

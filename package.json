@@ -19,6 +19,7 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "verify": "npm run check && npm run lint && npm run format:check && npm run test && npm run build",
+    "publicar": "node scripts/publicar.ts",
     "test": "vitest run",
     "imagens:baixar": "node scripts/imagens/baixar.ts",
     "imagens:folhas": "node scripts/imagens/folhas.ts",

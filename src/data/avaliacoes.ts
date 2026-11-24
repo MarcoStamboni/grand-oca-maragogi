@@ -20,4 +20,4 @@ export const avaliacoes: readonly Avaliacao[] = [];
 
 /** Aspectos que mais pesam na avaliação (texto do cartão azul). */
 export const aspectosAvaliados =
-  'Natureza, estrutura de lazer, piscinas, atividades de aventura, gastronomia, atendimento, limpeza e experiência com crianças estão entre os pontos mais comentados por quem se hospeda.';
+  'Localização na praia, estrutura de lazer, piscinas, gastronomia, atendimento, limpeza e experiência com crianças estão entre os pontos mais comentados por quem se hospeda.';

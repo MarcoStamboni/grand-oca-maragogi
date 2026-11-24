@@ -15,19 +15,19 @@ relacionadas:
   - reservasHospedagem
 ---
 
-O Grand Oca Maragogi Resort tem 420 unidades de hospedagem em nove categorias, todas dentro de uma grande área de jardins e coqueiros, com vista para a piscina ou para o verde. A escolha fica mais simples quando se separam três perguntas: quantas pessoas viajam, qual vista agrada mais e quanto espaço é preciso.
+O Grand Oca Maragogi Resort tem 420 unidades de hospedagem em nove categorias, todas dentro de uma grande área de jardins e coqueiros, com vista para a piscina ou para o verde. A escolha fica mais simples quando se divide a decisão em três perguntas: quantas pessoas viajam, qual vista agrada mais e quanto espaço é preciso.
 
 ## Quantas pessoas viajam?
 
-O Apartamento Standard e o Bangalô Triplo recebem até três hóspedes, e o Bangalô, dois adultos, com bebê em berço. O Standard Comunicante chega a seis, em dois quartos e dois banheiros. Na área D’Água, o Duplo Deluxe com Sofá-cama recebe até cinco hóspedes, e a Suíte Deluxe, até seis, com no máximo quatro adultos e duas crianças.
+O Apartamento Standard e o Bangalô Triplo recebem até três hóspedes, e o Bangalô acomoda dois adultos, com a opção de um bebê em berço. O Standard Comunicante chega a seis, em dois quartos e dois banheiros. Na área D’Água, o Duplo Deluxe com Sofá-cama recebe até cinco hóspedes, e a Suíte Deluxe, até seis, com no máximo quatro adultos e duas crianças.
 
 ## Vista para o jardim ou para a piscina?
 
-Os apartamentos Standard e os bangalôs vista jardim ficam voltados para o verde e para o coqueiral, em um clima mais reservado. Os bangalôs vista piscina e os quartos Deluxe olham para a água. A Suíte, apenas duas unidades no andar superior, tem vista para a piscina e parcial para a Praia de Ponta de Mangue.
+Os apartamentos Standard e os bangalôs vista jardim ficam voltados para o verde e para o coqueiral, em um clima mais reservado. Os bangalôs vista piscina e os quartos Deluxe olham para a água. A Suíte, com apenas duas unidades no andar superior, tem vista para a piscina e parcial para a Praia de Ponta de Mangue.
 
 ## Quanto espaço é preciso?
 
-O Duplo Deluxe tem 50 m², e a Suíte Deluxe, com 72 m², é a maior do resort, com sala de estar e cafeteira Nespresso. Vale lembrar que o resort não informa a metragem de várias categorias, como o Standard, o Standard Comunicante, os bangalôs e as Suítes.
+O Duplo Deluxe tem 50 m², e a Suíte Deluxe, com 72 m², é a maior do resort, com sala de estar e cafeteira Nespresso. Vale lembrar que o resort não informa a metragem de várias categorias, como o Standard, o Standard Comunicante, os bangalôs e a Suíte.
 
 ## E se alguém tiver mobilidade reduzida?
 
