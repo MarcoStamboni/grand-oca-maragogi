@@ -4,9 +4,11 @@
  * botão "Quero reservar" sobre a faixa vazia do meio da imagem — a arte é desenhada com esse
  * espaço livre, de 68% a 90% da altura (`blackFriday.popup.botaoTopoPct`).
  *
- * Abre sozinho alguns segundos depois de a página carregar e, depois de fechado, volta a cada
- * X segundos (`segundosParaAbrir` e `segundosParaReabrir`, em src/site.config.ts). Os dois
- * gatilhos da faixa do topo ([data-bf-popup-abrir]) também abrem o pop-up, em vez de navegar.
+ * Abre sozinho alguns segundos depois de a página carregar (`segundosParaAbrir`, em
+ * src/site.config.ts). Depois de fechado, só volta se `segundosParaReabrir` for maior que zero;
+ * com 0, quem fechou não vê mais o pop-up abrir sozinho, nem ao trocar de página, nem numa visita
+ * seguinte. Os dois gatilhos da faixa do topo ([data-bf-popup-abrir]) continuam abrindo o pop-up
+ * quando a pessoa clica neles, em vez de navegar.
  *
  * Usa a Popover API: fecha no X, no Esc e no clique fora. Nasce com `display:none` e só é
  * liberado pelo script quando o navegador tem `showPopover`: sem JavaScript (ou sem suporte),
@@ -58,6 +60,7 @@ const ID = 'popup-black-friday';
         href={popup.ctaHref}
         class:list={[classesBotao('verde', 'lg'), 'w-full shadow-flutuante']}
         data-evento="clique_popup_black_friday"
+        data-bf-popup-cta
       >
         {popup.cta}
         <span
@@ -113,12 +116,37 @@ const ID = 'popup-black-friday';
     if (document.readyState === 'complete') prepararArte();
     else window.addEventListener('load', prepararArte, { once: true });
 
+    /** Milissegundos de um tempo em segundos. Aceita 0 (ver `naoReabre`). */
     const segundos = (valor: string | undefined, padrao: number) => {
       const numero = Number(valor);
-      return Number.isFinite(numero) && numero > 0 ? numero * 1000 : padrao * 1000;
+      return Number.isFinite(numero) && numero >= 0 ? numero * 1000 : padrao * 1000;
     };
-    const esperaInicial = segundos(popup.dataset['abrir'], 3);
-    const esperaVolta = segundos(popup.dataset['reabrir'], 20);
+    const esperaInicial = segundos(popup.dataset['abrir'], 5);
+    const esperaVolta = segundos(popup.dataset['reabrir'], 0);
+    /** `segundosParaReabrir: 0`: quem fechou não vê o pop-up abrir sozinho nunca mais. */
+    const naoReabre = esperaVolta === 0;
+
+    /*
+     * A escolha de quem fechou fica no navegador, então vale também ao trocar de página e numa
+     * visita depois. Em janela anônima ou com o armazenamento bloqueado, o localStorage lança
+     * erro: nesse caso o pop-up volta a se comportar como se fosse a primeira visita.
+     */
+    const CHAVE_FECHADO = 'grand-oca:bf-popup-fechado';
+    const jaFechou = () => {
+      try {
+        return localStorage.getItem(CHAVE_FECHADO) === '1';
+      } catch {
+        return false;
+      }
+    };
+    const guardarQueFechou = () => {
+      try {
+        localStorage.setItem(CHAVE_FECHADO, '1');
+      } catch {
+        // Armazenamento indisponível: só não guarda a escolha.
+      }
+    };
+
     let temporizador = 0;
 
     const abrirAgora = () => {
@@ -127,8 +155,8 @@ const ID = 'popup-black-friday';
       try {
         popup.showPopover();
       } catch {
-        // Outra janela (popover) aberta na frente: tenta de novo no próximo intervalo.
-        temporizador = window.setTimeout(abrirAgora, esperaVolta);
+        // Outra janela (popover) aberta na frente: tenta de novo daqui a pouco.
+        temporizador = window.setTimeout(abrirAgora, 2000);
       }
     };
     const agendar = (espera: number) => {
@@ -136,13 +164,25 @@ const ID = 'popup-black-friday';
       temporizador = window.setTimeout(abrirAgora, espera);
     };
 
-    // Fechou (X, Esc ou clique fora): volta depois do intervalo.
+    // Fechou no X, no Esc ou clicando fora.
     popup.addEventListener('toggle', (evento) => {
       const estado = (evento as Event & { newState?: string }).newState;
-      if (estado === 'closed') agendar(esperaVolta);
+      if (estado !== 'closed') return;
+      if (naoReabre) {
+        guardarQueFechou();
+        window.clearTimeout(temporizador);
+        return;
+      }
+      agendar(esperaVolta);
     });
 
-    // Gatilhos da faixa do topo: abrem o pop-up em vez de ir para a página.
+    // Ir para a reserva também conta como fechar: não faz sentido insistir com quem já clicou.
+    popup.querySelector('[data-bf-popup-cta]')?.addEventListener('click', () => {
+      if (naoReabre) guardarQueFechou();
+    });
+
+    // Gatilhos da faixa do topo: abrem o pop-up em vez de ir para a página. Valem sempre, mesmo
+    // para quem já fechou antes — aí é a pessoa que está pedindo para ver a oferta.
     for (const gatilho of document.querySelectorAll('[data-bf-popup-abrir]')) {
       gatilho.addEventListener('click', (evento) => {
         evento.preventDefault();
@@ -150,6 +190,6 @@ const ID = 'popup-black-friday';
       });
     }
 
-    agendar(esperaInicial);
+    if (!jaFechou()) agendar(esperaInicial);
   }
 </script>

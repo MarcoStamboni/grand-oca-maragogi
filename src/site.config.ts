@@ -210,8 +210,15 @@ export const blackFriday = {
     /** Hub de reservas, na âncora das modalidades (rota `reservas`). */
     ctaHref: '/reservas/#modalidades',
     botaoTopoPct: 78,
-    segundosParaAbrir: 3,
-    segundosParaReabrir: 20,
+    /** Segundos até o pop-up abrir sozinho, depois de a página carregar. */
+    segundosParaAbrir: 5,
+    /**
+     * Segundos até voltar depois de fechado. **0 = não volta mais**: quem fechou (no X, no Esc,
+     * clicando fora ou indo para "Quero reservar") não vê o pop-up abrir sozinho de novo, nem ao
+     * trocar de página, nem numa visita seguinte — a escolha fica guardada no navegador. O botão
+     * da faixa do topo continua abrindo quando a pessoa clica nele.
+     */
+    segundosParaReabrir: 0,
   },
 } as const;
 
