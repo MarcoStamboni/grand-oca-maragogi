@@ -416,7 +416,7 @@ const agencia: Operador = {
   instagram: 'https://www.instagram.com/resortsonline/',
   reservas: {
     // Motor de hospedagem da agência para o Grand Oca Maragogi: motor 94 (motordereservas.app.br), em iframe.
-    hospedagemUrl: 'https://motordereservas.app.br/motor/reservas/94' as string | null,
+    hospedagemUrl: 'https://motordereservas.app.br/motor/reservas/100' as string | null,
     hospedagemIncorporavel: true,
     // Motor do pacote hotel + aéreo: PENDENTE (id ainda não informado).
     pacoteComAereoUrl: 'https://motordereservas.app.br/motor/abas/reservas/28' as string | null,
