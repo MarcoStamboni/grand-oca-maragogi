@@ -197,4 +197,39 @@ const ID = 'popup-black-friday';
 
     if (!jaViu()) agendar(esperaInicial);
   }
+
+  /**
+   * Chegada pelo botão do pop-up (`/reservas/#modalidades`): leva a pessoa direto aos cartões das
+   * modalidades (Só hospedagem / Hotel + aéreo), sem precisar rolar. O navegador sozinho nem sempre
+   * rola até a âncora nestas páginas (em 26/11/2026 a página ficava no topo, no celular e no
+   * computador). Roda quando a página termina de carregar e confere de novo 1 s depois; não mexe se
+   * a pessoa já rolou ou tocou na tela.
+   */
+  const irParaModalidades = () => {
+    if (window.location.hash !== '#modalidades') return;
+    const secao = document.getElementById('modalidades');
+    if (!secao) return;
+    const cartoes = secao.querySelector<HTMLElement>('ul') ?? secao;
+
+    let mexeu = false;
+    for (const tipo of ['wheel', 'touchstart', 'keydown', 'pointerdown'] as const) {
+      window.addEventListener(tipo, () => (mexeu = true), { once: true, passive: true });
+    }
+
+    const ir = () => {
+      if (mexeu) return;
+      const folga =
+        Number.parseFloat(getComputedStyle(document.documentElement).scrollPaddingTop) || 0;
+      if (Math.abs(cartoes.getBoundingClientRect().top - folga) > 8) {
+        cartoes.scrollIntoView({ behavior: 'instant', block: 'start' });
+      }
+    };
+    const depoisDeCarregar = () => {
+      ir();
+      window.setTimeout(ir, 1000);
+    };
+    if (document.readyState === 'complete') depoisDeCarregar();
+    else window.addEventListener('load', depoisDeCarregar, { once: true });
+  };
+  irParaModalidades();
 </script>
