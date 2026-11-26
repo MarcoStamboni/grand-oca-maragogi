@@ -213,10 +213,10 @@ export const blackFriday = {
     /** Segundos até o pop-up abrir sozinho, depois de a página carregar. */
     segundosParaAbrir: 5,
     /**
-     * Segundos até voltar depois de fechado. **0 = não volta mais**: quem fechou (no X, no Esc,
-     * clicando fora ou indo para "Quero reservar") não vê o pop-up abrir sozinho de novo, nem ao
-     * trocar de página, nem numa visita seguinte — a escolha fica guardada no navegador. O botão
-     * da faixa do topo continua abrindo quando a pessoa clica nele.
+     * Segundos até voltar depois de fechado. **0 = uma vez por visita**: depois que o pop-up
+     * apareceu, ele não abre sozinho de novo ao trocar de página; volta só quando a pessoa fecha o
+     * site e entra outra vez (marca no sessionStorage). O botão da faixa do topo continua abrindo
+     * quando a pessoa clica nele.
      */
     segundosParaReabrir: 0,
   },

@@ -5,9 +5,9 @@
  * espaço livre, de 68% a 90% da altura (`blackFriday.popup.botaoTopoPct`).
  *
  * Abre sozinho alguns segundos depois de a página carregar (`segundosParaAbrir`, em
- * src/site.config.ts). Depois de fechado, só volta se `segundosParaReabrir` for maior que zero;
- * com 0, quem fechou não vê mais o pop-up abrir sozinho, nem ao trocar de página, nem numa visita
- * seguinte. Os dois gatilhos da faixa do topo ([data-bf-popup-abrir]) continuam abrindo o pop-up
+ * src/site.config.ts), com ou sem resposta ao aviso de cookies. Depois de fechado, só volta se
+ * `segundosParaReabrir` for maior que zero; com 0, abre uma vez por visita: não volta ao trocar
+ * de página, só quando a pessoa fecha o site e entra de novo (marca no sessionStorage). Os dois gatilhos da faixa do topo ([data-bf-popup-abrir]) continuam abrindo o pop-up
  * quando a pessoa clica neles, em vez de navegar.
  *
  * Usa a Popover API: fecha no X, no Esc e no clique fora. Nasce com `display:none` e só é
@@ -123,27 +123,33 @@ const ID = 'popup-black-friday';
     };
     const esperaInicial = segundos(popup.dataset['abrir'], 5);
     const esperaVolta = segundos(popup.dataset['reabrir'], 0);
-    /** `segundosParaReabrir: 0`: quem fechou não vê o pop-up abrir sozinho nunca mais. */
+    /** `segundosParaReabrir: 0`: abre sozinho uma vez só por visita. */
     const naoReabre = esperaVolta === 0;
 
     /*
-     * A escolha de quem fechou fica no navegador, então vale também ao trocar de página e numa
-     * visita depois. Em janela anônima ou com o armazenamento bloqueado, o localStorage lança
-     * erro: nesse caso o pop-up volta a se comportar como se fosse a primeira visita.
+     * A marca de que o pop-up já apareceu fica no sessionStorage: vale ao trocar de página e some
+     * quando a pessoa fecha o site, então a próxima visita vê o pop-up de novo. Com o
+     * armazenamento bloqueado, o pop-up se comporta como na primeira página.
      */
-    const CHAVE_FECHADO = 'grand-oca:bf-popup-fechado';
-    const jaFechou = () => {
+    const CHAVE_VISTO = 'grand-oca:bf-popup-visto';
+    // A versão anterior guardava "fechou" para sempre no localStorage; a regra agora é por visita.
+    try {
+      localStorage.removeItem('grand-oca:bf-popup-fechado');
+    } catch {
+      // Armazenamento indisponível.
+    }
+    const jaViu = () => {
       try {
-        return localStorage.getItem(CHAVE_FECHADO) === '1';
+        return sessionStorage.getItem(CHAVE_VISTO) === '1';
       } catch {
         return false;
       }
     };
-    const guardarQueFechou = () => {
+    const marcarVisto = () => {
       try {
-        localStorage.setItem(CHAVE_FECHADO, '1');
+        sessionStorage.setItem(CHAVE_VISTO, '1');
       } catch {
-        // Armazenamento indisponível: só não guarda a escolha.
+        // Armazenamento indisponível: só não guarda.
       }
     };
 
@@ -164,25 +170,24 @@ const ID = 'popup-black-friday';
       temporizador = window.setTimeout(abrirAgora, espera);
     };
 
-    // Fechou no X, no Esc ou clicando fora.
+    // Abriu: já conta como visto nesta visita. Fechou (X, Esc ou clique fora): só volta se
+    // `segundosParaReabrir` mandar.
     popup.addEventListener('toggle', (evento) => {
       const estado = (evento as Event & { newState?: string }).newState;
+      if (estado === 'open') {
+        marcarVisto();
+        return;
+      }
       if (estado !== 'closed') return;
       if (naoReabre) {
-        guardarQueFechou();
         window.clearTimeout(temporizador);
         return;
       }
       agendar(esperaVolta);
     });
 
-    // Ir para a reserva também conta como fechar: não faz sentido insistir com quem já clicou.
-    popup.querySelector('[data-bf-popup-cta]')?.addEventListener('click', () => {
-      if (naoReabre) guardarQueFechou();
-    });
-
     // Gatilhos da faixa do topo: abrem o pop-up em vez de ir para a página. Valem sempre, mesmo
-    // para quem já fechou antes — aí é a pessoa que está pedindo para ver a oferta.
+    // depois de o pop-up já ter aparecido — aí é a pessoa que está pedindo para ver a oferta.
     for (const gatilho of document.querySelectorAll('[data-bf-popup-abrir]')) {
       gatilho.addEventListener('click', (evento) => {
         evento.preventDefault();
@@ -190,6 +195,6 @@ const ID = 'popup-black-friday';
       });
     }
 
-    if (!jaFechou()) agendar(esperaInicial);
+    if (!jaViu()) agendar(esperaInicial);
   }
 </script>
