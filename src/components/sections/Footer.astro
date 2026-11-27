@@ -202,14 +202,33 @@ const ano = new Date().getFullYear();
       </ul>
       {operador.logo && (
         <p class="pt-2">
-          <img
-            src={`${operador.logo.caminho}-claro.webp`}
-            alt={operador.logo.alt}
-            width={operador.logo.largura}
-            height={operador.logo.altura}
-            loading="lazy"
-            class="h-12 w-auto"
-          />
+          {operador.logo.link ? (
+            <a
+              href={operador.logo.link}
+              target="_blank"
+              rel="noopener"
+              class="inline-block transition-opacity hover:opacity-80"
+            >
+              <img
+                src={`${operador.logo.caminho}-claro.webp`}
+                alt={operador.logo.alt}
+                width={operador.logo.largura}
+                height={operador.logo.altura}
+                loading="lazy"
+                class="h-12 w-auto"
+              />
+              <span class="sr-only"> (abre em nova aba)</span>
+            </a>
+          ) : (
+            <img
+              src={`${operador.logo.caminho}-claro.webp`}
+              alt={operador.logo.alt}
+              width={operador.logo.largura}
+              height={operador.logo.altura}
+              loading="lazy"
+              class="h-12 w-auto"
+            />
+          )}
         </p>
       )}
     </div>

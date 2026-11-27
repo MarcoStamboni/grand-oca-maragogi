@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import {
+  ACEITAR_TODOS,
   dominiosDoCookie,
   ehCookieAnalytics,
   lerConsentimento,
@@ -74,15 +75,34 @@ describe('resolverAnalytics', () => {
 });
 
 describe('consentimento', () => {
-  it('guarda a escolha com versão e data e lê de volta', () => {
-    const registro = registrarConsentimento(true, new Date('2026-10-02T12:00:00Z'));
+  it('guarda a escolha por categoria, com versão e data, e lê de volta', () => {
+    const registro = registrarConsentimento(
+      { desempenho: true, publicidade: false },
+      new Date('2026-10-02T12:00:00Z'),
+    );
     expect(JSON.parse(registro)).toEqual({
       versao: VERSAO_CONSENTIMENTO,
-      aceito: true,
+      desempenho: true,
+      publicidade: false,
       data: '2026-10-02T12:00:00.000Z',
     });
-    expect(lerConsentimento(registro)).toBe(true);
-    expect(lerConsentimento(registrarConsentimento(false, new Date()))).toBe(false);
+    expect(lerConsentimento(registro)).toEqual({ desempenho: true, publicidade: false });
+    expect(lerConsentimento(registrarConsentimento(ACEITAR_TODOS, new Date()))).toEqual(
+      ACEITAR_TODOS,
+    );
+    const nada = { desempenho: false, publicidade: false };
+    expect(lerConsentimento(registrarConsentimento(nada, new Date()))).toEqual(nada);
+  });
+
+  it('mantém a escolha da versão 1 (aceitar/recusar) como Desempenho', () => {
+    expect(lerConsentimento(JSON.stringify({ versao: 1, aceito: true, data: '' }))).toEqual({
+      desempenho: true,
+      publicidade: false,
+    });
+    expect(lerConsentimento(JSON.stringify({ versao: 1, aceito: false, data: '' }))).toEqual({
+      desempenho: false,
+      publicidade: false,
+    });
   });
 
   it('pede a escolha de novo sem registro, com registro corrompido ou de outra versão', () => {
@@ -91,12 +111,15 @@ describe('consentimento', () => {
     expect(lerConsentimento('"aceito"')).toBeNull();
     expect(
       lerConsentimento(
-        JSON.stringify({ versao: VERSAO_CONSENTIMENTO + 1, aceito: true, data: '' }),
+        JSON.stringify({ versao: VERSAO_CONSENTIMENTO + 1, desempenho: true, publicidade: true }),
       ),
     ).toBeNull();
     expect(
-      lerConsentimento(JSON.stringify({ versao: VERSAO_CONSENTIMENTO, aceito: 'sim' })),
+      lerConsentimento(
+        JSON.stringify({ versao: VERSAO_CONSENTIMENTO, desempenho: 'sim', publicidade: false }),
+      ),
     ).toBeNull();
+    expect(lerConsentimento(JSON.stringify({ versao: 1, aceito: 'sim' }))).toBeNull();
   });
 });
 

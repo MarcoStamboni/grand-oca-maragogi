@@ -44,39 +44,55 @@ export function urlScriptAnalytics(provedor: ProvedorAnalytics, id: string): str
 /** Chave no localStorage. A escolha fica no navegador da pessoa, sem cookie. */
 export const CHAVE_CONSENTIMENTO = 'resort:consentimento-analytics';
 
-/** Suba a versão quando o uso de dados mudar: a escolha antiga deixa de valer e o aviso volta. */
-export const VERSAO_CONSENTIMENTO = 1;
+/**
+ * Suba a versão quando o uso de dados mudar: a escolha antiga deixa de valer e o aviso volta.
+ * A escolha da versão 1 (só aceitar/recusar) continua valendo: vira Desempenho, sem Publicidade.
+ */
+export const VERSAO_CONSENTIMENTO = 2;
 
-interface RegistroConsentimento {
+/** Categorias opcionais do aviso. Os cookies estritamente necessários não dependem de escolha. */
+export interface Consentimento {
+  /** Medição de audiência (Google Analytics). */
+  desempenho: boolean;
+  /** Mensuração de campanhas e remarketing (sinais de publicidade do Consent Mode). */
+  publicidade: boolean;
+}
+
+export const ACEITAR_TODOS: Consentimento = { desempenho: true, publicidade: true };
+
+interface RegistroConsentimento extends Consentimento {
   versao: number;
-  aceito: boolean;
   /** Data e hora da escolha (ISO 8601), para comprovar o consentimento. */
   data: string;
 }
 
-export function registrarConsentimento(aceito: boolean, data: Date): string {
+export function registrarConsentimento(escolha: Consentimento, data: Date): string {
   const registro: RegistroConsentimento = {
     versao: VERSAO_CONSENTIMENTO,
-    aceito,
+    desempenho: escolha.desempenho,
+    publicidade: escolha.publicidade,
     data: data.toISOString(),
   };
   return JSON.stringify(registro);
 }
 
-/** Escolha guardada: `true` aceitou, `false` recusou, `null` sem escolha válida (mostrar o aviso). */
-export function lerConsentimento(bruto: string | null): boolean | null {
+/** Escolha guardada por categoria, ou `null` sem escolha válida (mostrar o aviso). */
+export function lerConsentimento(bruto: string | null): Consentimento | null {
   if (!bruto) return null;
   try {
     const registro: unknown = JSON.parse(bruto);
+    if (typeof registro !== 'object' || registro === null || !('versao' in registro)) return null;
+    if (registro.versao === 1 && 'aceito' in registro && typeof registro.aceito === 'boolean') {
+      return { desempenho: registro.aceito, publicidade: false };
+    }
     if (
-      typeof registro === 'object' &&
-      registro !== null &&
-      'versao' in registro &&
-      'aceito' in registro &&
       registro.versao === VERSAO_CONSENTIMENTO &&
-      typeof registro.aceito === 'boolean'
+      'desempenho' in registro &&
+      'publicidade' in registro &&
+      typeof registro.desempenho === 'boolean' &&
+      typeof registro.publicidade === 'boolean'
     ) {
-      return registro.aceito;
+      return { desempenho: registro.desempenho, publicidade: registro.publicidade };
     }
   } catch {
     // Registro corrompido: pede a escolha de novo.

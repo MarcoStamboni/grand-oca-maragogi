@@ -3,10 +3,16 @@
  * Faixa preta da Black Friday no topo do cabeçalho (padrão do site hoteisemolimpia.com.br):
  * selo amarelo, chamada, relógio d/h/m/s e o link "Ver hospedagens" à direita. O selo e o link
  * abrem o pop-up da campanha (PopupBlackFriday, pelo atributo `data-bf-popup-abrir`); sem
- * JavaScript, os dois continuam levando à página de hospedagem. Antes do início,
- * conta até o começo das ofertas; durante a campanha, mostra a frase `depois` e conta até o fim;
- * depois do fim, some. Enquanto a faixa está visível, o cabeçalho, os submenus e o menu do
- * celular ficam pretos (#0B0B0B), com letras e logos brancas (estilos abaixo).
+ * JavaScript, os dois continuam levando à página de hospedagem. Fases (horário de Brasília):
+ * - até o `fim` (27/11, 9h): conta até o começo das ofertas;
+ * - do `fim` à `extensao`: o relógio fica em 00 e "Black Friday Valendo!" (`depois`) entra à
+ *   direita do link, em dourado, com um ponto verde "ao vivo"; o conteúdo fica centralizado;
+ * - da `extensao` (28/11) ao `encerramento`: só a frase `depoisExtensao` e o link, que passa a
+ *   dizer `ctaExtensao` (sem selo e sem relógio);
+ * - no `encerramento` (01/12): a faixa sai da página (script logo abaixo dela, sem esperar o resto
+ *   da página) e, com ela, todo o visual preto do cabeçalho e dos menus.
+ * Enquanto a faixa está na página, o cabeçalho, os submenus e o menu do celular ficam pretos
+ * (#0B0B0B), com letras e logos brancas (estilos abaixo, todos presos à presença da faixa).
  * A altura da faixa entra em `--bf-h` (40px; 36px até 560px), somada ao scroll-padding e aos
  * painéis fixos. Tudo é configurado em `blackFriday` (src/site.config.ts).
  * Sem JavaScript, mostra a data por extenso no lugar do relógio; leitores de tela leem o texto
@@ -15,12 +21,16 @@
 import { formatarData } from '@/lib/formatar';
 import { blackFriday } from '@/site.config';
 
-const inicio = new Date(blackFriday.inicio);
-const fim = new Date(blackFriday.fim);
-// Gerada só enquanto a campanha não acabou (o navegador também esconde depois do fim).
-const visivel = blackFriday.ativo && Date.now() < fim.getTime();
-const dataInicio = formatarData(blackFriday.inicio.slice(0, 10));
-const dataFim = formatarData(blackFriday.fim.slice(0, 10));
+const encerramento = new Date(blackFriday.encerramento);
+// Gerada só enquanto a campanha não acabou (o navegador também tira a faixa no encerramento).
+const visivel = blackFriday.ativo && Date.now() < encerramento.getTime();
+const dataInicio = formatarData(blackFriday.fim.slice(0, 10));
+/** Último dia das ofertas: a véspera do encerramento, no horário de Brasília. */
+const dataFim = formatarData(
+  new Date(encerramento.getTime() - 1).toLocaleDateString('sv-SE', {
+    timeZone: 'America/Sao_Paulo',
+  }),
+);
 const unidades = ['d', 'h', 'm', 's'] as const;
 ---
 
@@ -28,10 +38,11 @@ const unidades = ['d', 'h', 'm', 's'] as const;
   <div
     class="bf-band"
     data-black-friday
-    data-inicio={inicio.toISOString()}
-    data-fim={fim.toISOString()}
-    data-chamada={blackFriday.chamada}
-    data-chamada-fim={blackFriday.chamadaFim}
+    data-bf-fim={blackFriday.fim}
+    data-bf-depois={blackFriday.depois}
+    data-bf-extensao={blackFriday.extensao}
+    data-bf-depois-extensao={blackFriday.depoisExtensao}
+    data-bf-cta-extensao={blackFriday.ctaExtensao}
   >
     <div class="container-site bf-in">
       <a class="bf-selo" href={blackFriday.ctaHref} data-bf-popup-abrir>
@@ -40,9 +51,6 @@ const unidades = ['d', 'h', 'm', 's'] as const;
       <p class="sr-only">
         {`Black Friday: as ofertas começam em ${dataInicio} e vão até ${dataFim}.`}
       </p>
-      <span class="bf-depois" aria-hidden="true" hidden data-bf-depois>
-        {blackFriday.depois}
-      </span>
       <span class="bf-txt" aria-hidden="true" data-bf-txt>
         {blackFriday.chamada}
       </span>
@@ -61,9 +69,33 @@ const unidades = ['d', 'h', 'm', 's'] as const;
       <a class="bf-cta" href={blackFriday.ctaHref} data-bf-popup-abrir>
         {blackFriday.cta}
       </a>
+      {/* Frase das fases depois da contagem (o script põe o texto e a posição). */}
+      <span class="bf-depois" hidden data-bf-depois></span>
     </div>
   </div>
 )}
+
+{
+  /*
+   * Fim da campanha (blackFriday.encerramento): tira a faixa da página. Todo o visual da Black
+   * Friday (cabeçalho, submenus e menu do celular pretos, logos brancas, `--bf-h`) depende de
+   * `:root:has([data-black-friday])`, então sem a faixa o site volta ao layout normal. Fica logo
+   * depois da faixa e roda na hora (não espera o resto da página), para quem entra depois do fim
+   * não ver o cabeçalho preto piscar. Quem estiver com o site aberto na virada vê a troca na hora.
+   */
+  visivel && <script is:inline define:vars={{ encerramento: blackFriday.encerramento }}>
+    (() => {
+      const fim = new Date(encerramento).getTime();
+      if (!fim || Number.isNaN(fim)) return;
+      const encerrar = () => {
+        document.querySelectorAll('[data-black-friday]').forEach((faixa) => faixa.remove());
+      };
+      const falta = fim - Date.now();
+      if (falta <= 0) encerrar();
+      else if (falta < 2147483647) window.setTimeout(encerrar, falta);
+    })();
+  </script>
+}
 
 <style is:global>
   /* Altura da faixa: somada ao scroll-padding e aos painéis fixos abaixo do cabeçalho. */
@@ -128,6 +160,51 @@ const unidades = ['d', 'h', 'm', 's'] as const;
     text-overflow: ellipsis;
     font-weight: 600;
     color: #fff;
+  }
+  /* "Black Friday Valendo!" em destaque: dourado, maior, com brilho e um ponto "ao vivo" pulsando. */
+  .bf-band.is-ok:not(.is-extensao) .bf-depois {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 4px 2px 4px 6px;
+    color: #f5c04a;
+    font-size: 14.5px;
+    font-weight: 800;
+    letter-spacing: 0.01em;
+    text-shadow: 0 0 14px rgb(245 192 74 / 0.5);
+  }
+  .bf-band.is-ok:not(.is-extensao) .bf-depois[hidden] {
+    display: none;
+  }
+  .bf-band.is-ok:not(.is-extensao) .bf-depois::before {
+    content: '';
+    flex: none;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #2fc78a;
+    animation: bf-ao-vivo 1.6s ease-out infinite;
+  }
+  @keyframes bf-ao-vivo {
+    0% {
+      box-shadow: 0 0 0 0 rgb(47 199 138 / 0.75);
+    }
+    80%,
+    100% {
+      box-shadow: 0 0 0 6px rgb(47 199 138 / 0);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .bf-band.is-ok:not(.is-extensao) .bf-depois::before {
+      animation: none;
+    }
+  }
+  /* Depois da contagem, o conteúdo da faixa fica centralizado (o link deixa de ir para a direita). */
+  .bf-band.is-ok .bf-in {
+    justify-content: center;
+  }
+  .bf-band.is-ok .bf-cta {
+    margin-left: 4px;
   }
   .bf-data {
     font-weight: 600;
@@ -208,6 +285,69 @@ const unidades = ['d', 'h', 'm', 's'] as const;
   @media (max-width: 400px) {
     .bf-cta {
       display: none;
+    }
+  }
+  /*
+   * Ao zerar, o relógio fica em 00 e a frase entra à direita do link. Em telas menores não cabe
+   * tudo: sai "as ofertas começam em", depois o selo (a frase já diz "Black Friday"), os segundos
+   * e, no celular estreito, o "00 d" dos dias.
+   */
+  @media (max-width: 1023px) {
+    .bf-band.is-ok .bf-txt {
+      display: none;
+    }
+  }
+  @media (max-width: 860px) {
+    .bf-band.is-ok:not(.is-extensao) .bf-depois {
+      gap: 6px;
+      font-size: 13.5px;
+    }
+    .bf-band.is-ok .bf-selo {
+      display: none;
+    }
+  }
+  @media (max-width: 640px) {
+    .bf-band.is-ok .bf-clock b[data-bf='s'],
+    .bf-band.is-ok .bf-clock i[data-bf-unidade='s'] {
+      display: none;
+    }
+  }
+  @media (max-width: 560px) {
+    .bf-band.is-ok:not(.is-extensao) .bf-depois {
+      gap: 4px;
+      padding-left: 4px;
+      font-size: 12px;
+      letter-spacing: 0;
+    }
+    .bf-band.is-ok:not(.is-extensao) .bf-depois::before {
+      width: 6px;
+      height: 6px;
+    }
+  }
+  /* Até 480px: aqui o link "Ver hospedagens" ainda aparece (some só até 400px) e não sobra espaço. */
+  @media (max-width: 480px) {
+    .bf-band.is-ok .bf-clock b[data-bf='d'],
+    .bf-band.is-ok .bf-clock i[data-bf-unidade='d'] {
+      display: none;
+    }
+  }
+  /* Oferta estendida (a partir de 28/11): só a frase e o link, sem selo e sem relógio. */
+  .bf-band.is-extensao .bf-selo,
+  .bf-band.is-extensao .bf-txt,
+  .bf-band.is-extensao .bf-data,
+  .bf-band.is-extensao .bf-clock {
+    display: none;
+  }
+  /* No celular estreito, o link volta: na extensão ele é metade do recado. */
+  @media (max-width: 400px) {
+    .bf-band.is-extensao .bf-in {
+      gap: 6px;
+    }
+    .bf-band.is-extensao :is(.bf-depois, .bf-cta) {
+      font-size: 11.5px;
+    }
+    .bf-band.is-extensao .bf-cta {
+      display: inline;
     }
   }
 
@@ -291,14 +431,18 @@ const unidades = ['d', 'h', 'm', 's'] as const;
 
 <script>
   /**
-   * Relógio da faixa: atualiza a cada segundo (pausa com a aba escondida). Antes do início, conta
-   * até o começo; durante a campanha, mostra a frase `depois` e conta até o fim; depois, some.
+   * Relógio da faixa: atualiza a cada segundo (pausa com a aba escondida). Conta até
+   * `data-bf-fim`; ao zerar, o relógio fica em 00 e a frase de `data-bf-depois` entra à direita do
+   * link. Na data de `data-bf-extensao` (oferta estendida), a faixa fica só com a frase de
+   * `data-bf-depois-extensao` e o link, que passa a dizer `data-bf-cta-extensao`. Quando nada mais
+   * vai mudar, o relógio para. O fim da campanha (a faixa sai da página) é o script inline acima.
    */
   for (const faixa of document.querySelectorAll<HTMLElement>('[data-black-friday]')) {
-    const inicio = Date.parse(faixa.dataset['inicio'] ?? '');
-    const fim = Date.parse(faixa.dataset['fim'] ?? '');
-    const txt = faixa.querySelector<HTMLElement>('[data-bf-txt]');
-    const depois = faixa.querySelector<HTMLElement>('[data-bf-depois]');
+    const fim = Date.parse(faixa.dataset['bfFim'] ?? '');
+    if (Number.isNaN(fim)) continue;
+    const extensao = Date.parse(faixa.dataset['bfExtensao'] ?? '');
+    const fraseExtensao = faixa.dataset['bfDepoisExtensao'];
+    const temExtensao = Boolean(fraseExtensao) && !Number.isNaN(extensao) && extensao > fim;
     const data = faixa.querySelector<HTMLElement>('[data-bf-data]');
     const relogio = faixa.querySelector<HTMLElement>('[data-bf-clock]');
     const campos = {
@@ -309,43 +453,73 @@ const unidades = ['d', 'h', 'm', 's'] as const;
     };
     const doisDigitos = (valor: number) => String(valor).padStart(2, '0');
     let intervalo = 0;
+    let terminou = false;
 
-    const atualizar = (): boolean => {
+    /**
+     * Frase da faixa: à direita do link quando a contagem zera; na oferta estendida, à esquerda
+     * dele (a faixa fica só com a frase e o link).
+     */
+    const mostrarFrase = (texto: string | undefined, antesDoLink = false) => {
+      const frase = faixa.querySelector<HTMLElement>('[data-bf-depois]');
+      const cta = faixa.querySelector<HTMLElement>('.bf-cta');
+      const referencia = cta ?? relogio;
+      if (!texto || !frase || !referencia) return;
+      if (antesDoLink && cta) {
+        if (frase.nextElementSibling !== cta) cta.before(frase);
+      } else if (referencia.nextElementSibling !== frase) {
+        referencia.after(frase);
+      }
+      if (frase.textContent !== texto) frase.textContent = texto;
+      frase.hidden = false;
+    };
+
+    const atualizar = () => {
+      // Tirada da página no fim da campanha: nada mais a fazer.
+      if (!faixa.isConnected) {
+        terminou = true;
+        return;
+      }
       const agora = Date.now();
-      if (Number.isNaN(fim) || agora >= fim) {
-        faixa.hidden = true;
-        return false;
+      const falta = fim - agora;
+      if (falta <= 0) {
+        faixa.classList.add('is-ok');
+        // o relógio fica parado em 00
+        for (const campo of Object.values(campos)) if (campo) campo.textContent = '00';
+        if (temExtensao && agora >= extensao) {
+          faixa.classList.add('is-extensao');
+          mostrarFrase(fraseExtensao, true);
+          const novoTexto = faixa.dataset['bfCtaExtensao'];
+          const cta = faixa.querySelector<HTMLElement>('.bf-cta');
+          if (novoTexto && cta && cta.textContent !== novoTexto) cta.textContent = novoTexto;
+          terminou = true;
+        } else {
+          mostrarFrase(faixa.dataset['bfDepois']);
+          terminou = !temExtensao; // sem extensão, nada mais muda
+        }
+        return;
       }
-      const noAr = agora >= inicio;
-      faixa.classList.toggle('is-ok', noAr);
-      if (depois) depois.hidden = !noAr;
-      if (txt) {
-        txt.textContent = (noAr ? faixa.dataset['chamadaFim'] : faixa.dataset['chamada']) ?? '';
-      }
-      const segundos = Math.floor(Math.max(0, (noAr ? fim : inicio) - agora) / 1000);
+      const segundos = Math.floor(falta / 1000);
       if (campos.d) campos.d.textContent = doisDigitos(Math.floor(segundos / 86_400));
       if (campos.h) campos.h.textContent = doisDigitos(Math.floor(segundos / 3600) % 24);
       if (campos.m) campos.m.textContent = doisDigitos(Math.floor(segundos / 60) % 60);
       if (campos.s) campos.s.textContent = doisDigitos(segundos % 60);
-      return true;
     };
     const iniciar = () => {
       window.clearInterval(intervalo);
-      if (atualizar()) {
-        intervalo = window.setInterval(() => {
-          if (!atualizar()) window.clearInterval(intervalo);
-        }, 1000);
-      }
+      atualizar();
+      if (terminou) return;
+      intervalo = window.setInterval(() => {
+        atualizar();
+        if (terminou) window.clearInterval(intervalo);
+      }, 1000);
     };
 
-    if (atualizar()) {
-      if (data) data.hidden = true;
-      if (relogio) relogio.hidden = false;
-      iniciar();
-      document.addEventListener('visibilitychange', () => {
-        window.clearInterval(intervalo);
-        if (!document.hidden && !faixa.hidden) iniciar();
-      });
-    }
+    if (data) data.hidden = true;
+    if (relogio) relogio.hidden = false;
+    iniciar();
+    document.addEventListener('visibilitychange', () => {
+      window.clearInterval(intervalo);
+      if (!document.hidden && !terminou) iniciar();
+    });
   }
 </script>

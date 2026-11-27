@@ -20,6 +20,8 @@ const itens = await menuPrincipal();
 const caminhoAtual = Astro.url.pathname;
 const linksExtrasCelular = linksDisponiveis(['reservas', 'perguntasFrequentes', 'contato']);
 const inicio = linkRota('home');
+/** O logo da agência vira link quando o operador tem `logo.link` (portal da rede). */
+const LogoAgencia = operador.logo?.link ? 'a' : 'span';
 
 /** Ícone de cada tópico no menu do celular (pelo endereço da página). */
 const iconesMenu = new Map<string, NomeIcone>([
@@ -160,9 +162,21 @@ const ehSecaoAtual = (href: string, filhos: readonly { href: string }[] = []) =>
         {acoes.consultarTarifas.rotulo}
       </Botao>
 
-      {/* Logo da agência (Rede Resort All Inclusive) à direita. */}
+      {/*
+        Logo da agência (Rede Resort All Inclusive) à direita: abre o portal da rede (logo.link, em
+        nova aba). Sem link, é só a imagem.
+      */}
       {operador.logo && (
-        <>
+        <LogoAgencia
+          class={
+            operador.logo.link
+              ? 'flex shrink-0 items-center leading-none no-underline transition-opacity hover:opacity-80'
+              : 'contents'
+          }
+          href={operador.logo.link}
+          target={operador.logo.link ? '_blank' : undefined}
+          rel={operador.logo.link ? 'noopener' : undefined}
+        >
           <img
             src={`${operador.logo.caminho}.webp`}
             alt={operador.logo.alt}
@@ -181,7 +195,8 @@ const ehSecaoAtual = (href: string, filhos: readonly { href: string }[] = []) =>
             data-logo-agencia-claro
             class="h-7 w-auto shrink-0 sm:h-9"
           />
-        </>
+          {operador.logo.link && <span class="sr-only"> (abre em nova aba)</span>}
+        </LogoAgencia>
       )}
 
       {/* Com JavaScript: abre o menu em <dialog>. Sem JavaScript: leva ao mapa do site no rodapé. */}

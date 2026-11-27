@@ -2,12 +2,15 @@
 /**
  * Aviso de cookies (LGPD). Só é renderizado com o analytics ativo (BaseLayout testa
  * `analytics.ativo`). Começa escondido; o script (src/scripts/analytics.ts) mostra o aviso
- * quando não há escolha guardada e carrega o Google só depois do consentimento.
+ * quando não há escolha guardada e carrega o Google só com a categoria Desempenho permitida.
  *
- * Dois caminhos, lado a lado e com o mesmo tamanho: "Aceitar" libera a medição; "Configurar"
- * troca o aviso pelas preferências, no mesmo cartão, onde a medição vem desligada e a pessoa
- * decide antes de salvar (salvar com a chave desligada equivale a recusar). "Preferências de
- * cookies", no rodapé, abre direto esse painel, já com a escolha guardada.
+ * Cartão pequeno no canto inferior esquerdo (no celular, largura toda acima da barra de botões),
+ * com duas telas no mesmo cartão:
+ * - resumo: "Configurações" e "Aceitar" (aceita todas as categorias), lado a lado e com o mesmo
+ *   tamanho;
+ * - configurações: as categorias com a descrição (abre no "+") e a chave de cada uma (desligadas
+ *   até a pessoa escolher), com "Salvar preferências" e "Aceitar todos". "Preferências de
+ *   cookies", no rodapé, abre direto aqui, já com a escolha guardada.
  *
  * Não é modal: não prende o foco nem bloqueia a leitura. Sem JavaScript, nada é carregado e o
  * aviso não aparece.
@@ -29,9 +32,34 @@ const { provedor, id } = Astro.props;
  * do cliente (aconteceu num teste em 24/11/2026).
  */
 const hostDoSite = new URL(site.url).hostname;
+
+const categorias = [
+  {
+    chave: null,
+    nome: 'Estritamente necessários',
+    descricao:
+      'Essenciais para o funcionamento do site: segurança, balanceamento de carga, manutenção da sessão de reserva e registro da sua escolha de privacidade. Não podem ser desativados.',
+  },
+  {
+    chave: 'desempenho',
+    nome: 'Desempenho',
+    descricao:
+      'Coletam dados estatísticos e agregados de navegação, como páginas acessadas, origem do tráfego e tipo de dispositivo, para medir e otimizar o desempenho do site.',
+  },
+  {
+    chave: 'publicidade',
+    nome: 'Publicidade direcionada',
+    descricao:
+      'Permitem a mensuração de campanhas e a exibição de anúncios personalizados (remarketing) com base nos seus interesses.',
+  },
+] as const;
+
+/** Os dois botões de cada tela dividem a linha; sem espaço, cada um ocupa a linha toda. */
+const botaoClaro = [...classesBotao('contorno'), 'flex-1 whitespace-nowrap'];
+const botaoCheio = [...classesBotao('secundario'), 'flex-1 whitespace-nowrap'];
 /** Chave liga/desliga: o trilho e a bolinha seguem o estado do <input> (que fica só para leitores de tela). */
 const trilho =
-  'relative mt-0.5 inline-flex h-7 w-12 shrink-0 items-center rounded-full bg-areia-300 transition-colors duration-300 ease-suave group-has-[:checked]:bg-verde-700 group-has-[:focus-visible]:ring-2 group-has-[:focus-visible]:ring-mar-700 group-has-[:focus-visible]:ring-offset-2';
+  'relative inline-flex h-7 w-12 shrink-0 items-center rounded-full bg-areia-300 transition-colors duration-300 ease-suave group-has-[:checked]:bg-verde-700 group-has-[:focus-visible]:ring-2 group-has-[:focus-visible]:ring-mar-700 group-has-[:focus-visible]:ring-offset-2';
 const bolinha =
   'ml-1 size-5 rounded-full bg-white shadow transition-transform duration-300 ease-suave group-has-[:checked]:translate-x-5';
 ---
@@ -39,81 +67,101 @@ const bolinha =
 <section
   hidden
   aria-labelledby="aviso-cookies-titulo"
-  class="fixed inset-x-0 bottom-[calc(var(--altura-barra-mobile)+env(safe-area-inset-bottom))] z-40 p-3 lg:bottom-0"
+  class="fixed inset-x-0 bottom-[calc(var(--altura-barra-mobile)+env(safe-area-inset-bottom))] z-40 p-3 sm:right-auto sm:p-4 lg:bottom-0"
   data-aviso-cookies
   data-provedor={provedor}
   data-id={id}
   data-host={hostDoSite}
 >
-  <div class="ring-areia-300 container-site max-w-4xl rounded-cartao bg-white p-4 shadow-[0_8px_32px_rgb(6_42_49/0.18)] ring-1 sm:p-5">
-    {/* Passo 1: o aviso. */}
-    <div class="flex flex-col gap-4 sm:flex-row sm:items-center" data-cookies-aviso>
-      <div class="space-y-1 text-sm">
+  <div class="ring-areia-300 text-tinta max-h-[calc(100dvh-var(--altura-barra-mobile)-1.5rem)] w-full overflow-y-auto overscroll-contain rounded-cartao bg-white p-4 text-sm shadow-[0_8px_32px_rgb(6_42_49/0.18)] ring-1 sm:w-[440px] sm:p-5 lg:max-h-[calc(100dvh-2rem)]">
+    {/* Tela 1: o resumo. */}
+    <div class="space-y-4" data-cookies-resumo>
+      <div class="space-y-1">
         <p id="aviso-cookies-titulo" class="text-mar-950 font-semibold">
           Podemos usar cookies?
         </p>
         <p class="text-tinta-suave">
-          Com a sua permissão, usamos cookies para entender como o site é usado.
+          Com a sua permissão, usamos cookies do Google para entender como o site é usado e medir
+          campanhas. Aceite todos ou escolha quais permitir em Configurações.{' '}
           <a href={rotas.cookies.caminho}>Política de cookies</a>.
         </p>
       </div>
-      <div class="flex shrink-0 gap-3">
-        <button type="button" class:list={classesBotao('contorno')} data-cookies-configurar>
-          Configurar
+      <div class="flex flex-wrap gap-3">
+        <button type="button" class:list={botaoClaro} data-cookies-configurar>
+          Configurações
         </button>
-        <button type="button" class:list={classesBotao('secundario')} data-cookies-aceitar>
+        <button type="button" class:list={botaoCheio} data-cookies-aceitar>
           Aceitar
         </button>
       </div>
     </div>
 
-    {/* Passo 2: as preferências, no lugar do aviso. */}
-    <div class="space-y-4 text-sm" hidden data-cookies-painel>
+    {/* Tela 2: as categorias, no lugar do resumo. */}
+    <div class="space-y-4" hidden data-cookies-painel>
       <div class="space-y-1">
-        <p id="aviso-cookies-preferencias" class="text-mar-950 font-semibold">
-          Preferências de cookies
-        </p>
+        {/* <strong>, e não um título: a auditoria do build não aceita títulos antes do H1. */}
+        <strong
+          id="aviso-cookies-preferencias"
+          class="text-mar-950 block font-semibold outline-none"
+          tabindex="-1"
+          data-cookies-painel-titulo
+        >
+          Personalizar minhas opções
+        </strong>
         <p class="text-tinta-suave">
-          Escolha o que pode ser usado e salve.{' '}
+          Escolha quais categorias você permite e salve. Você pode mudar isso quando quiser em
+          "Preferências de cookies", no rodapé.{' '}
           <a href={rotas.cookies.caminho}>Política de cookies</a>.
         </p>
       </div>
 
       <ul class="divide-areia-200 ring-areia-200 divide-y rounded-cartao ring-1">
-        <li class="flex items-start justify-between gap-4 p-4">
-          <div class="space-y-0.5">
-            <p class="text-mar-950 font-semibold">Necessários</p>
-            <p class="text-tinta-suave">
-              Fazem o site funcionar e guardam a sua escolha sobre cookies.
-            </p>
-          </div>
-          <span class="bg-mar-50 text-mar-800 mt-0.5 shrink-0 rounded-full px-3 py-1 text-xs font-semibold">
-            Sempre ativos
-          </span>
-        </li>
-        <li>
-          {/* Grade (e não flex) para o texto ficar direto no <label>: é ele que nomeia a chave. */}
-          <label class="group grid cursor-pointer grid-cols-[minmax(0,1fr)_auto] items-start gap-x-4 gap-y-0.5 p-4">
-            <span class="text-mar-950 font-semibold">Medição de audiência</span>
-            <input
-              type="checkbox"
-              class="sr-only"
-              aria-label="Medição de audiência"
-              data-cookies-medicao
-            />
-            <span class={trilho} aria-hidden="true">
-              <span class={bolinha}></span>
-            </span>
-            <span class="text-tinta-suave col-start-1">
-              Ajuda a entender como o site é usado, sem publicidade.
-            </span>
-          </label>
-        </li>
+        {categorias.map((categoria) => (
+          <li class="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-x-3 px-4 py-2">
+            <details class="group">
+              <summary class="text-mar-950 flex min-h-11 cursor-pointer list-none items-center gap-2 font-semibold [&::-webkit-details-marker]:hidden">
+                <span
+                  aria-hidden="true"
+                  class="text-mar-700 ring-areia-300 inline-flex size-5 shrink-0 items-center justify-center rounded-full text-base leading-none ring-1 group-open:rotate-45 motion-safe:transition-transform"
+                >
+                  +
+                </span>
+                {categoria.nome}
+              </summary>
+              <p class="text-tinta-suave pb-2 pl-7">{categoria.descricao}</p>
+            </details>
+            {categoria.chave ? (
+              <label class="group flex min-h-11 cursor-pointer items-center">
+                <input
+                  type="checkbox"
+                  role="switch"
+                  class="sr-only"
+                  aria-label={`Permitir ${categoria.nome.toLowerCase()}`}
+                  data-cookies-categoria={categoria.chave}
+                />
+                <span class={trilho} aria-hidden="true">
+                  <span class={bolinha}></span>
+                </span>
+              </label>
+            ) : (
+              <span class="flex min-h-11 items-center">
+                <span class="bg-mar-50 text-mar-800 shrink-0 rounded-full px-3 py-1 text-xs font-semibold">
+                  Sempre ativos
+                </span>
+              </span>
+            )}
+          </li>
+        ))}
       </ul>
 
-      <button type="button" class:list={classesBotao('secundario')} data-cookies-salvar>
-        Salvar preferências
-      </button>
+      <div class="flex flex-wrap gap-3">
+        <button type="button" class:list={botaoClaro} data-cookies-salvar>
+          Salvar preferências
+        </button>
+        <button type="button" class:list={botaoCheio} data-cookies-aceitar>
+          Aceitar todos
+        </button>
+      </div>
     </div>
   </div>
 </section>

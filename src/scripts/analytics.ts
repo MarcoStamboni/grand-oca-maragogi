@@ -1,19 +1,24 @@
 /**
  * Consentimento e analytics (componente AvisoCookies, que só existe com o analytics ativo).
  * - Sem escolha guardada: mostra o aviso, sem tirar o foco de onde a pessoa está.
- * - "Aceitar": guarda a escolha (localStorage, com data e versão) e só então carrega o GA4 ou
- *   o GTM, com Consent Mode v2 (publicidade sempre negada).
- * - "Configurar": troca o aviso pelo painel de preferências, no mesmo cartão (a chave da medição
- *   começa desligada, ou no que estiver guardado). "Salvar preferências" aplica a escolha: com a
- *   chave desligada equivale a recusar, então nega o consentimento (se já estava carregado nesta
- *   visita) e apaga os cookies do Google Analytics.
- * - "Preferências de cookies" (rodapé) abre direto o painel; Esc fecha e devolve o foco.
+ * - "Aceitar" / "Aceitar todos": permite as duas categorias opcionais.
+ * - "Configurações": troca o resumo pelas categorias, no mesmo cartão, com uma chave para
+ *   Desempenho e outra para Publicidade direcionada (desligadas até a pessoa escolher);
+ *   "Salvar preferências" guarda o que estiver marcado.
+ * - A escolha fica no localStorage, com data e versão. Com Desempenho permitido, carrega o GA4
+ *   ou o GTM com Consent Mode v2; os sinais de publicidade só são liberados com Publicidade
+ *   direcionada permitida. Ao desligar Desempenho, nega o consentimento (se o analytics já
+ *   estava carregado nesta visita) e apaga os cookies do Google Analytics.
+ * - "Preferências de cookies" (rodapé) reabre o aviso já nas configurações, com a escolha
+ *   atual marcada; Esc fecha e devolve o foco.
  * - Eventos: cliques em [data-evento] e eventos internos do site (envio do formulário), só
  *   com o analytics carregado. Os parâmetros são o nome do evento e o caminho da página:
  *   nenhum dado pessoal.
  */
 import {
+  ACEITAR_TODOS,
   CHAVE_CONSENTIMENTO,
+  type Consentimento,
   type DetalheEvento,
   dominiosDoCookie,
   EVENTO_SITE,
@@ -38,7 +43,7 @@ function gtag(..._argumentos: unknown[]): void {
   window.dataLayer.push(arguments);
 }
 
-function lerEscolha(): boolean | null {
+function lerEscolha(): Consentimento | null {
   try {
     return lerConsentimento(localStorage.getItem(CHAVE_CONSENTIMENTO));
   } catch {
@@ -46,9 +51,9 @@ function lerEscolha(): boolean | null {
   }
 }
 
-function gravarEscolha(aceito: boolean): void {
+function gravarEscolha(escolha: Consentimento): void {
   try {
-    localStorage.setItem(CHAVE_CONSENTIMENTO, registrarConsentimento(aceito, new Date()));
+    localStorage.setItem(CHAVE_CONSENTIMENTO, registrarConsentimento(escolha, new Date()));
   } catch {
     // Armazenamento bloqueado: a escolha vale só para esta visita.
   }
@@ -70,22 +75,31 @@ function apagarCookiesAnalytics(): void {
 function iniciar(aviso: HTMLElement): void {
   const provedor = aviso.dataset.provedor as ProvedorAnalytics;
   const id = aviso.dataset.id ?? '';
-  // As duas faces do cartão: o aviso e o painel de preferências.
-  const introducao = aviso.querySelector<HTMLElement>('[data-cookies-aviso]');
+  // As duas telas do cartão: o resumo e as categorias.
+  const resumo = aviso.querySelector<HTMLElement>('[data-cookies-resumo]');
   const painel = aviso.querySelector<HTMLElement>('[data-cookies-painel]');
-  const medicao = aviso.querySelector<HTMLInputElement>('[data-cookies-medicao]');
+  const chaves = [...aviso.querySelectorAll<HTMLInputElement>('[data-cookies-categoria]')];
   let carregado = false;
   let retornoFoco: HTMLElement | null = null;
+  let escolhaAtual = lerEscolha();
 
-  const carregar = () => {
-    if (carregado) return;
+  const sinais = (escolha: Consentimento) => {
+    const publicidade = escolha.publicidade ? 'granted' : 'denied';
+    return {
+      ad_storage: publicidade,
+      ad_user_data: publicidade,
+      ad_personalization: publicidade,
+      analytics_storage: escolha.desempenho ? 'granted' : 'denied',
+    };
+  };
+
+  const carregar = (escolha: Consentimento) => {
+    if (carregado) {
+      gtag('consent', 'update', sinais(escolha));
+      return;
+    }
     carregado = true;
-    gtag('consent', 'default', {
-      ad_storage: 'denied',
-      ad_user_data: 'denied',
-      ad_personalization: 'denied',
-      analytics_storage: 'granted',
-    });
+    gtag('consent', 'default', sinais(escolha));
     if (provedor === 'ga4') {
       gtag('js', new Date());
       gtag('config', id);
@@ -106,71 +120,88 @@ function iniciar(aviso: HTMLElement): void {
   };
 
   // O aviso aberto empurra o fim da página e o scroll-padding (o foco não fica escondido sob ele).
+  // Da largura `sm` em diante ele é um cartão no canto esquerdo e não cobre os botões flutuantes
+  // da direita, então não empurra nada.
+  const cantinho = window.matchMedia('(min-width: 40rem)');
   const medir = () => {
-    const altura = aviso.hidden ? 0 : aviso.offsetHeight;
+    const altura = aviso.hidden || cantinho.matches ? 0 : aviso.offsetHeight;
     document.documentElement.style.setProperty('--altura-aviso-cookies', `${altura}px`);
   };
   new ResizeObserver(medir).observe(aviso);
+  cantinho.addEventListener('change', medir);
 
-  /** Troca o aviso pelas preferências (e vice-versa), com a chave no que estiver guardado. */
+  /** Troca o resumo pelas categorias (e vice-versa); as chaves seguem a escolha atual. */
   const verPainel = (abrir: boolean) => {
-    if (!introducao || !painel) return;
-    introducao.hidden = abrir;
+    if (!resumo || !painel) return;
+    resumo.hidden = abrir;
     painel.hidden = !abrir;
     aviso.setAttribute(
       'aria-labelledby',
       abrir ? 'aviso-cookies-preferencias' : 'aviso-cookies-titulo',
     );
-    if (abrir && medicao) medicao.checked = lerEscolha() === true;
+    if (abrir) {
+      // Sem escolha guardada, as duas chaves começam desligadas.
+      for (const chave of chaves) {
+        const categoria = chave.dataset.cookiesCategoria as keyof Consentimento;
+        chave.checked = escolhaAtual?.[categoria] ?? false;
+      }
+      painel.parentElement?.scrollTo(0, 0);
+    }
     medir();
   };
 
-  const mostrar = (origem?: HTMLElement, preferencias = false) => {
+  const abrirConfiguracoes = () => {
+    verPainel(true);
+    aviso.querySelector<HTMLElement>('[data-cookies-painel-titulo]')?.focus();
+  };
+
+  const mostrar = (origem?: HTMLElement) => {
     retornoFoco = origem ?? null;
     aviso.hidden = false;
-    verPainel(preferencias);
-    medir();
-    if (!origem) return;
-    const alvo = preferencias
-      ? medicao
-      : aviso.querySelector<HTMLButtonElement>('[data-cookies-aceitar]');
-    alvo?.focus();
+    // Pelo rodapé ("Preferências de cookies"), abre direto nas configurações.
+    if (origem) {
+      abrirConfiguracoes();
+      return;
+    }
+    verPainel(false);
   };
 
   const esconder = () => {
     aviso.hidden = true;
-    // Volta ao aviso: a próxima abertura começa do começo.
+    // Volta ao resumo: a próxima abertura começa do começo.
     verPainel(false);
     medir();
     retornoFoco?.focus();
     retornoFoco = null;
   };
 
-  /** Aplica a escolha: aceita carrega o analytics; recusa nega o consentimento e limpa os cookies. */
-  const aplicar = (aceito: boolean) => {
-    gravarEscolha(aceito);
-    if (aceito) {
-      carregar();
+  /** Aplica a escolha: com Desempenho, carrega o analytics; sem, nega e limpa os cookies. */
+  const aplicar = (escolha: Consentimento) => {
+    escolhaAtual = escolha;
+    gravarEscolha(escolha);
+    if (escolha.desempenho) {
+      carregar(escolha);
     } else {
-      if (carregado) gtag('consent', 'update', { analytics_storage: 'denied' });
+      if (carregado) gtag('consent', 'update', sinais(escolha));
       apagarCookiesAnalytics();
     }
     esconder();
   };
 
-  aviso.querySelector('[data-cookies-aceitar]')?.addEventListener('click', () => aplicar(true));
-  aviso.querySelector('[data-cookies-configurar]')?.addEventListener('click', () => {
-    verPainel(true);
-    medicao?.focus();
+  for (const botao of aviso.querySelectorAll('[data-cookies-aceitar]')) {
+    botao.addEventListener('click', () => aplicar(ACEITAR_TODOS));
+  }
+  aviso.querySelector('[data-cookies-configurar]')?.addEventListener('click', abrirConfiguracoes);
+  aviso.querySelector('[data-cookies-salvar]')?.addEventListener('click', () => {
+    const marcada = (categoria: keyof Consentimento) =>
+      chaves.some((chave) => chave.dataset.cookiesCategoria === categoria && chave.checked);
+    aplicar({ desempenho: marcada('desempenho'), publicidade: marcada('publicidade') });
   });
-  aviso
-    .querySelector('[data-cookies-salvar]')
-    ?.addEventListener('click', () => aplicar(medicao?.checked === true));
   aviso.addEventListener('keydown', (evento) => {
     if (evento.key === 'Escape' && retornoFoco) esconder();
   });
   for (const botao of document.querySelectorAll<HTMLElement>('[data-preferencias-cookies]')) {
-    botao.addEventListener('click', () => mostrar(botao, true));
+    botao.addEventListener('click', () => mostrar(botao));
   }
 
   document.addEventListener('click', (evento) => {
@@ -183,9 +214,8 @@ function iniciar(aviso: HTMLElement): void {
     enviar(nome, { pagina: location.pathname, ...parametros });
   });
 
-  const escolha = lerEscolha();
-  if (escolha === true) carregar();
-  else if (escolha === null) mostrar();
+  if (escolhaAtual === null) mostrar();
+  else if (escolhaAtual.desempenho) carregar(escolhaAtual);
 }
 
 /**

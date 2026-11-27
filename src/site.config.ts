@@ -107,9 +107,10 @@ export interface Operador {
   /**
    * Logo horizontal do operador (cabeçalho, rodapé e JSON-LD), gerada por `npm run icones` em
    * public/: `<caminho>.webp` (tela), `<caminho>-claro.webp` (fundo escuro, rodapé) e
-   * `<caminho>.png` (JSON-LD). `null` = só a marca do resort.
+   * `<caminho>.png` (JSON-LD). `null` = só a marca do resort. `link`: site aberto (em nova aba)
+   * ao clicar no logo do cabeçalho e do rodapé.
    */
-  logo: { caminho: string; alt: string; largura: number; altura: number } | null;
+  logo: { caminho: string; alt: string; largura: number; altura: number; link?: string } | null;
   /** Encarregado de dados (LGPD). */
   encarregadoDados: { nome: string; email: string } | null;
 }
@@ -169,21 +170,29 @@ export const recursos = {
 /**
  * Faixa da Black Friday no topo do cabeçalho de todas as páginas
  * (src/components/sections/FaixaBlackFriday.astro), no padrão do site hoteisemolimpia.com.br:
- * contagem regressiva até o `inicio` (`chamada`) e, durante a campanha, a frase `depois` com a
- * contagem até o `fim` (`chamadaFim`). Depois do `fim`, a faixa some sozinha no navegador e deixa
- * de ser gerada no próximo build. Enquanto a faixa aparece, o cabeçalho, os submenus e o menu do
- * celular ficam pretos (#0B0B0B), com letras e logos brancas. Horários de Brasília (-03:00).
- * Para desligar tudo, use `ativo: false`.
+ * contagem regressiva até o `fim` (`chamada`) e, depois, as fases descritas abaixo. No
+ * `encerramento`, a faixa some sozinha no navegador e deixa de ser gerada no próximo build.
+ * Enquanto a faixa aparece, o cabeçalho, os submenus e o menu do celular ficam pretos (#0B0B0B),
+ * com letras e logos brancas. Horários de Brasília (-03:00). Para desligar tudo, use
+ * `ativo: false`.
  * Período confirmado pelo cliente em 19/11/2026: de 27/11 a 30/11/2026.
  */
 export const blackFriday = {
   ativo: true,
-  inicio: '2026-11-27T00:00:00-03:00',
-  fim: '2026-11-30T23:59:59-03:00',
   rotulo: 'Black Friday',
   chamada: 'as ofertas começam em',
-  chamadaFim: 'as ofertas terminam em',
-  depois: 'Black Friday no ar: ofertas em todas as hospedagens',
+  // A contagem termina às 9h de 27/11 (horário de Brasília); depois o relógio fica em 00 e a frase
+  // entra à direita do botão.
+  depois: 'Black Friday Valendo!',
+  fim: '2026-11-27T09:00:00-03:00',
+  // À meia-noite de 28/11 a oferta é estendida até 30/11: a faixa fica só com esta frase e o
+  // botão com o texto `ctaExtensao` (sem selo e sem relógio).
+  extensao: '2026-11-28T00:00:00-03:00',
+  depoisExtensao: 'Perdeu a oferta? Estendemos até 30/11!',
+  ctaExtensao: 'Ver ofertas',
+  // À meia-noite de 01/12 a campanha acaba: o site volta ao layout normal sozinho (sem a faixa,
+  // cabeçalho claro e logos coloridos), sem precisar publicar de novo.
+  encerramento: '2026-12-01T00:00:00-03:00',
   cta: 'Ver hospedagens',
   /** Página de reserva de hospedagem (rota `reservasHospedagem`). */
   ctaHref: '/reservas/hospedagem/',
@@ -438,6 +447,7 @@ const agencia: Operador = {
     alt: 'Resort All Inclusive by Resorts Online',
     largura: 320,
     altura: 81,
+    link: 'https://resortallinclusive.com.br/',
   },
   encarregadoDados: null, // TODO: encarregado (DPO) da agência.
 };
