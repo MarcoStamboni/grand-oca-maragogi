@@ -10,14 +10,26 @@ import {
   PUBLIC_GTM_ID,
 } from 'astro:env/client';
 
-import { resolverAnalytics } from '@/lib/analytics';
+import { origemMedicao, resolverAnalytics } from '@/lib/analytics';
+import { dominio, medicao } from '@/site.config';
 
-/** Analytics ativo só com PUBLIC_ANALYTICS_ENABLED=true e um ID válido. */
-export const analytics = resolverAnalytics({
-  habilitado: PUBLIC_ANALYTICS_ENABLED,
-  ga4: PUBLIC_GA4_ID,
-  gtm: PUBLIC_GTM_ID,
-});
+/**
+ * Código do Google: o de produção vem de site.config.ts (`medicao`); um ID no .env tem
+ * preferência (testes). Em qualquer caso, só carrega depois do consentimento (aviso de cookies).
+ */
+const entradaMedicao = origemMedicao(
+  { habilitado: PUBLIC_ANALYTICS_ENABLED, ga4: PUBLIC_GA4_ID, gtm: PUBLIC_GTM_ID },
+  medicao,
+);
+
+export const analytics = resolverAnalytics(entradaMedicao);
+
+/**
+ * Domínio em que o código de produção pode carregar (`undefined` = qualquer um, para o código de
+ * teste do .env). Fora dele o aviso aparece e guarda a escolha, mas o Google não é carregado.
+ */
+export const hostDaMedicao: string | undefined =
+  entradaMedicao.travarDominio && dominio.url ? new URL(dominio.url).hostname : undefined;
 
 /** Endereço que recebe o formulário. `null` = sem formulário (só os canais de atendimento). */
 export const enderecoFormulario: string | null = PUBLIC_FORM_ENDPOINT?.trim() || null;

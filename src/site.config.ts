@@ -550,3 +550,15 @@ export const linkRotaAeroporto = linkRotaDoAeroporto();
 
 /** Mesma rota no mapa incorporado (carregado sob demanda em /como-chegar/). */
 export const incorporacaoRotaAeroporto = rotaAte(resort.aeroporto, 'mapa');
+
+/**
+ * Medição de audiência (Google Tag Manager ou Google Analytics 4). O código é público (aparece no
+ * HTML), por isso fica aqui: qualquer build do site já sai medindo. Mesmo assim, o Google só é
+ * carregado depois que a pessoa permite "Desempenho" no aviso de cookies (LGPD), e só no domínio
+ * do site (dominio.url). Com os dois, vale o GTM. `null` nos dois = sem medição.
+ * Para testar outro código, PUBLIC_GA4_ID / PUBLIC_GTM_ID no .env têm preferência.
+ */
+export const medicao: { ga4: string | null; gtm: string | null } = {
+  ga4: 'G-EQJSQRYM03',
+  gtm: null,
+};

@@ -35,6 +35,28 @@ export function resolverAnalytics({ habilitado, ga4, gtm }: EntradaAnalytics): C
   throw new Error('PUBLIC_ANALYTICS_ENABLED=true exige PUBLIC_GA4_ID ou PUBLIC_GTM_ID.');
 }
 
+/** Código do Google gravado no site (site.config.ts → `medicao`). */
+export interface MedicaoDoSite {
+  ga4: string | null;
+  gtm: string | null;
+}
+
+/**
+ * De onde vem o código do Google. Com algum ID no .env (PUBLIC_GA4_ID / PUBLIC_GTM_ID), vale só o
+ * .env, como antes (útil para testes). Sem ID no .env, vale o código de produção de site.config:
+ * a medição liga sozinha em qualquer build e fica presa ao domínio do site (`travarDominio`).
+ */
+export function origemMedicao(
+  env: EntradaAnalytics,
+  doSite: MedicaoDoSite,
+): EntradaAnalytics & { travarDominio: boolean } {
+  if (env.ga4?.trim() || env.gtm?.trim()) return { ...env, travarDominio: false };
+  const ga4 = doSite.ga4?.trim() || undefined;
+  const gtm = doSite.gtm?.trim() || undefined;
+  const temCodigo = Boolean(ga4 || gtm);
+  return { habilitado: temCodigo, ga4, gtm, travarDominio: temCodigo };
+}
+
 /** Endereço do script do provedor (só é inserido depois do consentimento). */
 export function urlScriptAnalytics(provedor: ProvedorAnalytics, id: string): string {
   const arquivo = provedor === 'gtm' ? 'gtm.js' : 'gtag/js';

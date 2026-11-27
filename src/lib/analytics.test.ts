@@ -6,6 +6,7 @@ import {
   ehCookieAnalytics,
   lerConsentimento,
   medicaoPermitida,
+  origemMedicao,
   registrarConsentimento,
   resolverAnalytics,
   urlScriptAnalytics,
@@ -133,5 +134,34 @@ describe('cookies do Google Analytics', () => {
       '.com.br',
     ]);
     expect(dominiosDoCookie('localhost')).toEqual([]);
+  });
+});
+
+describe('código do Google gravado no site', () => {
+  const doSite = { ga4: null, gtm: 'GTM-ABC1234' };
+
+  it('liga sozinho com o código de site.config, preso ao domínio', () => {
+    expect(origemMedicao({ habilitado: false }, doSite)).toEqual({
+      habilitado: true,
+      ga4: undefined,
+      gtm: 'GTM-ABC1234',
+      travarDominio: true,
+    });
+    expect(origemMedicao({ habilitado: false }, { ga4: null, gtm: null }).habilitado).toBe(false);
+  });
+
+  it('dá preferência a um ID do .env, sem trava de domínio', () => {
+    const env = { habilitado: true, ga4: 'G-TESTE00000' };
+    expect(origemMedicao(env, doSite)).toEqual({ ...env, travarDominio: false });
+  });
+
+  it('só libera o domínio do site e os subdomínios dele', () => {
+    const site = 'makai.resortallinclusive.com.br';
+    expect(medicaoPermitida(site, site)).toBe(true);
+    expect(medicaoPermitida(`www.${site}`, site)).toBe(true);
+    expect(medicaoPermitida(site.toUpperCase(), site)).toBe(true);
+    expect(medicaoPermitida('localhost', site)).toBe(false);
+    expect(medicaoPermitida(`falso${site}`, site)).toBe(false);
+    expect(medicaoPermitida('localhost', undefined)).toBe(true);
   });
 });
