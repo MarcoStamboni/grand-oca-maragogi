@@ -689,3 +689,16 @@ details[id^='pergunta-']:not([open]) {
   content-visibility: auto;
   contain-intrinsic-size: auto 5.5rem;
 }
+
+/*
+ * WhatsApp oculto (temporário, a pedido do cliente em 27/11/2026): some só com os botões mais
+ * aparentes (flutuante, barra do celular, cabeçalho, CTAs e "Cotar pelo WhatsApp"). O link de
+ * contato do rodapé, os formulários e os textos continuam. Para voltar: apague este bloco.
+ */
+a[data-evento='clique_whatsapp']:not(footer a, form a),
+li:has(> a[data-evento='clique_whatsapp']):not(footer li) {
+  display: none !important;
+}
+nav[aria-label='Atendimento rápido'] ul:has(a[data-evento='clique_whatsapp']) {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
